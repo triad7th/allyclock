@@ -1,9 +1,24 @@
-<div class="d-flex flex-row justify-content-between align-items-center" style="border-bottom: solid 1px white">
+<div
+  class="d-flex flex-row justify-content-between align-items-center"
+  style="border-bottom: solid 1px white"
+>
   <div>
-    <img class="py-3" src="{{locale[this.state].Flag}}" />
+    <img class="py-3" src="{{ getFlag() }}" />
   </div>
-  <div class="d-flex flex-column justify-content-center align-items-end text-white">
-    <h1 class="my-0 mx-0" style="font-size: 4rem;">{{now | date:'hh:mm a': this.locale[this.state].TimeZone}}<span *ngIf="this.showSecond" style="font-family: consolas; font-size: 1rem;">{{now | date: 'ss'}}</span></h1>
-    <h5 class="mx-0" style="font-size: 1rem;">{{now | date:'MMM d, y, z': locale[this.state].TimeZone}}</h5>
+  <div
+    class="d-flex flex-column justify-content-center align-items-end text-white"
+  >
+    <h1 class="my-0 mx-0" style="font-size: 4rem">
+      {{ now | date: "hh:mm a":getTimeZone() }}
+      <span
+        *ngIf="this.showSecond"
+        style="font-family: consolas; font-size: 1rem"
+      >
+        {{ now | date: "ss" }}
+      </span>
+    </h1>
+    <h5 class="mx-0" style="font-size: 1rem">
+      {{ now | date: "MMM d, y, z":getTimeZone() }}
+    </h5>
   </div>
 </div>
