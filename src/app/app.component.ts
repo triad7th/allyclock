@@ -19,5 +19,4 @@ export class AppComponent implements OnInit {
       this.now = new Date();
     });
   }
-
 }

@@ -1,18 +1,17 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: main-allyclock
+name: plex-version-allyclock
 
 on:
   push:
     branches:
-      - main
       - plex-version
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -20,7 +19,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: '16.x'
 
       - name: npm install, build, and test
         run: |
@@ -32,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: dist/allyclock
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,10 +47,10 @@ jobs:
           name: node-app
 
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
         with:
           app-name: 'allyclock'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_AA14E6D48E894C10807A0BDFD4363329 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_050A5423F4404245AAF84BA247B4ED7D }}
           package: .

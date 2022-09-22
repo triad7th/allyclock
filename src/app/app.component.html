@@ -1,48 +1,11 @@
 <div class="container-fluid">
-  <div class="row padding40"></div>
+  <app-card state="US" showSecond="true"></app-card>
   <div class="row">
     <div class="col-sm">
-      <table class="table big-clock">
-        <tbody>
-          <tr>
-            <th class="flag"><img src="{{flags['US']}}" class="img-fluid center" /></th>
-            <th>
-              <h1 class="card-title big-title" >{{now | date:'hh:mm a'}}<span class="big-title-second">{{now | date: 'ss'}}</span></h1>
-              <h5 class="card-text big-text">{{now | date:'MMM d, y, z'}}</h5>
-            </th>
-          </tr>
-          <tr></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="row" style="padding-bottom: 40px;"></div>
-  <div class="row">
-    <div class="col-sm">
-      <table class="table small-clock">
-        <tbody>
-          <tr>
-            <th class="flag"><img src="{{flags['UK']}}" class="img-fluid center"/></th>
-            <th>
-              <h1 class="card-title small-title">{{now | date:'hh:mm a' : "UTC"}}</h1>
-              <h5 class="card-text small-text">{{now | date:'MMM d, y, z' : "UTC"}}</h5>
-            </th>
-          </tr>
-        </tbody>
-      </table>
+      <app-card state="UK"></app-card>
     </div>
     <div class="col-sm">
-      <table class="table small-clock">
-        <tbody>
-          <tr>
-            <th class="flag"><img src="{{flags['KR']}}" class="img-fluid center"/></th>
-            <th>
-              <h1 class="card-title small-title">{{now | date:'hh:mm a' : "UTC+9"}}</h1>
-              <h5 class="card-text small-text">{{now | date:'MMM d, y, z' : "UTC+9"}}</h5>
-            </th>
-          </tr>
-        </tbody>
-      </table>
+      <app-card state="KR"></app-card>
     </div>
   </div>
 </div>
