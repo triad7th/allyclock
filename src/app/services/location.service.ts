@@ -27,7 +27,7 @@ export class LocationService {
       case 'LA':
         return moment.tz(targetDate, 'America/Los_Angeles').format('Z');
       case 'UK':
-        return moment.tz(targetDate, 'Europe/London').format('Z');
+        return moment.tz(targetDate, 'UTC').format('Z');
       case 'KR':
         return moment.tz(targetDate, 'Asia/Seoul').format('Z');
       default:
