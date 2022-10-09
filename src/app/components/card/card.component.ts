@@ -9,7 +9,6 @@ import { LocationService } from 'src/app/services/location.service';
 export class CardComponent implements OnInit {
   now: Date = new Date();
   @Input() state: string = 'UK';
-  @Input() showSecond: any = false;
   constructor(public location: LocationService) {}
 
   ngOnInit(): void {
