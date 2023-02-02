@@ -25,13 +25,13 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-        # npm run test --if-present
-
+          npm run test --if-present
+      
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: ./dist/allyclock
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'allyclock'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BE765E53DC814373BEFBB9BF38199D4F }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0B59ED8FAB3246C4BF0EF11E45C2158D }}
           package: .
