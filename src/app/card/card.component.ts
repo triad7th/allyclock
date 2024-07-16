@@ -1,10 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { LocationService } from 'src/app/services/location.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { LocationService } from '../services/location.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-card',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss'],
+  styleUrl: './card.component.scss'
 })
 export class CardComponent implements OnInit {
   now: Date = new Date();
