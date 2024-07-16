@@ -3,18 +3,19 @@
   style="border-bottom: solid 1px white"
 >
   <div>
-    <img class="py-3" src="{{ getFlag() }}" />
+    <img class="py-3" width="110" src="{{ getFlag() }}" />
   </div>
   <div
     class="d-flex flex-column justify-content-center align-items-end text-white"
+    style="word-break: break-all;"
   >
-    <h1 class="my-0 mx-0" style="font-size: 4rem">
+    <h1 class="mx-0" style="font-size: 3.77rem; margin-bottom: 0.4rem;">
       {{ now | date: "hh:mm a":getTimeZone() }}
     </h1>
-    <h5 class="mx-0 mb-0" style="font-size: 1.5rem; font-family: consolas;">
+    <h5 class="mx-0 mb-0" style="font-size: 1.25rem; font-family: consolas;">
       {{ now | date: "HH:mm:ss.SS zzzz":getTimeZone() }}
     </h5>
-    <h5 class="mx-0" style="font-size: 1rem">
+    <h5 class="mx-0" style="font-size: 0.8rem">
       {{ now | date: "MMM d, y, zzzz":getTimeZone() }}
     </h5>
   </div>
