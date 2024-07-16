@@ -6,7 +6,7 @@ name: allyclock
 on:
   push:
     branches:
-      - update
+      - main
   workflow_dispatch:
 
 jobs:
