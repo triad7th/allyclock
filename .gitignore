@@ -4,11 +4,13 @@
 /dist
 /tmp
 /out-tsc
+/apps/*/dist
 # Only exists if Bazel was run
 /bazel-out
 
 # dependencies
 /node_modules
+/apps/*/node_modules
 
 # profiling files
 chrome-profiler-events*.json
@@ -32,9 +34,11 @@ chrome-profiler-events*.json
 
 # misc
 /.angular/cache
+/apps/*/.angular/cache
 /.sass-cache
 /connect.lock
 /coverage
+/.netlify
 /libpeerconnection.log
 npm-debug.log
 yarn-error.log

@@ -1,27 +1,35 @@
-# AllyclockUpgrade
+# AllyClock
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.0.
+AllyClock is a multi-app repository. The current production app is the Angular Web app in `apps/web`.
 
-## Development server
+## Web App
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Install Web dependencies:
 
-## Code scaffolding
+```sh
+npm --prefix apps/web ci
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Run the Web app locally:
 
-## Build
+```sh
+npm run start:web
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Build the Web app:
 
-## Running unit tests
+```sh
+npm run build:web
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run Web unit tests:
 
-## Running end-to-end tests
+```sh
+npm run test:web
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+The Web production build is emitted under `apps/web/dist/allyclock/browser`.
 
-## Further help
+## Deployment
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+GitHub Actions builds `apps/web` and deploys the browser output to Netlify.

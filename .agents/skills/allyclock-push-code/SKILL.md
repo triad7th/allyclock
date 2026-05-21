@@ -28,7 +28,7 @@ Push committed AllyClock changes deliberately, without hiding local state or pus
    - Never use force push unless the user explicitly asks for it.
    - Never rewrite history, rebase, amend, or reset as part of pushing unless explicitly requested.
 5. Run final validation when appropriate:
-   - If commits since upstream include Web changes, prefer `npm run build` or the closest relevant check.
+   - If commits since upstream include Web changes, prefer `npm run build:web` or the closest relevant check.
    - If commits since upstream include iOS changes, prefer the app's configured iOS check when available.
    - If commits are docs-only or repo workflow-only, validation may be skipped.
    - If validation was already run during the same session after the last commit, reuse that result.

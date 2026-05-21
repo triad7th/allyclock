@@ -25,14 +25,15 @@ jobs:
         with:
           node-version: 20.x
           cache: npm
+          cache-dependency-path: apps/web/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm --prefix apps/web ci
 
       - name: Build
-        run: npm run build --if-present
+        run: npm --prefix apps/web run build --if-present
 
       - name: Deploy to Netlify
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        run: npx --yes netlify-cli deploy --prod --dir=dist/allyclock/browser --site="$NETLIFY_SITE_ID"
+        run: npx --yes netlify-cli deploy --prod --dir=apps/web/dist/allyclock/browser --site="$NETLIFY_SITE_ID"

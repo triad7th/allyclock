@@ -15,7 +15,7 @@ Commit current AllyClock changes with deliberate grouping and a consistent messa
    - `git diff`
    - Include staged changes with `git diff --cached --stat` and `git diff --cached` when present.
 2. Identify changed files and classify them by scope:
-   - `web`: Angular/Web app changes (`apps/web/**`; before monorepo migration also `src/**`, `public/**`, `angular.json`, `tsconfig*.json` when clearly Web-related)
+   - `web`: Angular/Web app changes (`apps/web/**`)
    - `ios`: iOS app changes (`apps/ios/**`, Xcode project/workspace files, Swift files)
    - `core`: shared product logic/data (`packages/core/**`, shared timezone/region data)
    - `ci`: GitHub Actions or deployment automation (`.github/**`)
@@ -35,7 +35,7 @@ Commit current AllyClock changes with deliberate grouping and a consistent messa
    - If one file contains multiple unrelated changes, only split it when the hunks are clearly separable with non-interactive commands. Otherwise create one broader commit or ask the user before proceeding.
    - Never rewrite history or amend existing commits unless the user explicitly asks.
 5. Validate before committing:
-   - For Web changes, prefer `npm run lint:web`, `npm run check:web`, or the closest available repo script. In the current flat Angular app, use available scripts such as `npm test -- --watch=false` or `npm run build` when appropriate.
+   - For Web changes, prefer `npm run lint:web`, `npm run check:web`, or the closest available repo script. Use `npm run build:web` when no narrower validation command exists.
    - For iOS changes, prefer `npm run lint:ios`, `npm run check:ios`, `swiftlint`, `swiftformat --lint .`, or `xcodebuild test` from the iOS app directory when available.
    - For docs-only changes, validation may be skipped.
    - If a relevant validation command is unavailable, note that in the final response.
