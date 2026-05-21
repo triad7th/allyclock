@@ -49,3 +49,13 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Xcode
+xcuserdata/
+DerivedData/
+build/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.xcbkptlist

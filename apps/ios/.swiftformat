@@ -1,0 +1,15 @@
+--swiftversion 5.0
+--indent 4
+--maxwidth 100
+--tabwidth 8
+--linebreaks lf
+--semicolons never
+--commas always
+--trimwhitespace always
+--wraparguments preserve
+--wrapparameters preserve
+--wrapcollections preserve
+--self remove
+--header ignore
+
+--exclude AllyClock.xcodeproj,build,DerivedData,.build

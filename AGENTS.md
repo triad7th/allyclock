@@ -9,12 +9,12 @@ AllyClock is a multi-app repository for clock experiences across platforms.
 Current layout:
 
 - `apps/web` contains the Angular 18 Web app.
-- `.github/workflows/allyclock.yml` builds and deploys the Web app to Netlify.
+- `apps/ios` contains the native SwiftUI iOS app (minimum target iOS 16.0 for iPhone 8 support).
+- `.github/workflows/allyclock.yml` builds and deploys the Web app to Netlify. iOS CI is intentionally not added yet.
 - `.agents/skills` contains repository-local Codex skills.
 
 Future layout:
 
-- `apps/ios` will contain the native iOS app when it is scaffolded.
 - `packages/core` will contain shared region/timezone data when shared logic is extracted.
 
 ## Development Commands
@@ -52,6 +52,7 @@ Root scripts delegate to `apps/web`. App-local commands can also be run from `ap
 ## Testing Guidance
 
 - For Web changes, run `npm run build:web` before finishing.
+- For iOS changes, validate the build via XcodeBuildMCP or `xcodebuild` from `apps/ios`; see `apps/ios/AGENTS.md` for commands.
 - For service logic, add focused Jasmine specs under the matching `*.spec.ts` file.
 - For component behavior, prefer assertions against rendered DOM or component public API.
 - When changing time-related behavior, use fixed `Date` values in tests so timezone assertions are deterministic.
