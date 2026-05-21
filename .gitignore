@@ -50,6 +50,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Superpowers brainstorm artifacts
+.superpowers/
+
 # Xcode
 xcuserdata/
 DerivedData/
