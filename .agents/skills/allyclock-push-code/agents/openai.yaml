@@ -1,0 +1,4 @@
+interface:
+  display_name: "AllyClock Push Code"
+  short_description: "Push committed AllyClock work safely"
+  default_prompt: "Use $allyclock-push-code to inspect the current branch, validate relevant commits, and push committed AllyClock changes."
