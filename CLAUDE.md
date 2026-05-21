@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AllyClock
 
 Guidance for coding agents working in this repository. The same content is served to both Claude Code (via `CLAUDE.md`) and Codex (via `AGENTS.md`, which is a symlink to `CLAUDE.md`). Edit `CLAUDE.md` and the agent harness stays consistent for both.
 
