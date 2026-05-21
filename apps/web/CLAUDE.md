@@ -1,6 +1,6 @@
-# AGENTS.md
+# CLAUDE.md
 
-Guidance for coding agents working in the AllyClock Web app.
+Guidance for Claude Code working in the AllyClock Web app.
 
 ## App Overview
 

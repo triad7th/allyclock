@@ -1,6 +1,6 @@
-# AGENTS.md
+# CLAUDE.md
 
-Guidance for coding agents working in this repository.
+Guidance for Claude Code working in this repository.
 
 ## Project Overview
 
@@ -11,7 +11,7 @@ Current layout:
 - `apps/web` contains the Angular 18 Web app.
 - `apps/ios` contains the native SwiftUI iOS app (minimum target iOS 16.0 for iPhone 8 support).
 - `.github/workflows/allyclock.yml` builds and deploys the Web app to Netlify. iOS CI is intentionally not added yet.
-- `.agents/skills` contains repository-local Codex skills.
+- `.claude/skills` contains repository-local Claude Code skills.
 
 Future layout:
 
@@ -52,7 +52,7 @@ Root scripts delegate to `apps/web`. App-local commands can also be run from `ap
 ## Testing Guidance
 
 - For Web changes, run `npm run build:web` before finishing.
-- For iOS changes, validate the build via XcodeBuildMCP or `xcodebuild` from `apps/ios`; see `apps/ios/AGENTS.md` for commands.
+- For iOS changes, validate the build via XcodeBuildMCP or `xcodebuild` from `apps/ios`; see `apps/ios/CLAUDE.md` for commands.
 - For service logic, add focused Jasmine specs under the matching `*.spec.ts` file.
 - For component behavior, prefer assertions against rendered DOM or component public API.
 - When changing time-related behavior, use fixed `Date` values in tests so timezone assertions are deterministic.
