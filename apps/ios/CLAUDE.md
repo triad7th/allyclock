@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for Claude Code working in the AllyClock iOS app.
+Guidance for coding agents working in the AllyClock iOS app. Served to both Claude Code (via `CLAUDE.md`) and Codex (via the sibling `AGENTS.md` symlink). Edit this file; the agent harness stays consistent for both.
 
 ## App Overview
 
