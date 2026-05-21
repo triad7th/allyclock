@@ -13,6 +13,7 @@
 		AC0000000000000000000083 /* ClockSizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000084 /* ClockSizing.swift */; };
 		AC0000000000000000000085 /* BigTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000086 /* BigTime.swift */; };
 		AC0000000000000000000088 /* InfoLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000089 /* InfoLine.swift */; };
+		AC0000000000000000000090 /* ClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000091 /* ClockView.swift */; };
 		AC0000000000000000000032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000022 /* Assets.xcassets */; };
 		AC0000000000000000000033 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000023 /* Preview Assets.xcassets */; };
 		AC0000000000000000000052 /* AllyClockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000050 /* AllyClockTests.swift */; };
@@ -35,6 +36,7 @@
 		AC0000000000000000000084 /* ClockSizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockSizing.swift; sourceTree = "<group>"; };
 		AC0000000000000000000086 /* BigTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigTime.swift; sourceTree = "<group>"; };
 		AC0000000000000000000089 /* InfoLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoLine.swift; sourceTree = "<group>"; };
+		AC0000000000000000000091 /* ClockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000022 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AC0000000000000000000023 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AC0000000000000000000024 /* AllyClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllyClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +106,7 @@
 			children = (
 				AC0000000000000000000086 /* BigTime.swift */,
 				AC0000000000000000000089 /* InfoLine.swift */,
+				AC0000000000000000000091 /* ClockView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 				AC0000000000000000000083 /* ClockSizing.swift in Sources */,
 				AC0000000000000000000085 /* BigTime.swift in Sources */,
 				AC0000000000000000000088 /* InfoLine.swift in Sources */,
+				AC0000000000000000000090 /* ClockView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
