@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		AC0000000000000000000030 /* AllyClockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000020 /* AllyClockApp.swift */; };
 		AC0000000000000000000031 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000021 /* ContentView.swift */; };
+		AC0000000000000000000080 /* ClockFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000081 /* ClockFormatter.swift */; };
 		AC0000000000000000000032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000022 /* Assets.xcassets */; };
 		AC0000000000000000000033 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000023 /* Preview Assets.xcassets */; };
 		AC0000000000000000000052 /* AllyClockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000050 /* AllyClockTests.swift */; };
@@ -27,6 +28,7 @@
 /* Begin PBXFileReference section */
 		AC0000000000000000000020 /* AllyClockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllyClockApp.swift; sourceTree = "<group>"; };
 		AC0000000000000000000021 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AC0000000000000000000081 /* ClockFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockFormatter.swift; sourceTree = "<group>"; };
 		AC0000000000000000000022 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AC0000000000000000000023 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AC0000000000000000000024 /* AllyClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllyClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,6 +79,7 @@
 				AC0000000000000000000021 /* ContentView.swift */,
 				AC0000000000000000000022 /* Assets.xcassets */,
 				AC0000000000000000000012 /* Preview Content */,
+				AC0000000000000000000082 /* Time */,
 			);
 			path = AllyClock;
 			sourceTree = "<group>";
@@ -87,6 +90,14 @@
 				AC0000000000000000000023 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000082 /* Time */ = {
+			isa = PBXGroup;
+			children = (
+				AC0000000000000000000081 /* ClockFormatter.swift */,
+			);
+			path = Time;
 			sourceTree = "<group>";
 		};
 		AC0000000000000000000041 /* AllyClockTests */ = {
@@ -199,6 +210,7 @@
 			files = (
 				AC0000000000000000000031 /* ContentView.swift in Sources */,
 				AC0000000000000000000030 /* AllyClockApp.swift in Sources */,
+				AC0000000000000000000080 /* ClockFormatter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
