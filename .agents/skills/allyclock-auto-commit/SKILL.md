@@ -1,0 +1,1 @@
+../../../.claude/skills/allyclock-auto-commit/SKILL.md
