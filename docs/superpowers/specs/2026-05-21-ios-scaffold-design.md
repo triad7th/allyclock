@@ -12,6 +12,7 @@ The repository currently contains the production Web app under `apps/web`. Deplo
 - `AllyMetronome` uses `AllyMetronome.xcodeproj`, bundle ID `AllyWorld.AllyMetronome`, development team `77R8AFM4HU`, iOS deployment target `18.2`, iPhone-only support, and SwiftUI.
 
 AllyClock should follow the `allyfast` app naming and device-family pattern while living under `apps/ios`.
+Unlike the sibling apps, AllyClock must support iPhone 8, which cannot run iOS 17 or later. The scaffold should therefore use an iOS 16 minimum deployment target.
 
 ## Target Structure
 
@@ -35,7 +36,7 @@ apps/ios/
 - Product name: `AllyClock`
 - Bundle identifier: `com.allyworld.AllyClock`
 - Development team: `77R8AFM4HU`
-- Deployment target: `iOS 18.2`
+- Deployment target: `iOS 16.0`, to support iPhone 8
 - Device family: iPhone + iPad
 - Swift version: `5.0`, matching the existing sibling Xcode projects
 - Info.plist generation: Xcode-generated, matching `allyfast`
@@ -71,6 +72,7 @@ Expected validation target:
 - Scheme: `AllyClock`
 - Project: `apps/ios/AllyClock.xcodeproj`
 - Platform: iOS Simulator
+- Minimum supported runtime: iOS 16
 
 ## Out of Scope
 
