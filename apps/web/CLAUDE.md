@@ -4,13 +4,13 @@ Guidance for coding agents working in the AllyClock Web app. Served to both Clau
 
 ## App Overview
 
-This directory contains the Angular 18 Web app for AllyClock.
+This directory contains the Angular 21 Web app for AllyClock.
 
 - Angular standalone components live under `src/app`.
 - SCSS component styles are used throughout the app.
 - Bootstrap 5 is loaded globally through `angular.json`.
 - `moment-timezone` is used for timezone offset formatting.
-- Karma/Jasmine is configured for unit tests.
+- Vitest (via `@angular/build:unit-test`) is configured for unit tests; the app is zoneless and uses signals.
 
 ## Commands
 

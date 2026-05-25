@@ -17,6 +17,6 @@ export class CardComponent implements OnInit {
   readonly flag = computed(() => this.location.getFlag(this.state()));
 
   ngOnInit(): void {
-    setInterval(() => this.now.set(new Date()), 1000);
+    setInterval(() => this.now.set(new Date()), 100);
   }
 }
