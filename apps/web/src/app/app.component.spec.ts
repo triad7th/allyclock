@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
@@ -20,10 +21,10 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('allyclock');
   });
 
-  it('should render title', () => {
+  it('should render at least one clock card', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, allyclock');
+    expect(compiled.querySelector('app-card')).toBeTruthy();
   });
 });

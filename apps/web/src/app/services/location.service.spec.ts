@@ -1,5 +1,5 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-
 import { LocationService } from './location.service';
 
 describe('LocationService', () => {
