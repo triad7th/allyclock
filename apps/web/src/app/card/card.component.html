@@ -3,20 +3,20 @@
   style="border-bottom: solid 1px white"
 >
   <div>
-    <img class="py-3" width="110" [src]="flag()" />
+    <img class="py-3" width="110" [src]="flag()" [alt]="state() + ' flag'" />
   </div>
   <div
     class="d-flex flex-column justify-content-center align-items-end text-white"
-    style="word-break: break-all;"
+    style="word-break: break-all"
   >
-    <h1 class="mx-0" style="font-size: 3.77rem; margin-bottom: 0.4rem;">
-      {{ now() | date: "hh:mm a":timeZone() }}
+    <h1 class="mx-0" style="font-size: 3.77rem; margin-bottom: 0.4rem">
+      {{ now() | date: 'hh:mm a' : timeZone() }}
     </h1>
-    <h5 class="mx-0 mb-0" style="font-size: 1.30rem; font-family: consolas;">
-      {{ now() | date: "HH:mm:ss.SS zzzz":timeZone() }}
+    <h5 class="mx-0 mb-0" style="font-size: 1.3rem; font-family: consolas">
+      {{ now() | date: 'HH:mm:ss.SS zzzz' : timeZone() }}
     </h5>
     <h5 class="mx-0" style="font-size: 1rem">
-      {{ now() | date: "MMM d, y, zzzz":timeZone() }}
+      {{ now() | date: 'MMM d, y, zzzz' : timeZone() }}
     </h5>
   </div>
 </div>
