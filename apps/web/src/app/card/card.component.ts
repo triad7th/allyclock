@@ -1,31 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { LocationService } from '../services/location.service';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-card',
-  imports: [CommonModule],
+  imports: [DatePipe],
   templateUrl: './card.component.html',
-  styleUrl: './card.component.scss'
+  styleUrl: './card.component.scss',
 })
 export class CardComponent implements OnInit {
-  now: Date = new Date();
-  @Input() state: string = 'UK';
-  constructor(public location: LocationService) {}
+  private location = inject(LocationService);
+
+  readonly state = input<string>('UK');
+  readonly now = signal(new Date());
+  readonly timeZone = computed(() => this.location.getTimeZone(this.state(), this.now()));
+  readonly flag = computed(() => this.location.getFlag(this.state()));
 
   ngOnInit(): void {
-    console.log(`target locale: ${this.state}`);
-    setInterval(() => {
-      this.now = new Date();
-    });
-  }
-
-  getTimeZone(): string {
-    return this.location.getTimeZone(this.state, this.now);
-    //return "UTC";
-  }
-
-  getFlag(): string {
-    return this.location.getFlag(this.state);
+    setInterval(() => this.now.set(new Date()), 1000);
   }
 }
