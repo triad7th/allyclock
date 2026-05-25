@@ -5,8 +5,6 @@ import * as moment from 'moment-timezone';
   providedIn: 'root',
 })
 export class LocationService {
-  constructor() {}
-
   public getFlag(id: string): string {
     switch (id) {
       case 'US':
