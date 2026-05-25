@@ -10,6 +10,9 @@
     "start:web": "npm --prefix apps/web run start",
     "build:web": "npm --prefix apps/web run build",
     "watch:web": "npm --prefix apps/web run watch",
-    "test:web": "npm --prefix apps/web run test"
+    "test:web": "npm --prefix apps/web run test",
+    "lint:web": "npm --prefix apps/web run lint",
+    "format:web": "npm --prefix apps/web run format",
+    "format:check:web": "npm --prefix apps/web run format:check"
   }
 }
