@@ -1,15 +1,11 @@
 import SwiftUI
 
 struct ClockView: View {
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.locale) private var locale
 
     var body: some View {
         GeometryReader { geometry in
-            let bucket = SizeBucket.detect(
-                size: geometry.size,
-                horizontalSizeClass: horizontalSizeClass
-            )
+            let bucket = SizeBucket.detect(size: geometry.size)
 
             TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { context in
                 content(at: context.date, size: geometry.size, bucket: bucket)

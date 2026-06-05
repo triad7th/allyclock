@@ -5,8 +5,12 @@ enum SizeBucket: Equatable {
     case standardPhone
     case tablet
 
-    static func detect(size: CGSize, horizontalSizeClass: UserInterfaceSizeClass?) -> SizeBucket {
-        if horizontalSizeClass == .regular {
+    static func detect(size: CGSize) -> SizeBucket {
+        // Key off the smaller screen dimension, not horizontalSizeClass: Max-class
+        // iPhones report `.regular` in landscape and would otherwise be mistaken for
+        // tablets. The shorter side cleanly separates phones (<=440pt) from iPads
+        // (iPad mini landscape is 744pt).
+        if min(size.width, size.height) >= 600 {
             return .tablet
         }
         return size.height < 390 ? .compactPhone : .standardPhone
@@ -19,7 +23,11 @@ enum SizeBucket: Equatable {
         case .standardPhone:
             return size.height * 0.55
         case .tablet:
-            return max(size.height * 0.46, size.width * 0.32)
+            // Drive off width alone. The time is a wide horizontal string, so a fixed
+            // fraction of width gives every iPad the same fill. A height term here would
+            // win on squarer iPads (e.g. the 4:3 Pro 13") and inflate their digits
+            // relative to wider models like the mini.
+            return size.width * 0.32
         }
     }
 
