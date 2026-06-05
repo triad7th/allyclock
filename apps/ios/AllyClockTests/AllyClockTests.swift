@@ -120,49 +120,45 @@ final class ClockFormatterTests: XCTestCase {
 final class ClockSizingTests: XCTestCase {
     func test_detect_iPhoneSE_landscape_isCompactPhone() {
         // iPhone SE 3rd gen landscape: 667 x 375.
-        let bucket = SizeBucket.detect(
-            size: CGSize(width: 667, height: 375),
-            horizontalSizeClass: .compact
-        )
+        let bucket = SizeBucket.detect(size: CGSize(width: 667, height: 375))
         XCTAssertEqual(bucket, .compactPhone)
     }
 
     func test_detect_iPhone16Pro_landscape_isStandardPhone() {
         // iPhone 16 Pro landscape: ~852 x 393.
-        let bucket = SizeBucket.detect(
-            size: CGSize(width: 852, height: 393),
-            horizontalSizeClass: .compact
-        )
+        let bucket = SizeBucket.detect(size: CGSize(width: 852, height: 393))
         XCTAssertEqual(bucket, .standardPhone)
+    }
+
+    func test_detect_iPhoneProMax_landscape_isStandardPhone() {
+        // Regression: iPhone Pro Max landscape (~956 x 440) reports a `.regular`
+        // horizontalSizeClass and was previously misclassified as a tablet, making
+        // its type non-proportional to the non-Max Pro. It must be a standard phone.
+        let bucket = SizeBucket.detect(size: CGSize(width: 956, height: 440))
+        XCTAssertEqual(bucket, .standardPhone)
+    }
+
+    func test_detect_iPadMini_landscape_isTablet() {
+        // iPad mini landscape: ~1133 x 744 — the smallest iPad must still be a tablet.
+        let bucket = SizeBucket.detect(size: CGSize(width: 1133, height: 744))
+        XCTAssertEqual(bucket, .tablet)
     }
 
     func test_detect_iPadPro_landscape_isTablet() {
         // iPad Pro 13" landscape: ~1366 x 1024.
-        let bucket = SizeBucket.detect(
-            size: CGSize(width: 1366, height: 1024),
-            horizontalSizeClass: .regular
-        )
+        let bucket = SizeBucket.detect(size: CGSize(width: 1366, height: 1024))
         XCTAssertEqual(bucket, .tablet)
     }
 
-    func test_detect_nilSizeClass_fallsBackToHeightHeuristic() {
-        XCTAssertEqual(
-            SizeBucket.detect(size: CGSize(width: 667, height: 375), horizontalSizeClass: nil),
-            .compactPhone
-        )
-        XCTAssertEqual(
-            SizeBucket.detect(size: CGSize(width: 852, height: 393), horizontalSizeClass: nil),
-            .standardPhone
-        )
-    }
-
-    func test_bigSize_tablet_usesHeightWhenItIsLargerThanWidthFloor() {
+    func test_bigSize_tablet_isWidthDriven() {
+        // Width-driven so every iPad fills the same fraction of its width, regardless
+        // of aspect ratio. The squarer Pro 13" (4:3) must not be inflated by height.
         let size = SizeBucket.tablet.bigSize(in: CGSize(width: 1366, height: 1024))
-        XCTAssertEqual(size, 1024 * 0.46, accuracy: 0.01)
+        XCTAssertEqual(size, 1366 * 0.32, accuracy: 0.01)
     }
 
-    func test_bigSize_tablet_usesWidthFloor_whenHeightTooSmall() {
-        let size = SizeBucket.tablet.bigSize(in: CGSize(width: 1200, height: 500))
-        XCTAssertEqual(size, 1200 * 0.32, accuracy: 0.01)
+    func test_bigSize_tablet_isWidthDriven_regardlessOfAspectRatio() {
+        let wide = SizeBucket.tablet.bigSize(in: CGSize(width: 1200, height: 500))
+        XCTAssertEqual(wide, 1200 * 0.32, accuracy: 0.01)
     }
 }
