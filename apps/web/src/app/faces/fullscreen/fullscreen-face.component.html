@@ -1,0 +1,13 @@
+<div class="clock">
+  <div class="big-time">
+    <span class="digits">{{ big().digits }}</span>
+    @if (big().ampm; as ampm) {
+      <span class="ampm">{{ ampm }}</span>
+    }
+  </div>
+  <div class="info-line">
+    <span class="precise">{{ preciseText() }}</span>
+    <span class="dot">·</span>
+    <span class="date-tz">{{ dateTZText() }}</span>
+  </div>
+</div>
