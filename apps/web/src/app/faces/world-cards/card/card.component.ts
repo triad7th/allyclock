@@ -1,6 +1,7 @@
-import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { LocationService } from '../services/location.service';
+import { LocationService } from '../../../services/location.service';
+import { ClockService } from '../../../services/clock.service';
 
 @Component({
   selector: 'app-card',
@@ -8,15 +9,12 @@ import { LocationService } from '../services/location.service';
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
 })
-export class CardComponent implements OnInit {
-  private location = inject(LocationService);
+export class CardComponent {
+  private readonly location = inject(LocationService);
+  private readonly clock = inject(ClockService);
 
   readonly state = input<string>('UK');
-  readonly now = signal(new Date());
+  readonly now = this.clock.now;
   readonly timeZone = computed(() => this.location.getTimeZone(this.state(), this.now()));
   readonly flag = computed(() => this.location.getFlag(this.state()));
-
-  ngOnInit(): void {
-    setInterval(() => this.now.set(new Date()), 100);
-  }
 }

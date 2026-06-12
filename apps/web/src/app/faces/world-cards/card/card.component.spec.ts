@@ -20,15 +20,18 @@ describe('CardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should expose now as a signal that returns a Date', () => {
+  it('exposes the shared clock as a Date signal', () => {
     expect(component.now()).toBeInstanceOf(Date);
   });
 
-  it('should recompute timeZone when now changes', () => {
-    const before = component.timeZone();
-    component.now.set(new Date(component.now().getTime() + 60_000));
-    const after = component.timeZone();
-    expect(typeof before).toBe('string');
-    expect(typeof after).toBe('string');
+  it('derives a DatePipe-compatible timezone offset', () => {
+    expect(component.timeZone()).toMatch(/^[+-]\d{2}:\d{2}$/);
+  });
+
+  it('renders the flag for the configured region', () => {
+    fixture.componentRef.setInput('state', 'KR');
+    fixture.detectChanges();
+    const img = fixture.nativeElement.querySelector('img') as HTMLImageElement;
+    expect(img.src).toContain('SOUTH_KOREA');
   });
 });

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CardComponent } from './card/card.component';
+import { CardComponent } from './faces/world-cards/card/card.component';
 
 @Component({
   selector: 'app-root',
