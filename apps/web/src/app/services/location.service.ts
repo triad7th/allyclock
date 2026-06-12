@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment-timezone';
 
 @Injectable({
   providedIn: 'root',
@@ -21,15 +20,23 @@ export class LocationService {
 
   public getTimeZone(id: string, targetDate: Date): string {
     switch (id) {
+      case 'UK':
+        return offsetOf('UTC', targetDate);
+      case 'KR':
+        return offsetOf('Asia/Seoul', targetDate);
       case 'US':
       case 'LA':
-        return moment.tz(targetDate, 'America/Los_Angeles').format('Z');
-      case 'UK':
-        return moment.tz(targetDate, 'UTC').format('Z');
-      case 'KR':
-        return moment.tz(targetDate, 'Asia/Seoul').format('Z');
       default:
-        return 'PT';
+        return offsetOf('America/Los_Angeles', targetDate);
     }
   }
+}
+
+function offsetOf(timeZone: string, date: Date): string {
+  const name =
+    new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'longOffset' })
+      .formatToParts(date)
+      .find((part) => part.type === 'timeZoneName')?.value ?? 'GMT';
+  const match = name.match(/([+-]\d{2}:\d{2})$/);
+  return match ? match[1] : '+00:00';
 }
