@@ -1,0 +1,4 @@
+interface:
+  display_name: "AllyClock Web Lint Format"
+  short_description: "Run ESLint and Prettier for the Web app"
+  default_prompt: "Use $allyclock-web-lint-format to format and lint the AllyClock web app under apps/web."

@@ -1,0 +1,1 @@
+../../../.claude/skills/allyclock-web-lint-format/SKILL.md
