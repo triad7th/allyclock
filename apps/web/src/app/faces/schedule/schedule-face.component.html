@@ -1,0 +1,26 @@
+<div class="stage" [style.transform]="'translateY(' + translateY() + 'px)'">
+  <img
+    #schedImg
+    [src]="imageUrl()"
+    alt="Daily schedule"
+    (load)="onImageLoad($event)"
+    (error)="imageUrl.set(defaultImageSrc)"
+  />
+  <div
+    class="red-box"
+    [style.top.px]="redBoxTop()"
+    [style.height.px]="redBoxHeight()"
+  ></div>
+</div>
+<button
+  type="button"
+  class="gear"
+  [class.hidden]="!gearVisible() && !configOpen()"
+  (click)="configOpen.set(true)"
+>⚙</button>
+@if (configOpen()) {
+  <app-schedule-config
+    (saved)="onConfigSaved()"
+    (cancelled)="configOpen.set(false)"
+  />
+}
