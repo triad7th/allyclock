@@ -11,8 +11,12 @@ describe('FacePreferenceService', () => {
     TestBed.configureTestingModule({});
     vi.stubGlobal('localStorage', {
       getItem: (key: string) => mockStorage[key] ?? null,
-      setItem: (key: string, value: string) => { mockStorage[key] = value; },
-      removeItem: (key: string) => { delete mockStorage[key]; },
+      setItem: (key: string, value: string) => {
+        mockStorage[key] = value;
+      },
+      removeItem: (key: string) => {
+        delete mockStorage[key];
+      },
       clear: () => {
         mockStorage['allyclock.face'] = undefined!;
       },
