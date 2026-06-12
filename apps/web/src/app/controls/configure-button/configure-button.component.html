@@ -1,0 +1,9 @@
+<button
+  #button
+  type="button"
+  class="configure"
+  [class.hidden]="!visible() && !pinned()"
+  (click)="open.emit()"
+>
+  Configure
+</button>
