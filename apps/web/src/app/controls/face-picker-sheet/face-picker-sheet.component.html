@@ -1,0 +1,21 @@
+<div class="backdrop" (click)="close.emit()"></div>
+<div class="sheet" #panel tabindex="-1" role="dialog" aria-label="Choose a clock face">
+  <div class="handle"></div>
+  <div class="options">
+    @for (face of faces; track face.id) {
+      <button
+        type="button"
+        class="face-option"
+        [class.active]="face.id === activeFaceId()"
+        (click)="select.emit(face.id)"
+      >
+        <span class="preview" aria-hidden="true">
+          <span class="preview-viewport">
+            <ng-container [ngComponentOutlet]="face.component" />
+          </span>
+        </span>
+        <span class="name">{{ face.displayName }}</span>
+      </button>
+    }
+  </div>
+</div>

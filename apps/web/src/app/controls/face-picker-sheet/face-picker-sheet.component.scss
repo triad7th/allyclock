@@ -1,0 +1,77 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1e1e1e;
+  border-radius: 16px 16px 0 0;
+  padding: 0.75rem 1rem 1.25rem;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
+  outline: none;
+}
+
+.handle {
+  width: 36px;
+  height: 4px;
+  background: #555;
+  border-radius: 2px;
+  margin: 0 auto 0.75rem;
+}
+
+.options {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.face-option {
+  background: #2a2a2a;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  &.active {
+    border-color: #4a9eff;
+  }
+}
+
+.preview {
+  display: block;
+  width: 192px;
+  height: 108px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #000;
+}
+
+.preview-viewport {
+  display: block;
+  width: 960px;
+  height: 540px;
+  transform: scale(0.2);
+  transform-origin: top left;
+  pointer-events: none;
+}
+
+.name {
+  color: #ccc;
+  font-size: 0.85rem;
+}
