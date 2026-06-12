@@ -9,7 +9,7 @@ This directory contains the Angular 21 Web app for AllyClock.
 - Angular standalone components live under `src/app`.
 - SCSS component styles are used throughout the app.
 - Bootstrap 5 is loaded globally through `angular.json`.
-- `moment-timezone` is used for timezone offset formatting.
+- Native `Intl.DateTimeFormat` is used for all time/timezone formatting.
 - Vitest (via `@angular/build:unit-test`) is configured for unit tests; the app is zoneless and uses signals.
 
 ## Commands
@@ -34,7 +34,8 @@ npm test
 
 - `src/main.ts` bootstraps the standalone Angular app.
 - `src/app/app.component.*` owns the page layout.
-- `src/app/card/card.component.*` renders a single clock card.
+- `src/app/faces/face-registry.ts` lists the selectable clock faces; each face lives in its own directory under `src/app/faces/`.
+- `src/app/controls/` contains the configure button and face picker sheet.
 - `src/app/services/location.service.ts` maps region IDs to flag URLs and timezone offsets.
 - `src/styles.scss` contains global styles.
 - `angular.json` defines Angular build, serve, test, assets, global styles, and scripts.

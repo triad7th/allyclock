@@ -1,4 +1,4 @@
-<div class="backdrop" (click)="close.emit()"></div>
+<div class="backdrop" role="button" tabindex="0" (click)="faceClose.emit()" (keydown.enter)="faceClose.emit()" (keydown.space)="faceClose.emit()"></div>
 <div class="sheet" #panel tabindex="-1" role="dialog" aria-modal="true" aria-label="Choose a clock face">
   <div class="handle"></div>
   <div class="options">
@@ -7,7 +7,7 @@
         type="button"
         class="face-option"
         [class.active]="face.id === activeFaceId()"
-        (click)="select.emit(face.id)"
+        (click)="faceSelect.emit(face.id)"
       >
         <span class="preview" aria-hidden="true">
           <span class="preview-viewport">

@@ -8,14 +8,14 @@ import { FACES } from '../../faces/face-registry';
   templateUrl: './face-picker-sheet.component.html',
   styleUrl: './face-picker-sheet.component.scss',
   host: {
-    '(document:keydown.escape)': 'close.emit()',
+    '(document:keydown.escape)': 'faceClose.emit()',
   },
 })
 export class FacePickerSheetComponent {
   readonly faces = FACES;
   readonly activeFaceId = input.required<string>();
-  readonly select = output<string>();
-  readonly close = output<void>();
+  readonly faceSelect = output<string>();
+  readonly faceClose = output<void>();
 
   private readonly panel = viewChild.required<ElementRef<HTMLElement>>('panel');
 

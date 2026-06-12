@@ -23,7 +23,6 @@
     "@angular/platform-browser-dynamic": "^21.2.14",
     "@angular/router": "^21.2.14",
     "bootstrap": "^5.3.3",
-    "moment-timezone": "^0.5.45",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

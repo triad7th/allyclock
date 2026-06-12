@@ -32,7 +32,7 @@ describe('FacePickerSheetComponent', () => {
   it('emits select with the face id when an option is clicked', () => {
     const fixture = createSheet();
     let selected = '';
-    fixture.componentInstance.select.subscribe((id: string) => {
+    fixture.componentInstance.faceSelect.subscribe((id: string) => {
       selected = id;
     });
     const options = fixture.nativeElement.querySelectorAll('button.face-option');
@@ -43,7 +43,7 @@ describe('FacePickerSheetComponent', () => {
   it('emits close when the backdrop is clicked', () => {
     const fixture = createSheet();
     let closed = false;
-    fixture.componentInstance.close.subscribe(() => {
+    fixture.componentInstance.faceClose.subscribe(() => {
       closed = true;
     });
     (fixture.nativeElement.querySelector('.backdrop') as HTMLElement).click();
@@ -53,7 +53,7 @@ describe('FacePickerSheetComponent', () => {
   it('emits close on Escape', () => {
     const fixture = createSheet();
     let closed = false;
-    fixture.componentInstance.close.subscribe(() => {
+    fixture.componentInstance.faceClose.subscribe(() => {
       closed = true;
     });
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));

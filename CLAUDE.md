@@ -54,7 +54,9 @@ Root scripts delegate to `apps/web`. App-local commands can also be run from `ap
 - `apps/web/angular.json` defines Angular build, serve, test, assets, global styles, and scripts.
 - `apps/web/src/main.ts` bootstraps the standalone Angular app.
 - `apps/web/src/app/app.component.*` owns the page layout.
-- `apps/web/src/app/card/card.component.*` renders a single clock card.
+- `apps/web/src/app/faces/face-registry.ts` lists the selectable clock faces.
+- `apps/web/src/app/faces/` contains one directory per clock face (fullscreen, world-cards).
+- `apps/web/src/app/controls/` contains the configure button and face picker sheet.
 - `apps/web/src/app/services/location.service.ts` maps region IDs to flag URLs and timezone offsets.
 - `netlify.toml` defines the Netlify build base and publish directory.
 

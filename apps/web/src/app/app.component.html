@@ -5,7 +5,7 @@
 @if (sheetOpen()) {
   <app-face-picker-sheet
     [activeFaceId]="activeFaceId()"
-    (select)="selectFace($event)"
-    (close)="closeSheet()"
+    (faceSelect)="selectFace($event)"
+    (faceClose)="closeSheet()"
   />
 }

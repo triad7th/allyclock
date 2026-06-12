@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { FacePreferenceService } from './face-preference.service';
 import { DEFAULT_FACE_ID } from '../faces/face-registry';
 
-const mockStorage: { [key: string]: string } = {};
+const mockStorage: Record<string, string> = {};
 
 describe('FacePreferenceService', () => {
   beforeEach(() => {
