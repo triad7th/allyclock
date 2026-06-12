@@ -1,12 +1,37 @@
-import { Component } from '@angular/core';
-import { CardComponent } from './faces/world-cards/card/card.component';
+import { Component, computed, inject, signal, viewChild } from '@angular/core';
+import { NgComponentOutlet } from '@angular/common';
+import { FACES } from './faces/face-registry';
+import { FacePreferenceService } from './services/face-preference.service';
+import { ConfigureButtonComponent } from './controls/configure-button/configure-button.component';
+import { FacePickerSheetComponent } from './controls/face-picker-sheet/face-picker-sheet.component';
 
 @Component({
   selector: 'app-root',
-  imports: [CardComponent],
+  imports: [NgComponentOutlet, ConfigureButtonComponent, FacePickerSheetComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'allyclock';
+  private readonly preference = inject(FacePreferenceService);
+  private readonly configureButton = viewChild.required(ConfigureButtonComponent);
+
+  readonly sheetOpen = signal(false);
+  readonly activeFaceId = this.preference.activeFaceId;
+  readonly activeFace = computed(
+    () => FACES.find((face) => face.id === this.activeFaceId()) ?? FACES[0],
+  );
+
+  openSheet(): void {
+    this.sheetOpen.set(true);
+  }
+
+  closeSheet(): void {
+    this.sheetOpen.set(false);
+    this.configureButton().focusButton();
+  }
+
+  selectFace(id: string): void {
+    this.preference.setFace(id);
+    this.closeSheet();
+  }
 }

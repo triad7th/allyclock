@@ -1,11 +1,11 @@
-<div class="container-fluid">
-  <app-card state="US"></app-card>
-  <div class="row">
-    <div class="col-sm">
-      <app-card state="UK"></app-card>
-    </div>
-    <div class="col-sm">
-      <app-card state="KR"></app-card>
-    </div>
-  </div>
-</div>
+<main class="face-host">
+  <ng-container [ngComponentOutlet]="activeFace().component" />
+</main>
+<app-configure-button [pinned]="sheetOpen()" (open)="openSheet()" />
+@if (sheetOpen()) {
+  <app-face-picker-sheet
+    [activeFaceId]="activeFaceId()"
+    (select)="selectFace($event)"
+    (close)="closeSheet()"
+  />
+}
