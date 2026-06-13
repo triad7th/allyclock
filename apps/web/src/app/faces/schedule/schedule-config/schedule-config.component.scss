@@ -163,3 +163,37 @@ section {
   margin-bottom: 0.75rem;
   width: 100%;
 }
+
+.io-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.io-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #eee;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  input[type='file'] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+.import-error {
+  color: #ff6b6b;
+  font-size: 0.8rem;
+  margin: -0.25rem 0 0.75rem;
+}

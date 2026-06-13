@@ -20,6 +20,20 @@
     <h3>Time Segments</h3>
     <p class="hint">Drag the lines to set segment boundaries. Set the time range for each zone.</p>
     <button type="button" class="add-marker" (click)="addMarker()">+ Add segment boundary</button>
+    <div class="io-actions">
+      <button type="button" class="io-btn" (click)="exportSegments()">Export</button>
+      <label class="io-btn">
+        Import
+        <input
+          type="file"
+          accept="application/json,.json"
+          (change)="onImportFileSelected($event)"
+        />
+      </label>
+    </div>
+    @if (importError()) {
+      <p class="import-error">{{ importError() }}</p>
+    }
     <div class="marker-preview-container">
       <img
         class="marker-preview-img"

@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, computed, inject, output, signal } from '
 import { ScheduleStoreService } from '../schedule-store.service';
 import { ScheduleSegment } from '../schedule-formatter';
 import { DEFAULT_IMAGE_SRC } from '../default-schedule';
+import { parseSegments, serializeSegments } from '../schedule-io';
 import { ScheduleMarkerComponent } from './schedule-marker.component';
 
 export interface DraftZone {
@@ -169,6 +170,39 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
       // End is inferred from the next zone's start; the last zone ends at 24:00.
       timeEnd: i < zones.length - 1 ? zones[i + 1].from : '24:00',
     }));
+  }
+
+  readonly importError = signal<string | null>(null);
+
+  exportSegments(): void {
+    const json = serializeSegments(this.buildSegments());
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'allyclock-schedule.json';
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  onImportFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    // Reset so selecting the same file again re-triggers the change event.
+    input.value = '';
+    if (!file) return;
+    file
+      .text()
+      .then((text) => {
+        const segments = parseSegments(text);
+        if (!segments) {
+          this.importError.set('Could not import: file is not a valid schedule export.');
+          return;
+        }
+        this.importError.set(null);
+        this.initDraftFromSegments(segments);
+      })
+      .catch(() => this.importError.set('Could not read the selected file.'));
   }
 
   private initDraftFromSegments(segs: ScheduleSegment[]): void {
