@@ -63,6 +63,7 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
 
   private pendingBlob: Blob | null = null;
   private previewObjectUrl: string | null = null;
+  private resizeObserver: ResizeObserver | null = null;
 
   ngOnInit(): void {
     this.initDraftFromSegments(this.store.loadSegments());
@@ -79,6 +80,8 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
       URL.revokeObjectURL(this.previewObjectUrl);
       this.previewObjectUrl = null;
     }
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
   }
 
   onFileSelected(event: Event): void {
@@ -96,6 +99,12 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
     this.naturalWidth.set(img.naturalWidth);
     this.naturalHeight.set(img.naturalHeight);
     this.renderedWidth.set(img.clientWidth);
+    // Track the rendered width so `scale` stays correct when the viewport
+    // resizes; otherwise marker/zone positions drift from the image.
+    if (!this.resizeObserver) {
+      this.resizeObserver = new ResizeObserver(() => this.renderedWidth.set(img.clientWidth));
+      this.resizeObserver.observe(img);
+    }
   }
 
   async removeImage(): Promise<void> {
