@@ -4,10 +4,16 @@ import { FACES } from './faces/face-registry';
 import { FacePreferenceService } from './services/face-preference.service';
 import { ConfigureButtonComponent } from './controls/configure-button/configure-button.component';
 import { FacePickerSheetComponent } from './controls/face-picker-sheet/face-picker-sheet.component';
+import { TimeMachineComponent } from './controls/time-machine/time-machine.component';
 
 @Component({
   selector: 'app-root',
-  imports: [NgComponentOutlet, ConfigureButtonComponent, FacePickerSheetComponent],
+  imports: [
+    NgComponentOutlet,
+    ConfigureButtonComponent,
+    FacePickerSheetComponent,
+    TimeMachineComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

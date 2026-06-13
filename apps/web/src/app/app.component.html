@@ -1,7 +1,10 @@
 <main class="face-host">
   <ng-container [ngComponentOutlet]="activeFace().component" />
 </main>
-<app-configure-button [pinned]="sheetOpen()" (open)="openSheet()" />
+<div class="controls-bar">
+  <app-configure-button [pinned]="sheetOpen()" (open)="openSheet()" />
+  <app-time-machine />
+</div>
 @if (sheetOpen()) {
   <app-face-picker-sheet
     [activeFaceId]="activeFaceId()"

@@ -36,7 +36,8 @@ npm test
 - `src/app/app.component.*` owns the page layout.
 - `src/app/faces/face-registry.ts` lists the selectable clock faces; each face lives in its own directory under `src/app/faces/`.
 - `src/app/faces/schedule/` contains the Daily Schedule face: image panning, drag-marker config, and IndexedDB image storage.
-- `src/app/controls/` contains the configure button and face picker sheet.
+- `src/app/controls/` contains the "Face" button (opens the face picker sheet) and the Time Machine control (mocks the clock via `ClockService`).
+- `src/app/services/clock.service.ts` exposes `now()`; the Time Machine overrides it with `setMock()`/`clearMock()` so every face can be previewed at an arbitrary instant.
 - `src/app/services/location.service.ts` maps region IDs to flag URLs and timezone offsets.
 - `src/styles.scss` contains global styles.
 - `angular.json` defines Angular build, serve, test, assets, global styles, and scripts.
