@@ -1,0 +1,8 @@
+// Cross-platform monospace stack. `consolas` alone only resolves on Windows;
+// macOS has no Consolas, so it fell back to the default sans-serif. Ending in
+// the generic `monospace` keyword guarantees a monospace face on every OS.
+.mono {
+  font-family:
+    'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
+}
