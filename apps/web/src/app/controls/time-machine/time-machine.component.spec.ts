@@ -30,6 +30,21 @@ describe('TimeMachineComponent', () => {
     expect(el.querySelector('.tm-panel')).toBeTruthy();
   });
 
+  it('shows a Live indicator when not mocked and Mock after applying', () => {
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    const status = () => el.querySelector('.tm-status') as HTMLElement;
+    expect(status().textContent?.trim()).toBe('Live');
+    expect(status().classList.contains('mock')).toBe(false);
+
+    fixture.componentInstance.onTimeSlider('600');
+    fixture.detectChanges();
+    expect(status().textContent?.trim()).toBe('Mock');
+    expect(status().classList.contains('mock')).toBe(true);
+  });
+
   it('applies the drafted time as a mock and marks the button active', () => {
     const clock = TestBed.inject(ClockService);
     const { fixture, el } = create();

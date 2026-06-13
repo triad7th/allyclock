@@ -42,6 +42,29 @@
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
 }
 
+.tm-status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #4ade80; // live = green
+
+  &.mock {
+    color: #4a9eff; // mock = blue
+  }
+}
+
+.tm-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+
 .tm-field {
   display: flex;
   flex-direction: column;
