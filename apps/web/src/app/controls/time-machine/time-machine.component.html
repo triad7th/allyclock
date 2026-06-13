@@ -9,13 +9,14 @@
 </button>
 @if (panelOpen()) {
   <div class="tm-panel">
-    <div class="tm-status" [class.mock]="isMocked()">
-      <span class="tm-status-dot"></span>
-      <span class="tm-status-text">{{ isMocked() ? 'Mock' : 'Live' }}</span>
-    </div>
-
     <label class="tm-field">
-      <span>Mock date &amp; time</span>
+      <span class="tm-field-head">
+        <span>Mock date &amp; time</span>
+        <span class="tm-status" [class.mock]="isMocked()">
+          <span class="tm-status-dot"></span>
+          <span class="tm-status-text">{{ isMocked() ? 'Mock' : 'Live' }}</span>
+        </span>
+      </span>
       <input
         type="datetime-local"
         [value]="draft()"
