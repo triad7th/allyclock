@@ -5,8 +5,9 @@ import { DEFAULT_IMAGE_SRC } from '../default-schedule';
 import { ScheduleMarkerComponent } from './schedule-marker.component';
 
 export interface DraftZone {
-  timeStart: string;
-  timeEnd: string;
+  // Start time of the zone ("HH:MM"). The end time is inferred from the next
+  // zone's start (or "24:00" for the last zone), since zones are contiguous.
+  from: string;
 }
 
 @Component({
@@ -29,7 +30,7 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   // Boundary positions in SOURCE-image pixels, sorted ascending.
   // draftZones.length === markerSourceY.length + 1
   readonly markerSourceY = signal<number[]>([]);
-  readonly draftZones = signal<DraftZone[]>([{ timeStart: '00:00', timeEnd: '24:00' }]);
+  readonly draftZones = signal<DraftZone[]>([{ from: '00:00' }]);
 
   // Uniform source-pixel -> rendered-pixel scale. Reactive, so it is correct
   // regardless of when the image finishes loading.
@@ -40,6 +41,12 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
 
   // Rendered Y for each boundary marker.
   readonly markerRenderedY = computed(() => this.markerSourceY().map((y) => y * this.scale()));
+
+  // Inferred end time of each zone: the next zone's start, or "24:00" for the last.
+  readonly zoneEndTimes = computed(() => {
+    const zones = this.draftZones();
+    return zones.map((_, i) => (i < zones.length - 1 ? zones[i + 1].from : '24:00'));
+  });
 
   // One rendered band per draft zone: { top, height } in rendered px.
   readonly zoneBands = computed(() => {
@@ -141,38 +148,40 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
     this.markerSourceY.set(positions);
   }
 
-  updateZoneTime(zoneIndex: number, field: 'timeStart' | 'timeEnd', value: string): void {
+  updateZoneFrom(zoneIndex: number, value: string): void {
     const zones = [...this.draftZones()];
-    zones[zoneIndex] = { ...zones[zoneIndex], [field]: value };
+    zones[zoneIndex] = { from: value };
     this.draftZones.set(zones);
   }
 
   buildSegments(): ScheduleSegment[] {
     const nh = this.naturalHeight() > 0 ? this.naturalHeight() : 1000;
     const bounds = [0, ...this.markerSourceY(), nh];
-    return this.draftZones().map((zone, i) => ({
+    const zones = this.draftZones();
+    return zones.map((zone, i) => ({
       pixelStart: Math.round(bounds[i]),
       pixelEnd: Math.round(bounds[i + 1]),
-      timeStart: zone.timeStart,
-      timeEnd: zone.timeEnd,
+      timeStart: zone.from,
+      // End is inferred from the next zone's start; the last zone ends at 24:00.
+      timeEnd: i < zones.length - 1 ? zones[i + 1].from : '24:00',
     }));
   }
 
   private initDraftFromSegments(segs: ScheduleSegment[]): void {
     if (segs.length === 0) {
       this.markerSourceY.set([]);
-      this.draftZones.set([{ timeStart: '00:00', timeEnd: '24:00' }]);
+      this.draftZones.set([{ from: '00:00' }]);
       return;
     }
     this.markerSourceY.set(segs.slice(0, -1).map((s) => s.pixelEnd));
-    this.draftZones.set(segs.map((s) => ({ timeStart: s.timeStart, timeEnd: s.timeEnd })));
+    this.draftZones.set(segs.map((s) => ({ from: s.timeStart })));
   }
 
   private rebuildZones(markerCount: number): void {
     const current = this.draftZones();
     const zones: DraftZone[] = [];
     for (let i = 0; i <= markerCount; i++) {
-      zones.push(current[i] ?? { timeStart: '00:00', timeEnd: '24:00' });
+      zones.push(current[i] ?? { from: '00:00' });
     }
     this.draftZones.set(zones);
   }

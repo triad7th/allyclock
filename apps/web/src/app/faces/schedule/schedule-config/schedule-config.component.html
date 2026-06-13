@@ -32,15 +32,10 @@
           <div class="zone-times">
             <input
               type="time"
-              [value]="draftZones()[$index].timeStart"
-              (change)="updateZoneTime($index, 'timeStart', $any($event.target).value)"
+              [value]="draftZones()[$index].from"
+              (change)="updateZoneFrom($index, $any($event.target).value)"
             />
-            <span>–</span>
-            <input
-              type="time"
-              [value]="draftZones()[$index].timeEnd"
-              (change)="updateZoneTime($index, 'timeEnd', $any($event.target).value)"
-            />
+            <span class="zone-end">→ {{ zoneEndTimes()[$index] }}</span>
           </div>
         </div>
       }

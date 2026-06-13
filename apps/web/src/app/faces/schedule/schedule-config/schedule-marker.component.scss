@@ -18,13 +18,21 @@
 
 .marker-remove {
   position: absolute;
-  right: 4px;
-  top: -10px;
-  background: none;
-  border: none;
-  font-size: 0.75rem;
-  color: #4a9eff;
-  cursor: pointer;
-  padding: 4px;
+  right: 6px;
+  top: -12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ff3b30;
+  border: 2px solid #fff;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
   line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.6);
 }
