@@ -6,6 +6,8 @@ import { activeSegment, currentPixelY } from './schedule-formatter';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 
 const HIDE_DELAY_MS = 4000;
+// Matches the config-slide-out animation duration in the config SCSS.
+const CONFIG_CLOSE_MS = 300;
 
 @Component({
   selector: 'app-schedule-face',
@@ -30,10 +32,12 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   readonly viewportHeight = signal(window.innerHeight);
   readonly gearVisible = signal(true);
   readonly configOpen = signal(false);
+  readonly configClosing = signal(false);
 
   private readonly config = viewChild(ScheduleConfigComponent);
 
   private gearTimer: ReturnType<typeof setTimeout> | undefined;
+  private closeTimer: ReturnType<typeof setTimeout> | undefined;
   private readonly onResize = () => {
     this.viewportWidth.set(window.innerWidth);
     this.viewportHeight.set(window.innerHeight);
@@ -72,6 +76,7 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.onResize);
     clearTimeout(this.gearTimer);
+    clearTimeout(this.closeTimer);
   }
 
   onImageLoad(event: Event): void {
@@ -107,7 +112,23 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
     this.store.loadImage().then((url) => {
       if (url) this.imageUrl.set(url);
     });
-    this.configOpen.set(false);
+    this.beginConfigClose();
+  }
+
+  onConfigCancelled(): void {
+    this.beginConfigClose();
+  }
+
+  // Run the slide-out animation, then remove the config page from the DOM.
+  // The save/cancel side effects have already run; only the visual exit waits.
+  private beginConfigClose(): void {
+    if (this.configClosing()) return;
+    this.configClosing.set(true);
+    clearTimeout(this.closeTimer);
+    this.closeTimer = setTimeout(() => {
+      this.configOpen.set(false);
+      this.configClosing.set(false);
+    }, CONFIG_CLOSE_MS);
   }
 
   private armGearTimer(): void {

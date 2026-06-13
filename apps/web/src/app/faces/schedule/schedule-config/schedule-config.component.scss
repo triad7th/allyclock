@@ -9,8 +9,19 @@
   animation: config-slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+:host(.closing) {
+  animation: config-slide-out 0.3s cubic-bezier(0.7, 0, 0.84, 0) both;
+}
+
 @keyframes config-slide-in {
   from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes config-slide-out {
+  to {
     opacity: 0;
     transform: translateY(100%);
   }

@@ -8,7 +8,7 @@
   />
   <div class="red-box" [style.top.px]="redBoxTop()" [style.height.px]="redBoxHeight()"></div>
 </div>
-@if (configOpen()) {
+@if (configOpen() && !configClosing()) {
   <button type="button" class="gear check" aria-label="Save configuration" (click)="onSaveClick()">
     ✓
   </button>
@@ -16,7 +16,7 @@
 <button
   type="button"
   class="gear"
-  [class.hidden]="!gearVisible() && !configOpen()"
+  [class.hidden]="(!gearVisible() && !configOpen()) || configClosing()"
   [class.cancel-mode]="configOpen()"
   [attr.aria-label]="configOpen() ? 'Cancel configuration' : 'Configure schedule'"
   (click)="onGearClick()"
@@ -24,5 +24,9 @@
   {{ configOpen() ? '✕' : '⚙' }}
 </button>
 @if (configOpen()) {
-  <app-schedule-config (saved)="onConfigSaved()" (cancelled)="configOpen.set(false)" />
+  <app-schedule-config
+    [class.closing]="configClosing()"
+    (saved)="onConfigSaved()"
+    (cancelled)="onConfigCancelled()"
+  />
 }
