@@ -18,7 +18,7 @@
 
   <section class="editor-section">
     <h3>Time Segments</h3>
-    <p class="hint">Drag the lines to set segment boundaries. Set time ranges in each zone.</p>
+    <p class="hint">Drag the lines to set segment boundaries. Set the time range for each zone.</p>
     <div class="marker-preview-container">
       <img
         class="marker-preview-img"
@@ -26,36 +26,30 @@
         alt="Schedule preview"
         (load)="onPreviewImageLoad($event)"
       />
-      @for (pos of markerPositions(); track $index) {
+      @for (band of zoneBands(); track $index) {
+        <div class="zone-label" [style.top.px]="band.top" [style.height.px]="band.height">
+          <div class="zone-times">
+            <input
+              type="time"
+              [value]="draftZones()[$index].timeStart"
+              (change)="updateZoneTime($index, 'timeStart', $any($event.target).value)"
+            />
+            <span>–</span>
+            <input
+              type="time"
+              [value]="draftZones()[$index].timeEnd"
+              (change)="updateZoneTime($index, 'timeEnd', $any($event.target).value)"
+            />
+          </div>
+        </div>
+      }
+      @for (y of markerRenderedY(); track $index) {
         <app-schedule-marker
           [index]="$index"
-          [renderedY]="pos"
+          [renderedY]="y"
           (moved)="updateMarkerPosition($index, $event)"
           (removed)="removeMarker($index)"
         />
-      }
-      @for (zone of draftZones(); track $index) {
-        <div
-          class="zone-label"
-          [style.top.px]="$index === 0 ? 0 : markerPositions()[$index - 1]"
-          [style.height.px]="
-            $index === markerPositions().length
-              ? 9999
-              : markerPositions()[$index] - ($index === 0 ? 0 : markerPositions()[$index - 1])
-          "
-        >
-          <input
-            type="time"
-            [value]="zone.timeStart"
-            (change)="updateZoneTime($index, 'timeStart', $any($event.target).value)"
-          />
-          <span>–</span>
-          <input
-            type="time"
-            [value]="zone.timeEnd"
-            (change)="updateZoneTime($index, 'timeEnd', $any($event.target).value)"
-          />
-        </div>
       }
     </div>
     <button type="button" class="add-marker" (click)="addMarker()">+ Add segment boundary</button>
