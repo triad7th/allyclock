@@ -1,0 +1,27 @@
+:host {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.marker-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #4a9eff;
+  cursor: ns-resize;
+  touch-action: none;
+}
+
+.marker-remove {
+  position: absolute;
+  right: 4px;
+  top: -10px;
+  font-size: 0.75rem;
+  color: #4a9eff;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}

@@ -1,0 +1,7 @@
+<div
+  class="marker-line"
+  [style.top.px]="renderedY()"
+  (pointerdown)="onPointerDown($event)"
+>
+  <span class="marker-remove" (click)="removed.emit()">✕</span>
+</div>
