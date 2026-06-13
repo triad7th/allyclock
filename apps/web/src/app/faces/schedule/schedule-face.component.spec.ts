@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ScheduleFaceComponent } from './schedule-face.component';
 import { ScheduleStoreService } from './schedule-store.service';
-import { DEFAULT_SEGMENTS } from './default-schedule';
+import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 
 const mockStore = {
   loadSegments: () => DEFAULT_SEGMENTS,
@@ -41,7 +41,7 @@ describe('ScheduleFaceComponent', () => {
     const fixture = TestBed.createComponent(ScheduleFaceComponent);
     fixture.detectChanges();
     const img = fixture.nativeElement.querySelector('img') as HTMLImageElement;
-    expect(img.src).toContain('data:image/svg+xml');
+    expect(img.src).toContain(DEFAULT_IMAGE_SRC);
   });
 
   it('gear button is visible on load', () => {
