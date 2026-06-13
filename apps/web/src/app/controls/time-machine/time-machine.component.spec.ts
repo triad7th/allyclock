@@ -46,6 +46,38 @@ describe('TimeMachineComponent', () => {
     expect(el.querySelector('button.tm-button')?.classList.contains('active')).toBe(true);
   });
 
+  it('scrubs the clock live when the time slider moves', () => {
+    const clock = TestBed.inject(ClockService);
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    // 09:30 === 570 minutes into the day.
+    fixture.componentInstance.onTimeSlider('570');
+    fixture.detectChanges();
+
+    expect(clock.isMocked()).toBe(true);
+    expect(clock.now().getHours()).toBe(9);
+    expect(clock.now().getMinutes()).toBe(30);
+    // Panel stays open while scrubbing.
+    expect(el.querySelector('.tm-panel')).toBeTruthy();
+  });
+
+  it('scrubs to a chosen day of the year via the day slider', () => {
+    const clock = TestBed.inject(ClockService);
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    // Day 60 of 2026 is March 1.
+    fixture.componentInstance.onDaySlider('60');
+    fixture.detectChanges();
+
+    expect(clock.isMocked()).toBe(true);
+    expect(clock.now().getMonth()).toBe(2);
+    expect(clock.now().getDate()).toBe(1);
+  });
+
   it('returns to live time via the Live button', () => {
     const clock = TestBed.inject(ClockService);
     clock.setMock(new Date('2020-03-04T09:15:00.000Z'));

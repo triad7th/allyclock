@@ -17,6 +17,33 @@
         (input)="draft.set($any($event.target).value)"
       />
     </label>
+
+    <div class="tm-slider">
+      <span class="tm-slider-label"
+        >Day <strong>{{ dayLabel() }}</strong></span
+      >
+      <input
+        type="range"
+        min="1"
+        [max]="maxDayOfYear()"
+        [value]="dayOfYear()"
+        (input)="onDaySlider($any($event.target).value)"
+      />
+    </div>
+
+    <div class="tm-slider">
+      <span class="tm-slider-label"
+        >Time <strong>{{ timeLabel() }}</strong></span
+      >
+      <input
+        type="range"
+        min="0"
+        max="1439"
+        [value]="minuteOfDay()"
+        (input)="onTimeSlider($any($event.target).value)"
+      />
+    </div>
+
     <div class="tm-actions">
       <button type="button" class="tm-live" (click)="goLive()">Live</button>
       <button type="button" class="tm-apply" (click)="apply()">Apply</button>
