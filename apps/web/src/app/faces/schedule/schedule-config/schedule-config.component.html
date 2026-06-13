@@ -19,6 +19,7 @@
   <section class="editor-section">
     <h3>Time Segments</h3>
     <p class="hint">Drag the lines to set segment boundaries. Set the time range for each zone.</p>
+    <button type="button" class="add-marker" (click)="addMarker()">+ Add segment boundary</button>
     <div class="marker-preview-container">
       <img
         class="marker-preview-img"
@@ -52,6 +53,5 @@
         />
       }
     </div>
-    <button type="button" class="add-marker" (click)="addMarker()">+ Add segment boundary</button>
   </section>
 </div>
