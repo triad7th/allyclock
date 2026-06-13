@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { ClockService } from '../../services/clock.service';
 
 const HIDE_DELAY_MS = 4000;
@@ -36,12 +36,13 @@ function dayOfYear(date: Date): number {
   styleUrl: './time-machine.component.scss',
   host: {
     '(document:pointermove)': 'reveal()',
-    '(document:pointerdown)': 'reveal()',
-    '(document:keydown)': 'reveal()',
+    '(document:pointerdown)': 'onDocumentPointerDown($event)',
+    '(document:keydown)': 'onDocumentKeyDown($event)',
   },
 })
 export class TimeMachineComponent implements OnInit, OnDestroy {
   private readonly clock = inject(ClockService);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly isMocked = this.clock.isMocked;
   readonly panelOpen = signal(false);
@@ -62,6 +63,9 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
   );
   readonly timeLabel = computed(() => toLocalInput(this.draftDate()).slice(11));
 
+  // Clock state captured when the panel opened, so dismissing without applying
+  // can roll back any live scrubbing. null means "was live".
+  private mockBeforeOpen: Date | null = null;
   private hideTimer: ReturnType<typeof setTimeout> | undefined;
 
   ngOnInit(): void {
@@ -79,12 +83,40 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
 
   togglePanel(): void {
     if (this.panelOpen()) {
-      this.panelOpen.set(false);
+      this.cancel();
       return;
     }
+    // Remember the clock state so an outside click / Escape can roll back.
+    this.mockBeforeOpen = this.clock.mock();
     // Seed the picker with whatever the clock currently reads.
     this.draft.set(toLocalInput(this.clock.now()));
     this.panelOpen.set(true);
+  }
+
+  // Dismiss without committing: close and restore the pre-open clock state.
+  cancel(): void {
+    if (!this.panelOpen()) return;
+    if (this.mockBeforeOpen) {
+      this.clock.setMock(this.mockBeforeOpen);
+    } else {
+      this.clock.clearMock();
+    }
+    this.panelOpen.set(false);
+  }
+
+  onDocumentPointerDown(event: Event): void {
+    this.reveal();
+    if (!this.panelOpen()) return;
+    if (!this.host.nativeElement.contains(event.target as Node)) {
+      this.cancel();
+    }
+  }
+
+  onDocumentKeyDown(event: KeyboardEvent): void {
+    this.reveal();
+    if (this.panelOpen() && event.key === 'Escape') {
+      this.cancel();
+    }
   }
 
   // Drag the day slider: keep the time, move to the chosen day of the year.

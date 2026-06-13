@@ -78,6 +78,41 @@ describe('TimeMachineComponent', () => {
     expect(clock.now().getDate()).toBe(1);
   });
 
+  it('restores live time and closes when clicking outside after scrubbing', () => {
+    const clock = TestBed.inject(ClockService);
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    fixture.componentInstance.onTimeSlider('570');
+    fixture.detectChanges();
+    expect(clock.isMocked()).toBe(true);
+
+    document.dispatchEvent(new Event('pointerdown'));
+    fixture.detectChanges();
+
+    expect(clock.isMocked()).toBe(false);
+    expect(el.querySelector('.tm-panel')).toBeNull();
+  });
+
+  it('restores the prior mock when dismissed without applying', () => {
+    const clock = TestBed.inject(ClockService);
+    clock.setMock(new Date('2020-03-04T09:15:00.000Z'));
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    fixture.componentInstance.onDaySlider('200');
+    fixture.detectChanges();
+
+    document.dispatchEvent(new Event('pointerdown'));
+    fixture.detectChanges();
+
+    expect(clock.isMocked()).toBe(true);
+    expect(clock.now().toISOString()).toBe('2020-03-04T09:15:00.000Z');
+    expect(el.querySelector('.tm-panel')).toBeNull();
+  });
+
   it('returns to live time via the Live button', () => {
     const clock = TestBed.inject(ClockService);
     clock.setMock(new Date('2020-03-04T09:15:00.000Z'));
