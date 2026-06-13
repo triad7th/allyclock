@@ -8,6 +8,11 @@
   />
   <div class="red-box" [style.top.px]="redBoxTop()" [style.height.px]="redBoxHeight()"></div>
 </div>
+@if (configOpen()) {
+  <button type="button" class="gear check" aria-label="Save configuration" (click)="onSaveClick()">
+    ✓
+  </button>
+}
 <button
   type="button"
   class="gear"

@@ -33,25 +33,25 @@ describe('ScheduleConfigComponent', () => {
     expect(fixture.nativeElement.querySelector('input[type="file"]')).toBeTruthy();
   });
 
-  it('emits cancelled when Cancel is clicked', () => {
+  it('emits cancelled when cancel() is called', () => {
     const fixture = TestBed.createComponent(ScheduleConfigComponent);
     fixture.detectChanges();
     let cancelled = false;
     fixture.componentInstance.cancelled.subscribe(() => {
       cancelled = true;
     });
-    (fixture.nativeElement.querySelector('button.cancel') as HTMLButtonElement).click();
+    fixture.componentInstance.cancel();
     expect(cancelled).toBe(true);
   });
 
-  it('Save calls saveSegments and emits saved', async () => {
+  it('save() calls saveSegments and emits saved', async () => {
     const fixture = TestBed.createComponent(ScheduleConfigComponent);
     fixture.detectChanges();
     let saved = false;
     fixture.componentInstance.saved.subscribe(() => {
       saved = true;
     });
-    await (fixture.nativeElement.querySelector('button.save') as HTMLButtonElement).click();
+    await fixture.componentInstance.save();
     fixture.detectChanges();
     expect(mockStore.saveSegments).toHaveBeenCalled();
     expect(saved).toBe(true);

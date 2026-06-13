@@ -54,4 +54,12 @@ img {
     border-color: rgba(255, 255, 255, 0.35);
     z-index: 20;
   }
+
+  // The check (save) button sits just to the left of the X.
+  &.check {
+    right: 4.75rem;
+    background: rgba(40, 160, 70, 0.9);
+    border-color: rgba(255, 255, 255, 0.35);
+    z-index: 20;
+  }
 }

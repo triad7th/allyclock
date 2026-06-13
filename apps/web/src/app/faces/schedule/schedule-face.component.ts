@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { ClockService } from '../../services/clock.service';
 import { ScheduleStoreService } from './schedule-store.service';
 import { ScheduleConfigComponent } from './schedule-config/schedule-config.component';
@@ -30,6 +30,8 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   readonly viewportHeight = signal(window.innerHeight);
   readonly gearVisible = signal(true);
   readonly configOpen = signal(false);
+
+  private readonly config = viewChild(ScheduleConfigComponent);
 
   private gearTimer: ReturnType<typeof setTimeout> | undefined;
   private readonly onResize = () => {
@@ -84,8 +86,20 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   }
 
   onGearClick(): void {
-    // In config mode the gear acts as a cancel button: close without saving.
-    this.configOpen.set(!this.configOpen());
+    // Closed → open the editor. Open → the gear is the "X": cancel without
+    // saving, letting the config clean up any pending image/object URL.
+    if (!this.configOpen()) {
+      this.configOpen.set(true);
+      return;
+    }
+    const cfg = this.config();
+    if (cfg) cfg.cancel();
+    else this.configOpen.set(false);
+  }
+
+  // The check button: commit the editor's changes (it emits saved on success).
+  onSaveClick(): void {
+    this.config()?.save();
   }
 
   onConfigSaved(): void {
