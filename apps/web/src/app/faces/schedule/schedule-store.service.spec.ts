@@ -62,18 +62,24 @@ function makeIdbMock() {
   };
 }
 
-const SEGMENTS_KEY = 'allyclock.schedule';
-
 // Minimal localStorage mock for environments that lack full Storage API
 function makeLsMock(): Storage {
   const store: Record<string, string> = {};
   return {
     getItem: (key: string) => store[key] ?? null,
-    setItem: (key: string, value: string) => { store[key] = value; },
-    removeItem: (key: string) => { delete store[key]; },
-    clear: () => { for (const k of Object.keys(store)) delete store[k]; },
+    setItem: (key: string, value: string) => {
+      store[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      for (const k of Object.keys(store)) delete store[k];
+    },
     key: (index: number) => Object.keys(store)[index] ?? null,
-    get length() { return Object.keys(store).length; },
+    get length() {
+      return Object.keys(store).length;
+    },
   } as unknown as Storage;
 }
 

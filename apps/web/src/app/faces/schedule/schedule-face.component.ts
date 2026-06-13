@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { ClockService } from '../../services/clock.service';
 import { ScheduleStoreService } from './schedule-store.service';
 import { ScheduleConfigComponent } from './schedule-config/schedule-config.component';

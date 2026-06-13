@@ -4,7 +4,9 @@ import type { ScheduleSegment } from './schedule-formatter';
 
 // new Date('...T...:...') without Z = local time, getHours() is deterministic
 const at = (h: number, m: number, s = 0) =>
-  new Date(`2026-06-11T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
+  new Date(
+    `2026-06-11T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`,
+  );
 
 const SEGS: ScheduleSegment[] = [
   { pixelStart: 0, pixelEnd: 500, timeStart: '00:00', timeEnd: '10:00' },

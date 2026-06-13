@@ -19,8 +19,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="1000">
   <text x="200" y="953" text-anchor="middle" fill="#4a7fa5" font-size="18" font-family="sans-serif">Night 21:00 – 24:00</text>
 </svg>`;
 
-export const DEFAULT_IMAGE_SRC =
-  'data:image/svg+xml,' + encodeURIComponent(svg);
+export const DEFAULT_IMAGE_SRC = 'data:image/svg+xml,' + encodeURIComponent(svg);
 
 export const DEFAULT_SEGMENTS: ScheduleSegment[] = [
   { pixelStart: 0, pixelEnd: 375, timeStart: '00:00', timeEnd: '09:00' },

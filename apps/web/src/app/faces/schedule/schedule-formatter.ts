@@ -2,7 +2,7 @@ export interface ScheduleSegment {
   pixelStart: number;
   pixelEnd: number;
   timeStart: string; // "HH:MM" 24-hour
-  timeEnd: string;   // "HH:MM" 24-hour
+  timeEnd: string; // "HH:MM" 24-hour
 }
 
 function toMinutes(time: string): number {
@@ -24,9 +24,7 @@ export function currentPixelY(date: Date, segments: ScheduleSegment[]): number {
   if (now <= toMinutes(first.timeStart)) return first.pixelStart;
   if (now >= toMinutes(last.timeEnd)) return last.pixelEnd;
 
-  const seg = segments.find(
-    (s) => now >= toMinutes(s.timeStart) && now < toMinutes(s.timeEnd),
-  );
+  const seg = segments.find((s) => now >= toMinutes(s.timeStart) && now < toMinutes(s.timeEnd));
   if (!seg) return last.pixelEnd;
 
   const segStartMin = toMinutes(seg.timeStart);
@@ -45,7 +43,5 @@ export function activeSegment(date: Date, segments: ScheduleSegment[]): Schedule
   if (now <= toMinutes(first.timeStart)) return first;
   if (now >= toMinutes(last.timeEnd)) return last;
 
-  return (
-    segments.find((s) => now >= toMinutes(s.timeStart) && now < toMinutes(s.timeEnd)) ?? last
-  );
+  return segments.find((s) => now >= toMinutes(s.timeStart) && now < toMinutes(s.timeEnd)) ?? last;
 }

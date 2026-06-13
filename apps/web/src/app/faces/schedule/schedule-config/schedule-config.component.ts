@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, output, signal } from '@angular/core';
 import { ScheduleStoreService } from '../schedule-store.service';
 import { ScheduleSegment } from '../schedule-formatter';
-import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from '../default-schedule';
+import { DEFAULT_IMAGE_SRC } from '../default-schedule';
 import { ScheduleMarkerComponent } from './schedule-marker.component';
 
 export interface DraftZone {
@@ -131,9 +131,7 @@ export class ScheduleConfigComponent implements OnInit {
     for (let i = 0; i <= positions.length; i++) {
       const pixelStart = i === 0 ? 0 : Math.round(positions[i - 1] * scaleToSource);
       const pixelEnd =
-        i === positions.length
-          ? this.naturalHeight()
-          : Math.round(positions[i] * scaleToSource);
+        i === positions.length ? this.naturalHeight() : Math.round(positions[i] * scaleToSource);
       segments.push({
         pixelStart,
         pixelEnd,

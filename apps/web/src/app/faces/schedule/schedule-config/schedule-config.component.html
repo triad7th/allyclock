@@ -38,9 +38,11 @@
         <div
           class="zone-label"
           [style.top.px]="$index === 0 ? 0 : markerPositions()[$index - 1]"
-          [style.height.px]="$index === markerPositions().length
-            ? 9999
-            : (markerPositions()[$index] - ($index === 0 ? 0 : markerPositions()[$index - 1]))"
+          [style.height.px]="
+            $index === markerPositions().length
+              ? 9999
+              : markerPositions()[$index] - ($index === 0 ? 0 : markerPositions()[$index - 1])
+          "
         >
           <input
             type="time"

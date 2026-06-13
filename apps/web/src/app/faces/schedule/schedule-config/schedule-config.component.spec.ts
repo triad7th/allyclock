@@ -37,7 +37,9 @@ describe('ScheduleConfigComponent', () => {
     const fixture = TestBed.createComponent(ScheduleConfigComponent);
     fixture.detectChanges();
     let cancelled = false;
-    fixture.componentInstance.cancelled.subscribe(() => { cancelled = true; });
+    fixture.componentInstance.cancelled.subscribe(() => {
+      cancelled = true;
+    });
     (fixture.nativeElement.querySelector('button.cancel') as HTMLButtonElement).click();
     expect(cancelled).toBe(true);
   });
@@ -46,7 +48,9 @@ describe('ScheduleConfigComponent', () => {
     const fixture = TestBed.createComponent(ScheduleConfigComponent);
     fixture.detectChanges();
     let saved = false;
-    fixture.componentInstance.saved.subscribe(() => { saved = true; });
+    fixture.componentInstance.saved.subscribe(() => {
+      saved = true;
+    });
     await (fixture.nativeElement.querySelector('button.save') as HTMLButtonElement).click();
     fixture.detectChanges();
     expect(mockStore.saveSegments).toHaveBeenCalled();
@@ -56,7 +60,9 @@ describe('ScheduleConfigComponent', () => {
   it('Remove image calls store.removeImage', async () => {
     const fixture = TestBed.createComponent(ScheduleConfigComponent);
     fixture.detectChanges();
-    const removeBtn = fixture.nativeElement.querySelector('button.remove-image') as HTMLButtonElement;
+    const removeBtn = fixture.nativeElement.querySelector(
+      'button.remove-image',
+    ) as HTMLButtonElement;
     removeBtn.click();
     expect(mockStore.removeImage).toHaveBeenCalled();
   });
