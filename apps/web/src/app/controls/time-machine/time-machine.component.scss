@@ -12,7 +12,14 @@
   font-size: 0.9rem;
   cursor: pointer;
   opacity: 1;
-  transition: opacity 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.12s ease,
+    background 0.2s ease;
+
+  &:active {
+    transform: scale(0.93);
+  }
 
   &.hidden {
     opacity: 0;
@@ -30,7 +37,6 @@
   position: absolute;
   bottom: calc(100% + 0.5rem);
   left: 50%;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -40,6 +46,19 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  transform-origin: bottom center;
+  animation: tm-pop 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes tm-pop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
 }
 
 .tm-field-head {
@@ -153,6 +172,17 @@ input[type='range'] {
   padding: 0.35rem 0.9rem;
   font-size: 0.85rem;
   cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    background 0.2s ease;
+
+  &:hover {
+    background: #383838;
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
 }
 
 .tm-apply {

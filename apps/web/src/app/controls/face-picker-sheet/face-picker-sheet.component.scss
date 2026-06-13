@@ -8,6 +8,7 @@
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
+  animation: backdrop-fade 0.2s ease both;
 }
 
 .sheet {
@@ -20,6 +21,19 @@
   padding: 0.75rem 1rem 1.25rem;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
   outline: none;
+  animation: sheet-slide-up 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes backdrop-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-slide-up {
+  from {
+    transform: translateY(100%);
+  }
 }
 
 .handle {
@@ -47,6 +61,19 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    background: #333;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
 
   &.active {
     border-color: #4a9eff;

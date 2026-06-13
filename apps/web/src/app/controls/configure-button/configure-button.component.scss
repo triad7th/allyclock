@@ -12,7 +12,14 @@
   font-size: 0.9rem;
   cursor: pointer;
   opacity: 1;
-  transition: opacity 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.12s ease,
+    background 0.2s ease;
+
+  &:active {
+    transform: scale(0.93);
+  }
 
   &.hidden {
     opacity: 0;
