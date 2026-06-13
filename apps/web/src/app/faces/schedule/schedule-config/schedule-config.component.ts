@@ -126,11 +126,15 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   }
 
   addMarker(): void {
-    const nh = this.naturalHeight();
-    const mid = nh > 0 ? nh / 2 : 500;
-    const positions = [...this.markerSourceY(), mid].sort((a, b) => a - b);
-    this.markerSourceY.set(positions);
-    this.rebuildZones(positions.length);
+    const nh = this.naturalHeight() > 0 ? this.naturalHeight() : 1000;
+    const positions = this.markerSourceY();
+    // Place the new boundary below the last existing one: midway between the
+    // lowest current marker (or the image top) and the image bottom.
+    const last = positions.length > 0 ? positions[positions.length - 1] : 0;
+    const newPos = (last + nh) / 2;
+    const next = [...positions, newPos].sort((a, b) => a - b);
+    this.markerSourceY.set(next);
+    this.rebuildZones(next.length);
   }
 
   removeMarker(index: number): void {
