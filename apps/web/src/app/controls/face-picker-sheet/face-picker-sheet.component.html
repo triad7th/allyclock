@@ -2,9 +2,9 @@
   class="backdrop"
   role="button"
   tabindex="0"
-  (click)="faceClose.emit()"
-  (keydown.enter)="faceClose.emit()"
-  (keydown.space)="faceClose.emit()"
+  (click)="requestClose()"
+  (keydown.enter)="requestClose()"
+  (keydown.space)="requestClose()"
 ></div>
 <div
   class="sheet"
@@ -21,7 +21,7 @@
         type="button"
         class="face-option"
         [class.active]="face.id === activeFaceId()"
-        (click)="faceSelect.emit(face.id)"
+        (click)="selectFace(face.id)"
       >
         <span class="preview" aria-hidden="true">
           <span class="preview-viewport">

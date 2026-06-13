@@ -50,6 +50,7 @@ describe('AppComponent', () => {
   });
 
   it('switches face via the picker and persists the choice', () => {
+    vi.useFakeTimers();
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
@@ -60,11 +61,14 @@ describe('AppComponent', () => {
 
     const options = el.querySelectorAll('button.face-option');
     (options[1] as HTMLButtonElement).click();
+    // The sheet plays its slide-out before the face actually switches.
+    vi.advanceTimersByTime(300);
     fixture.detectChanges();
 
     expect(el.querySelector('app-world-cards-face')).toBeTruthy();
     expect(el.querySelector('app-face-picker-sheet')).toBeNull();
     expect(localStorage.getItem('allyclock.face')).toBe('world-cards');
+    vi.useRealTimers();
   });
 
   it('restores the persisted face on startup', () => {

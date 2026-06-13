@@ -36,6 +36,27 @@
   }
 }
 
+// Reverse of the entrance: fade the backdrop out and slide the sheet down.
+:host(.closing) .backdrop {
+  animation: backdrop-fade-out 0.2s ease both;
+}
+
+:host(.closing) .sheet {
+  animation: sheet-slide-down 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes backdrop-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-slide-down {
+  to {
+    transform: translateY(100%);
+  }
+}
+
 .handle {
   width: 36px;
   height: 4px;
