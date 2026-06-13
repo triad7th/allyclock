@@ -19,7 +19,7 @@ describe('FacePickerSheetComponent', () => {
   it('renders one option per registered face', () => {
     const fixture = createSheet();
     const options = fixture.nativeElement.querySelectorAll('button.face-option');
-    expect(options).toHaveLength(2);
+    expect(options).toHaveLength(3);
   });
 
   it('highlights the active face', () => {

@@ -35,6 +35,7 @@ npm test
 - `src/main.ts` bootstraps the standalone Angular app.
 - `src/app/app.component.*` owns the page layout.
 - `src/app/faces/face-registry.ts` lists the selectable clock faces; each face lives in its own directory under `src/app/faces/`.
+- `src/app/faces/schedule/` contains the Daily Schedule face: image panning, drag-marker config, and IndexedDB image storage.
 - `src/app/controls/` contains the configure button and face picker sheet.
 - `src/app/services/location.service.ts` maps region IDs to flag URLs and timezone offsets.
 - `src/styles.scss` contains global styles.
