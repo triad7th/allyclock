@@ -83,6 +83,11 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
     this.armGearTimer();
   }
 
+  onGearClick(): void {
+    // In config mode the gear acts as a cancel button: close without saving.
+    this.configOpen.set(!this.configOpen());
+  }
+
   onConfigSaved(): void {
     this.segments.set(this.store.loadSegments());
     this.store.loadImage().then((url) => {

@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, output, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, output, signal } from '@angular/core';
 import { ScheduleStoreService } from '../schedule-store.service';
 import { ScheduleSegment } from '../schedule-formatter';
 import { DEFAULT_IMAGE_SRC } from '../default-schedule';
@@ -15,7 +15,7 @@ export interface DraftZone {
   templateUrl: './schedule-config.component.html',
   styleUrl: './schedule-config.component.scss',
 })
-export class ScheduleConfigComponent implements OnInit {
+export class ScheduleConfigComponent implements OnInit, OnDestroy {
   private readonly store = inject(ScheduleStoreService);
 
   readonly saved = output<void>();
@@ -64,6 +64,13 @@ export class ScheduleConfigComponent implements OnInit {
         this.previewSrc.set(url);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.previewObjectUrl) {
+      URL.revokeObjectURL(this.previewObjectUrl);
+      this.previewObjectUrl = null;
+    }
   }
 
   onFileSelected(event: Event): void {

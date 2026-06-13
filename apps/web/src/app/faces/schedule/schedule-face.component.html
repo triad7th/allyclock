@@ -12,9 +12,11 @@
   type="button"
   class="gear"
   [class.hidden]="!gearVisible() && !configOpen()"
-  (click)="configOpen.set(true)"
+  [class.cancel-mode]="configOpen()"
+  [attr.aria-label]="configOpen() ? 'Cancel configuration' : 'Configure schedule'"
+  (click)="onGearClick()"
 >
-  ⚙
+  {{ configOpen() ? '✕' : '⚙' }}
 </button>
 @if (configOpen()) {
   <app-schedule-config (saved)="onConfigSaved()" (cancelled)="configOpen.set(false)" />
