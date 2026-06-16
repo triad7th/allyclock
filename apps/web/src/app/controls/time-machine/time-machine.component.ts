@@ -50,6 +50,42 @@ function buildTimeZones(localZone: string): string[] {
   return base.includes(localZone) ? base : [localZone, ...base];
 }
 
+export interface TimeZoneOption {
+  id: string;
+  label: string;
+  offset: number; // minutes east of UTC, for sorting
+}
+
+// Current UTC offset (in minutes) for a zone, parsed from Intl's longOffset.
+function zoneOffsetMinutes(timeZone: string, at: Date): number {
+  const name =
+    new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'longOffset' })
+      .formatToParts(at)
+      .find((p) => p.type === 'timeZoneName')?.value ?? 'GMT';
+  const m = /GMT([+-])(\d{2}):(\d{2})/.exec(name);
+  if (!m) return 0; // bare "GMT" === UTC
+  return (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3]));
+}
+
+// "GMT+09:00" / "GMT−07:00" (U+2212 minus, matching the rest of the app).
+function formatOffset(min: number): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const sign = min < 0 ? '−' : '+';
+  const abs = Math.abs(min);
+  return `GMT${sign}${pad(Math.floor(abs / 60))}:${pad(abs % 60)}`;
+}
+
+// Picker options: each zone labelled with its current GMT offset, sorted by
+// offset (numeric) then zone name. Built lazily (it scans every IANA zone).
+function buildTimeZoneOptions(localZone: string, at: Date): TimeZoneOption[] {
+  return buildTimeZones(localZone)
+    .map((id) => {
+      const offset = zoneOffsetMinutes(id, at);
+      return { id, offset, label: `${id}  ${formatOffset(offset)}` };
+    })
+    .sort((a, b) => a.offset - b.offset || a.id.localeCompare(b.id));
+}
+
 // 1-based day of the year (Jan 1 === 1). Rounded so DST shifts don't bias it.
 function dayOfYear(date: Date): number {
   const startOfYear = new Date(date.getFullYear(), 0, 0).getTime();
@@ -76,8 +112,10 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
   readonly panelClosing = signal(false);
   readonly visible = signal(true);
 
-  // Selectable zones for the Time Zone field; always includes the active zone.
-  readonly timeZones = buildTimeZones(this.clock.timeZone());
+  // Selectable zones for the Time Zone field (each labelled with its GMT offset,
+  // sorted by offset then name). Built lazily on first open — it scans every
+  // IANA zone — and always includes the active zone.
+  readonly timeZoneOptions = signal<TimeZoneOption[]>([]);
 
   // The drafted zone, mirroring `draft` for the time. Seeded on open.
   readonly tzDraft = signal(this.clock.timeZone());
@@ -138,6 +176,10 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     // Seed the picker with whatever the clock currently reads.
     this.draft.set(toLocalInput(this.clock.now()));
     this.tzDraft.set(this.clock.timeZone());
+    // Build the labelled/sorted zone list once, on first open.
+    if (this.timeZoneOptions().length === 0) {
+      this.timeZoneOptions.set(buildTimeZoneOptions(this.clock.timeZone(), new Date()));
+    }
     this.panelClosing.set(false);
     this.panelOpen.set(true);
   }
@@ -211,11 +253,18 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     this.beginClose();
   }
 
-  goLive(): void {
-    // "Live" resets BOTH the time and the zone to the device's local values.
-    this.clock.clearMock();
-    this.clock.clearTimeZone();
-    this.beginClose();
+  // Live/Mock switch: toggle between following the live timer and freezing at
+  // the current instant. Does NOT close the panel; re-syncs the editor (datetime
+  // + zone combobox) to the resulting state — including the zone back to local.
+  toggleLive(): void {
+    if (this.clock.isMocked()) {
+      this.clock.clearMock();
+      this.clock.clearTimeZone();
+    } else {
+      this.clock.setMock(this.clock.now());
+    }
+    this.draft.set(toLocalInput(this.clock.now()));
+    this.tzDraft.set(this.clock.timeZone());
   }
 
   // Update the draft and scrub the live clock to it so faces move as you drag.

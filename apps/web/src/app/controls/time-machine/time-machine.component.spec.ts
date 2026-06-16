@@ -226,6 +226,51 @@ describe('TimeMachineComponent', () => {
     expect(clock.isMocked()).toBe(false);
   });
 
+  it('freezes at the current time when the Live switch is toggled to mock, without closing', () => {
+    const clock = TestBed.inject(ClockService);
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(clock.isMocked()).toBe(false);
+
+    (el.querySelector('.tm-live-btn') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    // Now frozen (mocked) and the panel stays open.
+    expect(clock.isMocked()).toBe(true);
+    expect(clock.mock()).not.toBeNull();
+    expect(el.querySelector('.tm-sheet')).toBeTruthy();
+  });
+
+  it('syncs the zone combobox back to local when toggled to live', () => {
+    const clock = TestBed.inject(ClockService);
+    const localTz = clock.timeZone();
+    clock.setTimeZone('Asia/Seoul');
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(fixture.componentInstance.tzDraft()).toBe('Asia/Seoul');
+
+    (el.querySelector('.tm-live-btn') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(clock.timeZone()).toBe(localTz);
+    expect(fixture.componentInstance.tzDraft()).toBe(localTz);
+  });
+
+  it('labels zone options with a GMT offset and sorts them by offset', () => {
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    const opts = fixture.componentInstance.timeZoneOptions();
+    expect(opts.length).toBeGreaterThan(0);
+    expect(opts.every((o) => /GMT[+−]\d{2}:\d{2}/.test(o.label))).toBe(true);
+    for (let i = 1; i < opts.length; i++) {
+      expect(opts[i].offset).toBeGreaterThanOrEqual(opts[i - 1].offset);
+    }
+  });
+
   it('cancels and rolls back when the X button is clicked', () => {
     const clock = TestBed.inject(ClockService);
     const { fixture, el } = create();

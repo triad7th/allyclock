@@ -59,8 +59,13 @@ export class ClockService implements OnDestroy {
     }
   }
 
-  // Override the active zone with the given IANA zone.
+  // Override the active zone with the given IANA zone. Selecting the device's
+  // local zone is treated as "follow local" (live), so it isn't a mock.
   setTimeZone(tz: string): void {
+    if (tz === this.localTimeZone) {
+      this.clearTimeZone();
+      return;
+    }
     this.mockTimeZone.set(tz);
     try {
       localStorage.setItem(TZ_KEY, tz);

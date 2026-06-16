@@ -33,16 +33,6 @@
         </button>
         <div class="tm-titlebox">
           <span class="tm-title">Time Machine</span>
-          <button
-            type="button"
-            class="tm-live-btn"
-            [class.is-live]="!isMocked()"
-            (click)="goLive()"
-            aria-label="Set to live time"
-          >
-            <span class="tm-live-dot"></span>
-            <span>{{ isMocked() ? 'Mock' : 'Live' }}</span>
-          </button>
         </div>
         <button
           type="button"
@@ -54,6 +44,19 @@
           <app-icon name="checkmark" />
         </button>
       </header>
+
+      <div class="tm-subnav">
+        <button
+          type="button"
+          class="tm-live-btn"
+          [class.is-live]="!isMocked()"
+          (click)="toggleLive()"
+          aria-label="Toggle live or mock time"
+        >
+          <span class="tm-live-dot"></span>
+          <span>{{ isMocked() ? 'Mock' : 'Live' }}</span>
+        </button>
+      </div>
 
       <div class="tm-controls">
         <div class="tm-field tm-field-datetime">
@@ -96,8 +99,8 @@
         <div class="tm-field tm-field-tz">
           <span class="tm-field-label">Time Zone</span>
           <select class="tm-tz" [value]="tzDraft()" (change)="onTimeZone($any($event.target).value)">
-            @for (z of timeZones; track z) {
-              <option [value]="z">{{ z }}</option>
+            @for (z of timeZoneOptions(); track z.id) {
+              <option [value]="z.id">{{ z.label }}</option>
             }
           </select>
         </div>
