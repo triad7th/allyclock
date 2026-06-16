@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ScheduleFaceComponent } from './schedule-face.component';
 import { ScheduleStoreService } from './schedule-store.service';
+import { FaceConfigService } from '../../services/face-config.service';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 import { DEFAULT_PRESET_ID } from './schedule-preset';
 
@@ -71,5 +72,40 @@ describe('ScheduleFaceComponent', () => {
     (fixture.nativeElement.querySelector('button.gear') as HTMLButtonElement).click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('app-schedule-config')).toBeTruthy();
+  });
+
+  it('opening config hides the app controls bar via FaceConfigService', () => {
+    const faceConfig = TestBed.inject(FaceConfigService);
+    const fixture = TestBed.createComponent(ScheduleFaceComponent);
+    fixture.detectChanges();
+    expect(faceConfig.open()).toBe(false);
+    (fixture.nativeElement.querySelector('button.gear') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(faceConfig.open()).toBe(true);
+  });
+
+  it('cancelling config unmounts it immediately and reveals the controls bar', () => {
+    const faceConfig = TestBed.inject(FaceConfigService);
+    const fixture = TestBed.createComponent(ScheduleFaceComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.onGearClick();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-schedule-config')).toBeTruthy();
+    fixture.componentInstance.onConfigCancelled();
+    fixture.detectChanges();
+    expect(faceConfig.open()).toBe(false);
+    expect(fixture.nativeElement.querySelector('app-schedule-config')).toBeNull();
+  });
+
+  it('saving config unmounts it immediately and reveals the controls bar', () => {
+    const faceConfig = TestBed.inject(FaceConfigService);
+    const fixture = TestBed.createComponent(ScheduleFaceComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.onGearClick();
+    fixture.detectChanges();
+    fixture.componentInstance.onConfigSaved();
+    fixture.detectChanges();
+    expect(faceConfig.open()).toBe(false);
+    expect(fixture.nativeElement.querySelector('app-schedule-config')).toBeNull();
   });
 });

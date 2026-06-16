@@ -17,8 +17,6 @@ import { activeSegment, framedWindow } from './schedule-formatter';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 
 const HIDE_DELAY_MS = 4000;
-// Matches the config-slide-out animation duration in the config SCSS.
-const CONFIG_CLOSE_MS = 300;
 
 @Component({
   selector: 'app-schedule-face',
@@ -48,10 +46,8 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   readonly containerHeight = signal(0);
   readonly gearVisible = signal(true);
   readonly configOpen = signal(false);
-  readonly configClosing = signal(false);
 
   private gearTimer: ReturnType<typeof setTimeout> | undefined;
-  private closeTimer: ReturnType<typeof setTimeout> | undefined;
   private resizeObserver: ResizeObserver | undefined;
 
   readonly scaleFactor = computed(() => {
@@ -102,7 +98,6 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.resizeObserver?.disconnect();
     clearTimeout(this.gearTimer);
-    clearTimeout(this.closeTimer);
     this.faceConfig.open.set(false);
   }
 
@@ -131,15 +126,17 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
     this.faceConfig.open.set(true);
   }
 
+  // The config runs its own exit animation via <app-sheet> and emits these only
+  // after it finishes, so the face unmounts the config immediately.
   onConfigSaved(): void {
     this.loadActivePreset();
     this.faceConfig.open.set(false);
-    this.beginConfigClose();
+    this.configOpen.set(false);
   }
 
   onConfigCancelled(): void {
     this.faceConfig.open.set(false);
-    this.beginConfigClose();
+    this.configOpen.set(false);
   }
 
   private loadActivePreset(): void {
@@ -155,18 +152,6 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
     } else {
       this.store.loadPresetImage(active.id).then((url) => this.imageUrl.set(url ?? DEFAULT_IMAGE_SRC));
     }
-  }
-
-  // Run the slide-out animation, then remove the config page from the DOM.
-  // The save/cancel side effects have already run; only the visual exit waits.
-  private beginConfigClose(): void {
-    if (this.configClosing()) return;
-    this.configClosing.set(true);
-    clearTimeout(this.closeTimer);
-    this.closeTimer = setTimeout(() => {
-      this.configOpen.set(false);
-      this.configClosing.set(false);
-    }, CONFIG_CLOSE_MS);
   }
 
   private armGearTimer(): void {

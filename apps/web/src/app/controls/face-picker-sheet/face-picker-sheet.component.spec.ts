@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { FacePickerSheetComponent } from './face-picker-sheet.component';
+import { SHEET_ANIMATION_MS } from '../../config/animation-timing';
 
 describe('FacePickerSheetComponent', () => {
   beforeEach(async () => {
@@ -43,15 +44,18 @@ describe('FacePickerSheetComponent', () => {
     const options = fixture.nativeElement.querySelectorAll('button.face-option');
     (options[1] as HTMLButtonElement).click();
     expect(selected).toBe('');
-    vi.advanceTimersByTime(300);
+    vi.advanceTimersByTime(SHEET_ANIMATION_MS);
     expect(selected).toBe('world-cards');
   });
 
-  it('applies the closing class while sliding out', () => {
+  it('plays the sheet slide-out when a face is chosen', () => {
     const fixture = createSheet();
-    (fixture.nativeElement.querySelector('.backdrop') as HTMLElement).click();
+    const options = fixture.nativeElement.querySelectorAll('button.face-option');
+    (options[1] as HTMLButtonElement).click();
     fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).classList.contains('closing')).toBe(true);
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('.sheet-overlay.closing'),
+    ).toBeTruthy();
   });
 
   it('emits close after the slide-out finishes when the backdrop is clicked', () => {
@@ -60,9 +64,9 @@ describe('FacePickerSheetComponent', () => {
     fixture.componentInstance.faceClose.subscribe(() => {
       closed = true;
     });
-    (fixture.nativeElement.querySelector('.backdrop') as HTMLElement).click();
+    (fixture.nativeElement.querySelector('.sheet-backdrop') as HTMLElement).click();
     expect(closed).toBe(false);
-    vi.advanceTimersByTime(300);
+    vi.advanceTimersByTime(SHEET_ANIMATION_MS);
     expect(closed).toBe(true);
   });
 
@@ -73,7 +77,7 @@ describe('FacePickerSheetComponent', () => {
       closed = true;
     });
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-    vi.advanceTimersByTime(300);
+    vi.advanceTimersByTime(SHEET_ANIMATION_MS);
     expect(closed).toBe(true);
   });
 });

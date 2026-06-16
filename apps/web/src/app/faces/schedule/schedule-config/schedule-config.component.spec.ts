@@ -4,6 +4,7 @@ import { ScheduleConfigComponent } from './schedule-config.component';
 import { ScheduleStoreService } from '../schedule-store.service';
 import { DEFAULT_SEGMENTS } from '../default-schedule';
 import { DEFAULT_PRESET_ID } from '../schedule-preset';
+import { SHEET_ANIMATION_MS } from '../../../config/animation-timing';
 
 function makeState() {
   return {
@@ -125,31 +126,51 @@ describe('ScheduleConfigComponent', () => {
     expect(fixture.nativeElement.querySelectorAll('.preset-delete')).toHaveLength(0);
   });
 
-  it('emits cancelled when cancel() is called', () => {
-    const fixture = TestBed.createComponent(ScheduleConfigComponent);
-    fixture.detectChanges();
-    let cancelled = false;
-    fixture.componentInstance.cancelled.subscribe(() => (cancelled = true));
-    fixture.componentInstance.cancel();
-    expect(cancelled).toBe(true);
+  it('emits cancelled when cancel() is called, after the sheet exit animation', () => {
+    vi.useFakeTimers();
+    try {
+      const fixture = TestBed.createComponent(ScheduleConfigComponent);
+      fixture.detectChanges();
+      let cancelled = false;
+      fixture.componentInstance.cancelled.subscribe(() => (cancelled = true));
+      fixture.componentInstance.cancel();
+      // Routed through <app-sheet>: nothing emits until the exit animation ends.
+      expect(cancelled).toBe(false);
+      vi.advanceTimersByTime(SHEET_ANIMATION_MS);
+      expect(cancelled).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
-  it('clicking the header cancel button emits cancelled', () => {
-    const fixture = TestBed.createComponent(ScheduleConfigComponent);
-    fixture.detectChanges();
-    let cancelled = false;
-    fixture.componentInstance.cancelled.subscribe(() => (cancelled = true));
-    (fixture.nativeElement.querySelector('.config-cancel') as HTMLButtonElement).click();
-    expect(cancelled).toBe(true);
+  it('clicking the header cancel button emits cancelled after the exit animation', () => {
+    vi.useFakeTimers();
+    try {
+      const fixture = TestBed.createComponent(ScheduleConfigComponent);
+      fixture.detectChanges();
+      let cancelled = false;
+      fixture.componentInstance.cancelled.subscribe(() => (cancelled = true));
+      (fixture.nativeElement.querySelector('.config-cancel') as HTMLButtonElement).click();
+      vi.advanceTimersByTime(SHEET_ANIMATION_MS);
+      expect(cancelled).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
-  it('clicking the header done button emits saved', () => {
-    const fixture = TestBed.createComponent(ScheduleConfigComponent);
-    fixture.detectChanges();
-    let saved = false;
-    fixture.componentInstance.saved.subscribe(() => (saved = true));
-    (fixture.nativeElement.querySelector('.config-done') as HTMLButtonElement).click();
-    expect(saved).toBe(true);
+  it('clicking the header done button emits saved after the exit animation', () => {
+    vi.useFakeTimers();
+    try {
+      const fixture = TestBed.createComponent(ScheduleConfigComponent);
+      fixture.detectChanges();
+      let saved = false;
+      fixture.componentInstance.saved.subscribe(() => (saved = true));
+      (fixture.nativeElement.querySelector('.config-done') as HTMLButtonElement).click();
+      vi.advanceTimersByTime(SHEET_ANIMATION_MS);
+      expect(saved).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('empty preset shows a drop zone and only rename + delete overlay icons', () => {

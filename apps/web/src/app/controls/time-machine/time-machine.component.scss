@@ -1,3 +1,5 @@
+@use 'tokens' as t;
+
 :host {
   position: relative;
   display: inline-block;
@@ -33,80 +35,17 @@
   }
 }
 
-// Full-viewport overlay holding the backdrop + bottom sheet.
-.tm-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-}
-
-.tm-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  animation: tm-backdrop-fade 0.2s ease both;
-}
-
+// Layout wrapper inside <app-sheet>'s panel: the sheet chrome (background,
+// rounded corners, slide animation, grab handle) is owned by <app-sheet>.
 .tm-sheet {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
   // Query container so the controls reflow to columns based on the sheet's
   // own width, independent of the window.
   container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  // iOS systemGroupedBackground (dark).
-  background: #1c1c1e;
-  border-radius: 16px 16px 0 0;
-  padding: 0.5rem 0 calc(1.25rem + env(safe-area-inset-bottom, 0px));
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
-  color: #fff;
-  animation: tm-slide-up 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
   text-align: left;
-}
-
-// Reverse of the entrance: fade the backdrop out and slide the sheet down.
-.tm-overlay.closing .tm-backdrop {
-  animation: tm-backdrop-fade-out 0.2s ease both;
-}
-
-.tm-overlay.closing .tm-sheet {
-  animation: tm-slide-down 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes tm-backdrop-fade {
-  from {
-    opacity: 0;
-  }
-}
-
-@keyframes tm-backdrop-fade-out {
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes tm-slide-up {
-  from {
-    transform: translateY(100%);
-  }
-}
-
-@keyframes tm-slide-down {
-  to {
-    transform: translateY(100%);
-  }
-}
-
-.tm-grabber {
-  width: 36px;
-  height: 5px;
-  background: #555;
-  border-radius: 2.5px;
-  margin: 0.25rem auto 0.25rem;
 }
 
 // Nav-bar header: leading X on the left, centered title, and a trailing group
@@ -153,21 +92,21 @@
 
 // Leading action: cancel — discard everything done in the panel.
 .tm-corner-cancel {
-  background: rgba(118, 118, 128, 0.24);
-  color: #fff;
+  background: t.$secondary-surface;
+  color: t.$label;
 
   &:hover {
-    background: rgba(118, 118, 128, 0.34);
+    background: t.$secondary-surface-hover;
   }
 }
 
 // Trailing (primary) action: apply the drafted time.
 .tm-corner-apply {
-  background: #0a84ff;
-  color: #fff;
+  background: t.$tint;
+  color: t.$label;
 
   &:hover {
-    background: #2691ff;
+    background: t.$tint-hover;
   }
 }
 
@@ -181,7 +120,7 @@
 .tm-title {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #fff;
+  color: t.$label;
   line-height: 1.1;
 }
 
@@ -192,7 +131,7 @@
   align-items: center;
   gap: 0.3rem;
   border: none;
-  background: rgba(118, 118, 128, 0.24);
+  background: t.$secondary-surface;
   border-radius: 999px;
   // Match the 34px height of the cancel/apply corner buttons it sits beside.
   height: 34px;
@@ -202,18 +141,18 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #0a84ff; // mocked = iOS blue
+  color: t.$tint; // mocked = iOS blue
   cursor: pointer;
   transition:
     background 0.2s ease,
     transform 0.12s ease;
 
   &.is-live {
-    color: #30d158; // live = iOS green
+    color: t.$live; // live = iOS green
   }
 
   &:hover {
-    background: rgba(118, 118, 128, 0.34);
+    background: t.$secondary-surface-hover;
   }
 
   &:active {
@@ -259,7 +198,7 @@
 }
 
 .tm-field-label {
-  color: #98989e; // secondaryLabel (dark)
+  color: t.$secondary-label; // secondaryLabel (dark)
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -267,7 +206,7 @@
 }
 
 .tm-field-value {
-  color: #fff;
+  color: t.$label;
   font-size: 0.95rem;
   font-variant-numeric: tabular-nums;
 }
@@ -276,10 +215,10 @@
 .tm-datetime {
   appearance: none;
   width: 100%;
-  background: rgba(118, 118, 128, 0.24);
+  background: t.$secondary-surface;
   border: none;
   border-radius: 8px;
-  color: #0a84ff;
+  color: t.$tint;
   font-size: 0.95rem;
   padding: 0.5rem 0.75rem;
   color-scheme: dark;
@@ -293,10 +232,10 @@
 // searchable picker. Matches the datetime field's look.
 .tm-tz {
   width: 100%;
-  background: rgba(118, 118, 128, 0.24);
+  background: t.$secondary-surface;
   border: none;
   border-radius: 8px;
-  color: #0a84ff;
+  color: t.$tint;
   font-size: 0.95rem;
   padding: 0.5rem 0.75rem;
   text-align: left;
@@ -304,7 +243,7 @@
   transition: background 0.2s ease;
 
   &:hover {
-    background: rgba(118, 118, 128, 0.34);
+    background: t.$secondary-surface-hover;
   }
 }
 
@@ -322,15 +261,15 @@
   appearance: none;
   width: 100%;
   box-sizing: border-box;
-  background: rgba(118, 118, 128, 0.24);
+  background: t.$secondary-surface;
   border: none;
   border-radius: 8px;
-  color: #fff;
+  color: t.$label;
   font-size: 0.95rem;
   padding: 0.5rem 0.75rem;
 
   &::placeholder {
-    color: #98989e;
+    color: t.$secondary-label;
   }
 }
 
@@ -345,7 +284,7 @@
 .tm-tz-option {
   background: none;
   border: none;
-  color: #fff;
+  color: t.$label;
   font-size: 0.95rem;
   text-align: left;
   padding: 0.6rem 0.75rem;
@@ -357,13 +296,13 @@
   }
 
   &.active {
-    color: #0a84ff;
+    color: t.$tint;
     font-weight: 600;
   }
 }
 
 .tm-tz-empty {
-  color: #98989e;
+  color: t.$secondary-label;
   font-size: 0.9rem;
   text-align: center;
   padding: 1rem 0;
@@ -374,7 +313,7 @@
   align-self: center;
   background: none;
   border: none;
-  color: #0a84ff;
+  color: t.$tint;
   font-size: 0.95rem;
   padding: 0.4rem 0.75rem;
   cursor: pointer;
@@ -398,8 +337,8 @@ input[type='range'] {
     border-radius: 999px;
     background: linear-gradient(
       to right,
-      #0a84ff var(--fill, 0%),
-      rgba(255, 255, 255, 0.16) var(--fill, 0%)
+      t.$tint var(--fill, 0%),
+      t.$track var(--fill, 0%)
     );
   }
 
@@ -418,13 +357,13 @@ input[type='range'] {
   &::-moz-range-track {
     height: 4px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.16);
+    background: t.$track;
   }
 
   &::-moz-range-progress {
     height: 4px;
     border-radius: 999px;
-    background: #0a84ff;
+    background: t.$tint;
   }
 
   &::-moz-range-thumb {

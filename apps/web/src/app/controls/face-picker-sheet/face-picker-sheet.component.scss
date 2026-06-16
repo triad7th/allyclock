@@ -1,75 +1,11 @@
-:host {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-}
-
-.backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  animation: backdrop-fade 0.2s ease both;
-}
-
-.sheet {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #1e1e1e;
-  border-radius: 16px 16px 0 0;
-  padding: 0.75rem 1rem 1.25rem;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
-  outline: none;
-  animation: sheet-slide-up 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes backdrop-fade {
-  from {
-    opacity: 0;
-  }
-}
-
-@keyframes sheet-slide-up {
-  from {
-    transform: translateY(100%);
-  }
-}
-
-// Reverse of the entrance: fade the backdrop out and slide the sheet down.
-:host(.closing) .backdrop {
-  animation: backdrop-fade-out 0.2s ease both;
-}
-
-:host(.closing) .sheet {
-  animation: sheet-slide-down 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes backdrop-fade-out {
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes sheet-slide-down {
-  to {
-    transform: translateY(100%);
-  }
-}
-
-.handle {
-  width: 36px;
-  height: 4px;
-  background: #555;
-  border-radius: 2px;
-  margin: 0 auto 0.75rem;
-}
+@use 'tokens' as t;
 
 .options {
   display: flex;
   gap: 0.75rem;
   justify-content: center;
   flex-wrap: wrap;
+  padding: 0 1rem 1.25rem;
 }
 
 .face-option {
@@ -97,7 +33,7 @@
   }
 
   &.active {
-    border-color: #4a9eff;
+    border-color: t.$tint;
   }
 }
 

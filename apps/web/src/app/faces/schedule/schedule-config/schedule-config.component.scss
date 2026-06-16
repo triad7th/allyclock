@@ -1,32 +1,7 @@
-:host {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  background: #0b0e14;
-  color: #eee;
-  display: flex;
-  flex-direction: column;
-  animation: config-slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
+@use 'tokens' as t;
 
-:host(.closing) {
-  animation: config-slide-out 0.3s cubic-bezier(0.7, 0, 0.84, 0) both;
-}
-
-@keyframes config-slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(100%);
-  }
-}
-
-@keyframes config-slide-out {
-  to {
-    opacity: 0;
-    transform: translateY(100%);
-  }
-}
-
+// The panel fills the full-height sheet content region (which scrolls); the
+// chrome (grab handle, slide animation, backdrop) is owned by <app-sheet>.
 .config-panel {
   flex: 1;
   min-height: 0;
@@ -34,17 +9,8 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  color: t.$label;
   padding: 0.5rem 1.5rem 2rem;
-}
-
-// Top-centered grab handle, matching the Time Machine sheet.
-.config-grabber {
-  flex: 0 0 auto;
-  width: 36px;
-  height: 5px;
-  background: #555;
-  border-radius: 2.5px;
-  margin: 0.25rem auto 0.75rem;
 }
 
 // iOS nav-bar header: leading cancel, centered title, trailing done. Sits at
@@ -62,7 +28,7 @@
   text-align: center;
   font-size: 1.05rem;
   font-weight: 700;
-  color: #fff;
+  color: t.$label;
 }
 
 .config-corner {
@@ -91,21 +57,21 @@
 
 // Leading action: cancel — close the panel.
 .config-cancel {
-  background: rgba(118, 118, 128, 0.24);
-  color: #fff;
+  background: t.$secondary-surface;
+  color: t.$label;
 
   &:hover {
-    background: rgba(118, 118, 128, 0.34);
+    background: t.$secondary-surface-hover;
   }
 }
 
 // Trailing (primary) action: done.
 .config-done {
-  background: #0a84ff;
-  color: #fff;
+  background: t.$tint;
+  color: t.$label;
 
   &:hover {
-    background: #2691ff;
+    background: t.$tint-hover;
   }
 }
 
@@ -161,7 +127,7 @@ section {
   overflow: hidden;
 
   &.active {
-    border-color: #0a84ff;
+    border-color: t.$tint;
   }
 }
 
@@ -178,7 +144,7 @@ section {
   border: none;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.6);
-  color: #fff;
+  color: t.$label;
   cursor: pointer;
   backdrop-filter: blur(4px);
 
@@ -253,7 +219,7 @@ section {
   width: 100%;
   box-sizing: border-box;
   background: #1a1a1a;
-  border: 1px solid #0a84ff;
+  border: 1px solid t.$tint;
   border-radius: 6px;
   color: #eee;
   font-size: 1.1rem;
@@ -282,7 +248,7 @@ section {
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.55);
   border: none;
-  color: #fff;
+  color: t.$label;
   font-size: 1rem;
   display: flex;
   align-items: center;
@@ -372,7 +338,7 @@ section {
 
   input[type='time'] {
     background: #1a1a1a;
-    border: 1px solid #555;
+    border: 1px solid t.$grab-handle;
     border-radius: 4px;
     color: #eee;
     font-size: 0.75rem;

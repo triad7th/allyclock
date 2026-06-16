@@ -1,0 +1,35 @@
+// Design tokens for the iOS dark palette, named to mirror Apple semantics.
+// Components reference them via `@use 'tokens' as t;` then `t.$tint`, etc.
+// The build resolves the bare `tokens` import through
+// `stylePreprocessorOptions.includePaths: ["src/app/ui"]` in angular.json.
+
+// Accent / interactive blue (iOS systemBlue) and its hover state.
+$tint: #0a84ff;
+$tint-hover: #2691ff;
+
+// Live indicator (iOS systemGreen).
+$live: #30d158;
+
+// Sheet panel background (iOS systemGroupedBackground, dark).
+$sheet-bg: #1c1c1e;
+
+// Secondary fill used by pill/corner controls and their hover state.
+$secondary-surface: rgba(118, 118, 128, 0.24);
+$secondary-surface-hover: rgba(118, 118, 128, 0.34);
+
+// Sheet grab handle.
+$grab-handle: #555;
+
+// Text colours.
+$label: #fff;
+$secondary-label: #98989e;
+
+// Slider/track fill.
+$track: rgba(255, 255, 255, 0.16);
+
+// Dimming backdrop behind a sheet.
+$backdrop: rgba(0, 0, 0, 0.5);
+
+// Sheet enter/exit animation duration.
+// MUST equal SHEET_ANIMATION_MS in src/app/config/animation-timing.ts.
+$sheet-anim: 0.28s;

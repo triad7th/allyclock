@@ -1,68 +1,34 @@
 import { NgComponentOutlet } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  afterNextRender,
-  input,
-  output,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, input, output, viewChild } from '@angular/core';
 import { FACES } from '../../faces/face-registry';
-
-// Matches the slide-down/fade-out animation duration in the sheet SCSS.
-const CLOSE_MS = 280;
+import { SheetComponent } from '../../ui/sheet/sheet.component';
 
 @Component({
   selector: 'app-face-picker-sheet',
-  imports: [NgComponentOutlet],
+  imports: [NgComponentOutlet, SheetComponent],
   templateUrl: './face-picker-sheet.component.html',
   styleUrl: './face-picker-sheet.component.scss',
-  host: {
-    '[class.closing]': 'closing()',
-    '(document:keydown.escape)': 'requestClose()',
-  },
 })
-export class FacePickerSheetComponent implements OnDestroy {
+export class FacePickerSheetComponent {
   readonly faces = FACES;
   readonly activeFaceId = input.required<string>();
   readonly faceSelect = output<string>();
   readonly faceClose = output<void>();
 
-  readonly closing = signal(false);
-
-  private readonly panel = viewChild.required<ElementRef<HTMLElement>>('panel');
-  private closeTimer: ReturnType<typeof setTimeout> | undefined;
+  private readonly sheet = viewChild.required(SheetComponent);
   private pendingSelectId: string | null = null;
 
-  constructor() {
-    afterNextRender(() => this.panel().nativeElement.focus());
-  }
-
-  ngOnDestroy(): void {
-    clearTimeout(this.closeTimer);
-  }
-
-  // Dismiss without choosing a face (backdrop click / Escape).
-  requestClose(): void {
-    this.beginClose(null);
-  }
-
-  // Choose a face; the sheet still slides out before the parent swaps faces.
+  // Choose a face; remember it, then play the sheet's slide-out. The real
+  // emit happens in onSheetClosed once <app-sheet> finishes its exit.
   selectFace(id: string): void {
-    this.beginClose(id);
+    this.pendingSelectId = id;
+    this.sheet().close();
   }
 
-  // Play the slide-out, then emit the real close/select once it finishes.
-  private beginClose(selectId: string | null): void {
-    if (this.closing()) return;
-    this.pendingSelectId = selectId;
-    this.closing.set(true);
-    clearTimeout(this.closeTimer);
-    this.closeTimer = setTimeout(() => {
-      if (this.pendingSelectId !== null) this.faceSelect.emit(this.pendingSelectId);
-      else this.faceClose.emit();
-    }, CLOSE_MS);
+  // <app-sheet> finished its exit (via selectFace, backdrop, or Escape).
+  // Emit the pending selection if one was made, otherwise a plain close.
+  onSheetClosed(): void {
+    if (this.pendingSelectId !== null) this.faceSelect.emit(this.pendingSelectId);
+    else this.faceClose.emit();
   }
 }

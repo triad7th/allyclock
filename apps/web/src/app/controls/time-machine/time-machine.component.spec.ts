@@ -2,9 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { TimeMachineComponent } from './time-machine.component';
 import { ClockService } from '../../services/clock.service';
-
-// Matches CLOSE_MS in the component: the slide-out before the sheet unmounts.
-const CLOSE_MS = 280;
+import { SHEET_ANIMATION_MS } from '../../config/animation-timing';
 
 describe('TimeMachineComponent', () => {
   beforeEach(async () => {
@@ -34,7 +32,7 @@ describe('TimeMachineComponent', () => {
     (el.querySelector('button.tm-button') as HTMLButtonElement).click();
     fixture.detectChanges();
     expect(el.querySelector('.tm-sheet')).toBeTruthy();
-    expect(el.querySelector('.tm-backdrop')).toBeTruthy();
+    expect(el.querySelector('.sheet-backdrop')).toBeTruthy();
   });
 
   it('shows a Live indicator when not mocked and Mock after scrubbing', () => {
@@ -68,7 +66,7 @@ describe('TimeMachineComponent', () => {
     expect(el.querySelector('button.tm-button')?.classList.contains('active')).toBe(true);
 
     // The sheet slides out, then unmounts after the animation.
-    vi.advanceTimersByTime(CLOSE_MS);
+    vi.advanceTimersByTime(SHEET_ANIMATION_MS);
     fixture.detectChanges();
     expect(el.querySelector('.tm-sheet')).toBeNull();
   });
@@ -115,14 +113,14 @@ describe('TimeMachineComponent', () => {
     fixture.detectChanges();
     expect(clock.isMocked()).toBe(true);
 
-    (el.querySelector('.tm-backdrop') as HTMLElement).click();
+    (el.querySelector('.sheet-backdrop') as HTMLElement).click();
     fixture.detectChanges();
 
     // Closing accepts: the scrubbed mock is kept.
     expect(clock.isMocked()).toBe(true);
     expect(clock.now().getHours()).toBe(9);
     expect(clock.now().getMinutes()).toBe(30);
-    vi.advanceTimersByTime(CLOSE_MS);
+    vi.advanceTimersByTime(SHEET_ANIMATION_MS);
     fixture.detectChanges();
     expect(el.querySelector('.tm-sheet')).toBeNull();
   });
@@ -143,7 +141,7 @@ describe('TimeMachineComponent', () => {
     // Closing accepts the scrub (day 200 of 2020), not the pre-open mock.
     expect(clock.isMocked()).toBe(true);
     expect(clock.now().getFullYear()).toBe(2020);
-    vi.advanceTimersByTime(CLOSE_MS);
+    vi.advanceTimersByTime(SHEET_ANIMATION_MS);
     fixture.detectChanges();
     expect(el.querySelector('.tm-sheet')).toBeNull();
   });
@@ -201,12 +199,12 @@ describe('TimeMachineComponent', () => {
     fixture.detectChanges();
     expect(clock.timeZone()).toBe('Asia/Tokyo');
 
-    (el.querySelector('.tm-backdrop') as HTMLElement).click();
+    (el.querySelector('.sheet-backdrop') as HTMLElement).click();
     fixture.detectChanges();
 
     // Closing accepts the picked zone.
     expect(clock.timeZone()).toBe('Asia/Tokyo');
-    vi.advanceTimersByTime(CLOSE_MS);
+    vi.advanceTimersByTime(SHEET_ANIMATION_MS);
     fixture.detectChanges();
     expect(el.querySelector('.tm-sheet')).toBeNull();
   });
@@ -309,7 +307,7 @@ describe('TimeMachineComponent', () => {
 
     // Closing accepts: the mock is kept.
     expect(clock.isMocked()).toBe(true);
-    vi.advanceTimersByTime(CLOSE_MS);
+    vi.advanceTimersByTime(SHEET_ANIMATION_MS);
     fixture.detectChanges();
     expect(el.querySelector('.tm-sheet')).toBeNull();
   });

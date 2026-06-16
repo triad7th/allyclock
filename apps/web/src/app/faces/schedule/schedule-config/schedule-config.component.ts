@@ -15,6 +15,7 @@ import { DEFAULT_IMAGE_SRC } from '../default-schedule';
 import { DEFAULT_PRESET_ID, type SchedulePreset } from '../schedule-preset';
 import { ScheduleMarkerComponent } from './schedule-marker.component';
 import { IconComponent } from '../../../ui/icon/icon.component';
+import { SheetComponent } from '../../../ui/sheet/sheet.component';
 
 export interface DraftZone {
   from: string;
@@ -22,7 +23,7 @@ export interface DraftZone {
 
 @Component({
   selector: 'app-schedule-config',
-  imports: [ScheduleMarkerComponent, IconComponent],
+  imports: [ScheduleMarkerComponent, IconComponent, SheetComponent],
   templateUrl: './schedule-config.component.html',
   styleUrl: './schedule-config.component.scss',
 })
@@ -82,6 +83,10 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   private thumbGeneration = 0;
   private resizeObserver: ResizeObserver | null = null;
   private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
+  private readonly sheet = viewChild(SheetComponent);
+  // Which terminal action started the exit, resolved once the sheet finishes its
+  // exit animation and calls `onSheetClosed()`.
+  private savedOnClose = false;
 
   ngOnInit(): void {
     const state = this.store.loadState();
@@ -154,15 +159,28 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
     this.refreshThumbs();
   }
 
+  // Both terminal actions route through `<app-sheet>`: they record the outcome,
+  // then start the exit animation. `onSheetClosed()` fires once the sheet has
+  // finished animating and emits `cancelled`/`saved` accordingly.
   cancel(): void {
-    this.revokePreview();
-    this.cancelled.emit();
+    this.savedOnClose = false;
+    this.sheet()?.close();
   }
 
   // The face listens for `saved` to refresh; with immediate commit there is no
   // staging, so "done" just signals the face to re-read and close.
   done(): void {
-    this.saved.emit();
+    this.savedOnClose = true;
+    this.sheet()?.close();
+  }
+
+  onSheetClosed(): void {
+    if (this.savedOnClose) {
+      this.saved.emit();
+    } else {
+      this.revokePreview();
+      this.cancelled.emit();
+    }
   }
 
   // ---- Editor: image -------------------------------------------------------

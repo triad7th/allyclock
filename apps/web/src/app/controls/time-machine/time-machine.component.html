@@ -8,19 +8,8 @@
   Time
 </button>
 @if (panelOpen()) {
-  <div class="tm-overlay" [class.closing]="panelClosing()">
-    <div
-      class="tm-backdrop"
-      role="button"
-      tabindex="0"
-      aria-label="Dismiss Time Machine"
-      (click)="cancel()"
-      (keydown.enter)="cancel()"
-      (keydown.space)="cancel()"
-    ></div>
-    <div class="tm-sheet" role="dialog" aria-modal="true" aria-label="Time Machine">
-      <div class="tm-grabber"></div>
-
+  <app-sheet sheetLabel="Time Machine" (closed)="panelOpen.set(false)">
+    <div class="tm-sheet">
       <header class="tm-nav">
         <button
           type="button"
@@ -130,5 +119,5 @@
         </div>
       }
     </div>
-  </div>
+  </app-sheet>
 }

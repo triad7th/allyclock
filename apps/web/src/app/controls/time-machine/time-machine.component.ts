@@ -1,11 +1,10 @@
-import { Component, ElementRef, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
+import { AUTO_HIDE_MS } from '../../config/animation-timing';
 import { ClockService } from '../../services/clock.service';
 import { IconComponent } from '../../ui/icon/icon.component';
+import { SheetComponent } from '../../ui/sheet/sheet.component';
 
-const HIDE_DELAY_MS = 4000;
 const MS_PER_DAY = 86400000;
-// Matches the slide-down/fade-out animation duration in the sheet SCSS.
-const CLOSE_MS = 280;
 
 // Format a Date as the local value a <input type="datetime-local"> expects.
 function toLocalInput(date: Date): string {
@@ -94,23 +93,23 @@ function dayOfYear(date: Date): number {
 
 @Component({
   selector: 'app-time-machine',
-  imports: [IconComponent],
+  imports: [IconComponent, SheetComponent],
   templateUrl: './time-machine.component.html',
   styleUrl: './time-machine.component.scss',
   host: {
     '(document:pointermove)': 'reveal()',
-    '(document:pointerdown)': 'onDocumentPointerDown($event)',
-    '(document:keydown)': 'onDocumentKeyDown($event)',
+    '(document:pointerdown)': 'reveal()',
+    '(document:keydown)': 'reveal()',
   },
 })
 export class TimeMachineComponent implements OnInit, OnDestroy {
   private readonly clock = inject(ClockService);
-  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly isMocked = this.clock.isMocked;
   readonly panelOpen = signal(false);
-  readonly panelClosing = signal(false);
   readonly visible = signal(true);
+
+  private readonly sheet = viewChild(SheetComponent);
 
   // Selectable zones for the Time Zone field (each labelled with its GMT offset,
   // sorted by offset then name). Built lazily on first open — it scans every
@@ -157,7 +156,6 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
   readonly timeFillPercent = computed(() => (this.minuteOfDay() / 1439) * 100);
 
   private hideTimer: ReturnType<typeof setTimeout> | undefined;
-  private closeTimer: ReturnType<typeof setTimeout> | undefined;
 
   ngOnInit(): void {
     this.armHideTimer();
@@ -165,7 +163,6 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearTimeout(this.hideTimer);
-    clearTimeout(this.closeTimer);
   }
 
   reveal(): void {
@@ -187,30 +184,14 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     }
     // Always start on the controls, not the zone-search view.
     this.tzPickerOpen.set(false);
-    this.panelClosing.set(false);
     this.panelOpen.set(true);
   }
 
-  // Close the panel, accepting the live-scrubbed state. The X, the backdrop, and
-  // Escape are all "accept and close" — whatever the user set is kept.
+  // Close the panel, accepting the live-scrubbed state. The X is "accept and
+  // close" — whatever the user set is kept. Backdrop + Escape are owned by
+  // <app-sheet> and arrive as (closed), which also keeps the scrubbed state.
   cancel(): void {
-    if (!this.panelOpen() || this.panelClosing()) return;
-    this.beginClose();
-  }
-
-  onDocumentPointerDown(event: Event): void {
-    this.reveal();
-    if (!this.panelOpen()) return;
-    if (!this.host.nativeElement.contains(event.target as Node)) {
-      this.cancel();
-    }
-  }
-
-  onDocumentKeyDown(event: KeyboardEvent): void {
-    this.reveal();
-    if (this.panelOpen() && event.key === 'Escape') {
-      this.cancel();
-    }
+    this.sheet()?.close();
   }
 
   // Drag the day slider: keep the time, move to the chosen day of the year.
@@ -263,7 +244,7 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     if (!date) return;
     this.clock.setMock(date);
     this.clock.setTimeZone(this.tzDraft());
-    this.beginClose();
+    this.sheet()?.close();
   }
 
   // Live/Mock switch: toggle between following the live timer and freezing at
@@ -286,23 +267,11 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     this.clock.setMock(date);
   }
 
-  // Play the slide-out, then remove the sheet from the DOM once it finishes.
-  // The clock side-effects are applied by the caller before this runs.
-  private beginClose(): void {
-    if (this.panelClosing()) return;
-    this.panelClosing.set(true);
-    clearTimeout(this.closeTimer);
-    this.closeTimer = setTimeout(() => {
-      this.panelClosing.set(false);
-      this.panelOpen.set(false);
-    }, CLOSE_MS);
-  }
-
   private armHideTimer(): void {
     clearTimeout(this.hideTimer);
     this.hideTimer = setTimeout(() => {
       // Keep the button on screen while the picker is open.
       if (!this.panelOpen()) this.visible.set(false);
-    }, HIDE_DELAY_MS);
+    }, AUTO_HIDE_MS);
   }
 }

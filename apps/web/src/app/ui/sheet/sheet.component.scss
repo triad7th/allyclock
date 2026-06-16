@@ -1,0 +1,90 @@
+@use 'tokens' as t;
+
+:host {
+  display: contents;
+}
+
+// Full-viewport overlay holding the backdrop + bottom sheet.
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+}
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: t.$backdrop;
+  animation: sheet-backdrop-fade t.$sheet-anim ease both;
+}
+
+.sheet-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: t.$sheet-bg;
+  color: t.$label;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
+  outline: none;
+  animation: sheet-slide-up t.$sheet-anim cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  // Fill the viewport; the content region scrolls.
+  &.full-height {
+    top: 0;
+  }
+}
+
+// Reverse of the entrance: fade the backdrop out and slide the sheet down.
+.sheet-overlay.closing .sheet-backdrop {
+  animation: sheet-backdrop-fade-out t.$sheet-anim ease both;
+}
+
+.sheet-overlay.closing .sheet-panel {
+  animation: sheet-slide-down t.$sheet-anim cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes sheet-backdrop-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-backdrop-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-slide-down {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.sheet-handle {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 5px;
+  background: t.$grab-handle;
+  border-radius: 2.5px;
+  margin: 0.25rem auto 0.25rem;
+}
+
+.sheet-content {
+  // When the panel fills the viewport, its content scrolls instead of the page.
+  .sheet-panel.full-height & {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}

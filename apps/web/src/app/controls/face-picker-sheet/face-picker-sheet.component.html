@@ -1,20 +1,4 @@
-<div
-  class="backdrop"
-  role="button"
-  tabindex="0"
-  (click)="requestClose()"
-  (keydown.enter)="requestClose()"
-  (keydown.space)="requestClose()"
-></div>
-<div
-  class="sheet"
-  #panel
-  tabindex="-1"
-  role="dialog"
-  aria-modal="true"
-  aria-label="Choose a clock face"
->
-  <div class="handle"></div>
+<app-sheet sheetLabel="Choose a clock face" (closed)="onSheetClosed()">
   <div class="options">
     @for (face of faces; track face.id) {
       <button
@@ -32,4 +16,4 @@
       </button>
     }
   </div>
-</div>
+</app-sheet>

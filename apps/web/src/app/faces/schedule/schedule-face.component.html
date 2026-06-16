@@ -18,9 +18,5 @@
   <app-icon name="gearshape" />
 </button>
 @if (configOpen()) {
-  <app-schedule-config
-    [class.closing]="configClosing()"
-    (saved)="onConfigSaved()"
-    (cancelled)="onConfigCancelled()"
-  />
+  <app-schedule-config (saved)="onConfigSaved()" (cancelled)="onConfigCancelled()" />
 }
