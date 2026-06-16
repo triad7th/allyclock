@@ -11,15 +11,17 @@
 
 .cards {
   display: grid;
-  min-height: 100%;
-  // Fixed-height cards (their natural content height) centered vertically —
-  // never stretched to fill.
-  align-content: center;
-  // Narrow: three full-width stacked rows.
+  // Fixed-height cards (their natural content height), aligned to the top —
+  // never stretched, never vertically centered.
+  align-content: start;
+  // Small screens: the 2-column row breaks into stacked single-column rows, so
+  // US / UK / KR each get their own full-width row.
   grid-template-columns: 1fr;
 }
 
-// Medium: feature US across the top with UK / KR beside it.
+// Standard layout (everything but small screens): US featured across the top
+// with UK / KR fixed in a 2-column row below. No 3-column layout, even on very
+// wide screens.
 @container (min-width: 800px) {
   .cards {
     grid-template-columns: 1fr 1fr;
@@ -27,16 +29,5 @@
 
   app-card:first-child {
     grid-column: 1 / -1;
-  }
-}
-
-// Wide: all three cards in a single row.
-@container (min-width: 1200px) {
-  .cards {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  app-card:first-child {
-    grid-column: auto;
   }
 }
