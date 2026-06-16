@@ -4,7 +4,10 @@
 
 .card-row {
   gap: 0.75rem;
-  padding: 1rem 0.5rem;
+  // No horizontal padding: the bottom border lines up flush with the flag on
+  // the left and the time content on the right (gutter between cards comes from
+  // the grid column-gap, like the original).
+  padding: 1rem 0;
   border-bottom: 1px solid #fff;
 }
 
