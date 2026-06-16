@@ -68,6 +68,13 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
   );
   readonly timeLabel = computed(() => toLocalInput(this.draftDate()).slice(11));
 
+  // Slider progress (0–100%) driving the iOS blue minimum-track fill.
+  readonly dayFillPercent = computed(() => {
+    const max = this.maxDayOfYear();
+    return max > 1 ? ((this.dayOfYear() - 1) / (max - 1)) * 100 : 0;
+  });
+  readonly timeFillPercent = computed(() => (this.minuteOfDay() / 1439) * 100);
+
   // Clock state captured when the panel opened, so dismissing without applying
   // can roll back any live scrubbing. null means "was live".
   private mockBeforeOpen: Date | null = null;

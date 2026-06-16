@@ -53,6 +53,7 @@
             min="1"
             [max]="maxDayOfYear()"
             [value]="dayOfYear()"
+            [style.--fill.%]="dayFillPercent()"
             (input)="onDaySlider($any($event.target).value)"
           />
         </div>
@@ -67,6 +68,7 @@
             min="0"
             max="1439"
             [value]="minuteOfDay()"
+            [style.--fill.%]="timeFillPercent()"
             (input)="onTimeSlider($any($event.target).value)"
           />
         </div>
