@@ -97,9 +97,9 @@
         </div>
         <div class="tm-field tm-field-tz">
           <span class="tm-field-label">Time Zone</span>
-          <select class="tm-tz" [value]="tzDraft()" (change)="onTimeZone($any($event.target).value)">
+          <select class="tm-tz" (change)="onTimeZone($any($event.target).value)">
             @for (z of timeZoneOptions(); track z.id) {
-              <option [value]="z.id">{{ z.label }}</option>
+              <option [value]="z.id" [selected]="z.id === tzDraft()">{{ z.label }}</option>
             }
           </select>
         </div>

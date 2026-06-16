@@ -194,7 +194,10 @@
   border: none;
   background: rgba(118, 118, 128, 0.24);
   border-radius: 999px;
-  padding: 0.15rem 0.55rem;
+  // Match the 34px height of the cancel/apply corner buttons it sits beside.
+  height: 34px;
+  box-sizing: border-box;
+  padding: 0 0.7rem;
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.04em;
