@@ -57,7 +57,7 @@ describe('TimeMachineComponent', () => {
     fixture.detectChanges();
 
     fixture.componentInstance.draft.set('2020-03-04T09:15');
-    (el.querySelector('button.tm-corner-apply') as HTMLButtonElement).click();
+    (el.querySelector('button[aria-label="Apply"]') as HTMLButtonElement).click();
     fixture.detectChanges();
 
     // Clock side-effect is immediate.
@@ -219,7 +219,7 @@ describe('TimeMachineComponent', () => {
     fixture.detectChanges();
     expect(clock.timeZone()).toBe('Asia/Tokyo');
 
-    (el.querySelector('button.tm-corner-cancel') as HTMLButtonElement).click();
+    (el.querySelector('button[aria-label="Cancel"]') as HTMLButtonElement).click();
     fixture.detectChanges();
 
     expect(clock.timeZone()).toBe('Asia/Tokyo');
@@ -302,7 +302,7 @@ describe('TimeMachineComponent', () => {
     fixture.detectChanges();
     expect(clock.isMocked()).toBe(true);
 
-    (el.querySelector('button.tm-corner-cancel') as HTMLButtonElement).click();
+    (el.querySelector('button[aria-label="Cancel"]') as HTMLButtonElement).click();
     fixture.detectChanges();
 
     // Closing accepts: the mock is kept.

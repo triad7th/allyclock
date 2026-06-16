@@ -48,80 +48,12 @@
   text-align: left;
 }
 
-// Nav-bar header: leading X on the left, centered title, and a trailing group
-// (Live/Mock switch + Apply) on the right. Equal 1fr side columns keep the
-// title visually centered even though the two sides differ in width.
-.tm-nav {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0 1.25rem;
-}
-
-.tm-nav > .tm-corner-cancel {
-  justify-self: start;
-}
-
+// Trailing group inside the nav header: the Live/Mock switch sits beside the
+// Apply button. Inline-flex with a small gap keeps them aligned and spaced.
 .tm-trailing {
-  justify-self: end;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.tm-corner {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  padding: 0;
-  font-size: 17px;
-  transition:
-    transform 0.12s ease,
-    background 0.2s ease;
-
-  &:active {
-    transform: scale(0.9);
-  }
-}
-
-// Leading action: cancel — discard everything done in the panel.
-.tm-corner-cancel {
-  background: t.$secondary-surface;
-  color: t.$label;
-
-  &:hover {
-    background: t.$secondary-surface-hover;
-  }
-}
-
-// Trailing (primary) action: apply the drafted time.
-.tm-corner-apply {
-  background: t.$tint;
-  color: t.$label;
-
-  &:hover {
-    background: t.$tint-hover;
-  }
-}
-
-.tm-titlebox {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.1rem;
-}
-
-.tm-title {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: t.$label;
-  line-height: 1.1;
 }
 
 // Dedicated "go live" button that doubles as the Mock/Live indicator: tapping

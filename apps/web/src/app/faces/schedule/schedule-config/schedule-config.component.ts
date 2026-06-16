@@ -15,6 +15,8 @@ import { DEFAULT_IMAGE_SRC } from '../default-schedule';
 import { DEFAULT_PRESET_ID, type SchedulePreset } from '../schedule-preset';
 import { ScheduleMarkerComponent } from './schedule-marker.component';
 import { IconComponent } from '../../../ui/icon/icon.component';
+import { IconButtonComponent } from '../../../ui/icon-button/icon-button.component';
+import { NavHeaderComponent } from '../../../ui/nav-header/nav-header.component';
 import { SheetComponent } from '../../../ui/sheet/sheet.component';
 
 export interface DraftZone {
@@ -23,7 +25,13 @@ export interface DraftZone {
 
 @Component({
   selector: 'app-schedule-config',
-  imports: [ScheduleMarkerComponent, IconComponent, SheetComponent],
+  imports: [
+    ScheduleMarkerComponent,
+    IconComponent,
+    IconButtonComponent,
+    NavHeaderComponent,
+    SheetComponent,
+  ],
   templateUrl: './schedule-config.component.html',
   styleUrl: './schedule-config.component.scss',
 })

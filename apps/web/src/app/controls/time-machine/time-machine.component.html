@@ -10,20 +10,9 @@
 @if (panelOpen()) {
   <app-sheet sheetLabel="Time Machine" (closed)="panelOpen.set(false)">
     <div class="tm-sheet">
-      <header class="tm-nav">
-        <button
-          type="button"
-          class="tm-corner tm-corner-cancel"
-          (click)="cancel()"
-          aria-label="Cancel"
-          title="Cancel"
-        >
-          <app-icon name="xmark" />
-        </button>
-        <div class="tm-titlebox">
-          <span class="tm-title">Time Machine</span>
-        </div>
-        <div class="tm-trailing">
+      <app-nav-header title="Time Machine">
+        <app-icon-button navLeading icon="xmark" label="Cancel" (click)="cancel()" />
+        <span navTrailing class="tm-trailing">
           <button
             type="button"
             class="tm-live-btn"
@@ -34,17 +23,9 @@
             <span class="tm-live-dot"></span>
             <span>{{ isMocked() ? 'Mock' : 'Live' }}</span>
           </button>
-          <button
-            type="button"
-            class="tm-corner tm-corner-apply"
-            (click)="apply()"
-            aria-label="Apply time"
-            title="Apply"
-          >
-            <app-icon name="checkmark" />
-          </button>
-        </div>
-      </header>
+          <app-icon-button icon="checkmark" variant="primary" label="Apply" (click)="apply()" />
+        </span>
+      </app-nav-header>
 
       @if (tzPickerOpen()) {
         <div class="tm-tzpicker">

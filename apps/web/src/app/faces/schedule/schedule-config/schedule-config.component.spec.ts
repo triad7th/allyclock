@@ -150,7 +150,9 @@ describe('ScheduleConfigComponent', () => {
       fixture.detectChanges();
       let cancelled = false;
       fixture.componentInstance.cancelled.subscribe(() => (cancelled = true));
-      (fixture.nativeElement.querySelector('.config-cancel') as HTMLButtonElement).click();
+      (
+        fixture.nativeElement.querySelector('button[aria-label="Cancel"]') as HTMLButtonElement
+      ).click();
       vi.advanceTimersByTime(SHEET_ANIMATION_MS);
       expect(cancelled).toBe(true);
     } finally {
@@ -165,7 +167,9 @@ describe('ScheduleConfigComponent', () => {
       fixture.detectChanges();
       let saved = false;
       fixture.componentInstance.saved.subscribe(() => (saved = true));
-      (fixture.nativeElement.querySelector('.config-done') as HTMLButtonElement).click();
+      (
+        fixture.nativeElement.querySelector('button[aria-label="Done"]') as HTMLButtonElement
+      ).click();
       vi.advanceTimersByTime(SHEET_ANIMATION_MS);
       expect(saved).toBe(true);
     } finally {

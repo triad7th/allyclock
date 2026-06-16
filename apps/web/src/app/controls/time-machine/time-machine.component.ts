@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { AUTO_HIDE_MS } from '../../config/animation-timing';
 import { ClockService } from '../../services/clock.service';
-import { IconComponent } from '../../ui/icon/icon.component';
+import { IconButtonComponent } from '../../ui/icon-button/icon-button.component';
+import { NavHeaderComponent } from '../../ui/nav-header/nav-header.component';
 import { SheetComponent } from '../../ui/sheet/sheet.component';
 
 const MS_PER_DAY = 86400000;
@@ -93,7 +94,7 @@ function dayOfYear(date: Date): number {
 
 @Component({
   selector: 'app-time-machine',
-  imports: [IconComponent, SheetComponent],
+  imports: [IconButtonComponent, NavHeaderComponent, SheetComponent],
   templateUrl: './time-machine.component.html',
   styleUrl: './time-machine.component.scss',
   host: {

@@ -5,15 +5,10 @@
   (closed)="onSheetClosed()"
 >
   <div class="config-panel">
-    <header class="config-nav">
-      <button type="button" class="config-corner config-cancel" (click)="cancel()" aria-label="Cancel" title="Cancel">
-        <app-icon name="xmark" />
-      </button>
-      <span class="config-title">Daily Schedule</span>
-      <button type="button" class="config-corner config-done" (click)="done()" aria-label="Done" title="Done">
-        <app-icon name="checkmark" />
-      </button>
-    </header>
+    <app-nav-header title="Daily Schedule">
+      <app-icon-button navLeading icon="xmark" label="Cancel" (click)="cancel()" />
+      <app-icon-button navTrailing icon="checkmark" variant="primary" label="Done" (click)="done()" />
+    </app-nav-header>
 
     <section class="presets-section">
       <h3>Presets</h3>
