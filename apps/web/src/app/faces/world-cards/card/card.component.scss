@@ -15,7 +15,9 @@
 
 .flag {
   flex: 0 0 auto;
-  width: clamp(64px, 18cqi, 110px);
+  // Scales with the card's own width; grows well past the old fixed 110px on
+  // roomy cards instead of staying tiny.
+  width: clamp(72px, 22cqi, 240px);
   height: auto;
 }
 
@@ -25,20 +27,20 @@
 
 .time-primary {
   margin: 0 0 0.4rem;
-  font-size: clamp(2rem, 13cqi, 3.77rem);
+  font-size: clamp(2rem, 14cqi, 8rem);
   line-height: 1;
   white-space: nowrap;
 }
 
 .time-detail {
   margin: 0;
-  font-size: clamp(0.8rem, 4.6cqi, 1.3rem);
+  font-size: clamp(0.85rem, 5cqi, 1.5rem);
   white-space: nowrap;
 }
 
 .time-date {
   margin: 0;
-  font-size: clamp(0.7rem, 3.6cqi, 1rem);
+  font-size: clamp(0.72rem, 3.8cqi, 1.2rem);
   white-space: nowrap;
 }
 
