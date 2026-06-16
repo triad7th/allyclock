@@ -1,17 +1,9 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  afterNextRender,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { ClockService } from '../../services/clock.service';
 import { ScheduleStoreService } from './schedule-store.service';
 import { ScheduleConfigComponent } from './schedule-config/schedule-config.component';
 import { IconComponent } from '../../ui/icon/icon.component';
+import { ContainerSizeDirective } from '../../ui/container-size/container-size.directive';
 import { FaceConfigService } from '../../services/face-config.service';
 import { activeSegment, framedWindow } from './schedule-formatter';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
@@ -21,6 +13,7 @@ const HIDE_DELAY_MS = 4000;
 @Component({
   selector: 'app-schedule-face',
   imports: [ScheduleConfigComponent, IconComponent],
+  hostDirectives: [ContainerSizeDirective],
   templateUrl: './schedule-face.component.html',
   styleUrl: './schedule-face.component.scss',
   host: {
@@ -32,23 +25,22 @@ const HIDE_DELAY_MS = 4000;
 export class ScheduleFaceComponent implements OnInit, OnDestroy {
   private readonly clock = inject(ClockService);
   private readonly store = inject(ScheduleStoreService);
-  private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly size = inject(ContainerSizeDirective);
   private readonly faceConfig = inject(FaceConfigService);
 
   readonly defaultImageSrc = DEFAULT_IMAGE_SRC;
   readonly imageUrl = signal(DEFAULT_IMAGE_SRC);
   readonly segments = signal(DEFAULT_SEGMENTS);
   readonly naturalWidth = signal(0);
-  // Measured from the host element so the face frames correctly full-screen AND
-  // inside the scaled face-picker preview (a ResizeObserver reports the layout
-  // box, unaffected by any ancestor CSS transform).
-  readonly containerWidth = signal(0);
-  readonly containerHeight = signal(0);
+  // Measured from the host element (via the ContainerSize host directive) so the
+  // face frames correctly full-screen AND inside the scaled face-picker preview
+  // (the layout box is unaffected by any ancestor CSS transform).
+  readonly containerWidth = this.size.width;
+  readonly containerHeight = this.size.height;
   readonly gearVisible = signal(true);
   readonly configOpen = signal(false);
 
   private gearTimer: ReturnType<typeof setTimeout> | undefined;
-  private resizeObserver: ResizeObserver | undefined;
 
   readonly scaleFactor = computed(() => {
     const nw = this.naturalWidth();
@@ -76,35 +68,14 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
     return seg ? (seg.pixelEnd - seg.pixelStart) * this.scaleFactor() : 0;
   });
 
-  constructor() {
-    // Seed the sizes once the host is laid out, so the first frame is framed
-    // correctly even before any ResizeObserver callback fires (and in jsdom,
-    // where ResizeObserver may be absent, this is the only measurement).
-    afterNextRender(() => this.measureHost());
-  }
-
   ngOnInit(): void {
-    const el = this.host.nativeElement;
-    // Guard for environments without ResizeObserver (e.g. tests/jsdom).
-    if (typeof ResizeObserver !== 'undefined') {
-      this.resizeObserver = new ResizeObserver(() => this.measureHost());
-      this.resizeObserver.observe(el);
-    }
-    this.measureHost();
     this.armGearTimer();
     this.loadActivePreset();
   }
 
   ngOnDestroy(): void {
-    this.resizeObserver?.disconnect();
     clearTimeout(this.gearTimer);
     this.faceConfig.open.set(false);
-  }
-
-  private measureHost(): void {
-    const el = this.host.nativeElement;
-    this.containerWidth.set(el.clientWidth);
-    this.containerHeight.set(el.clientHeight);
   }
 
   onImageLoad(event: Event): void {

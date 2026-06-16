@@ -18,6 +18,7 @@ import { IconComponent } from '../../../ui/icon/icon.component';
 import { IconButtonComponent } from '../../../ui/icon-button/icon-button.component';
 import { NavHeaderComponent } from '../../../ui/nav-header/nav-header.component';
 import { SheetComponent } from '../../../ui/sheet/sheet.component';
+import { ContainerSizeDirective } from '../../../ui/container-size/container-size.directive';
 
 export interface DraftZone {
   from: string;
@@ -31,6 +32,7 @@ export interface DraftZone {
     IconButtonComponent,
     NavHeaderComponent,
     SheetComponent,
+    ContainerSizeDirective,
   ],
   templateUrl: './schedule-config.component.html',
   styleUrl: './schedule-config.component.scss',
@@ -61,7 +63,10 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   readonly previewSrc = signal(DEFAULT_IMAGE_SRC);
   readonly naturalWidth = signal(0);
   readonly naturalHeight = signal(0);
-  readonly renderedWidth = signal(0);
+  // The rendered (layout-box) width of the preview <img>, measured by the
+  // ContainerSize directive sitting on it. Undefined while the img is hidden
+  // behind @if(showImageStage()), which reads as 0.
+  readonly renderedWidth = computed(() => this.imgSize()?.width() ?? 0);
   readonly markerSourceY = signal<number[]>([]);
   readonly draftZones = signal<DraftZone[]>([{ from: '00:00' }]);
   readonly renaming = signal(false);
@@ -89,9 +94,11 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   private previewObjectUrl: string | null = null;
   private readonly thumbUrls: string[] = [];
   private thumbGeneration = 0;
-  private resizeObserver: ResizeObserver | null = null;
   private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
   private readonly sheet = viewChild(SheetComponent);
+  // Measures the lazily-created preview <img>; returns undefined while the img
+  // is hidden behind @if(showImageStage()).
+  private readonly imgSize = viewChild(ContainerSizeDirective);
   // Which terminal action started the exit, resolved once the sheet finishes its
   // exit animation and calls `onSheetClosed()`.
   private savedOnClose = false;
@@ -107,8 +114,6 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.revokePreview();
     for (const url of this.thumbUrls) URL.revokeObjectURL(url);
-    this.resizeObserver?.disconnect();
-    this.resizeObserver = null;
   }
 
   // ---- Preset selection / lifecycle ----------------------------------------
@@ -223,13 +228,10 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
 
   onPreviewImageLoad(event: Event): void {
     const img = event.target as HTMLImageElement;
+    // Intrinsic dimensions are not measurable by the ContainerSize directive
+    // (it reports the layout box), so read them from the decoded image here.
     this.naturalWidth.set(img.naturalWidth);
     this.naturalHeight.set(img.naturalHeight);
-    this.renderedWidth.set(img.clientWidth);
-    if (!this.resizeObserver) {
-      this.resizeObserver = new ResizeObserver(() => this.renderedWidth.set(img.clientWidth));
-      this.resizeObserver.observe(img);
-    }
   }
 
   // ---- Editor: segments ----------------------------------------------------
