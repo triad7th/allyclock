@@ -34,29 +34,28 @@
         <div class="tm-titlebox">
           <span class="tm-title">Time Machine</span>
         </div>
-        <button
-          type="button"
-          class="tm-corner tm-corner-apply"
-          (click)="apply()"
-          aria-label="Apply time"
-          title="Apply"
-        >
-          <app-icon name="checkmark" />
-        </button>
+        <div class="tm-trailing">
+          <button
+            type="button"
+            class="tm-live-btn"
+            [class.is-live]="!isMocked()"
+            (click)="toggleLive()"
+            aria-label="Toggle live or mock time"
+          >
+            <span class="tm-live-dot"></span>
+            <span>{{ isMocked() ? 'Mock' : 'Live' }}</span>
+          </button>
+          <button
+            type="button"
+            class="tm-corner tm-corner-apply"
+            (click)="apply()"
+            aria-label="Apply time"
+            title="Apply"
+          >
+            <app-icon name="checkmark" />
+          </button>
+        </div>
       </header>
-
-      <div class="tm-subnav">
-        <button
-          type="button"
-          class="tm-live-btn"
-          [class.is-live]="!isMocked()"
-          (click)="toggleLive()"
-          aria-label="Toggle live or mock time"
-        >
-          <span class="tm-live-dot"></span>
-          <span>{{ isMocked() ? 'Mock' : 'Live' }}</span>
-        </button>
-      </div>
 
       <div class="tm-controls">
         <div class="tm-field tm-field-datetime">
