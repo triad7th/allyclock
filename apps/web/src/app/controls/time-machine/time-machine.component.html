@@ -8,51 +8,74 @@
   Time
 </button>
 @if (panelOpen()) {
-  <div class="tm-panel">
-    <label class="tm-field">
-      <span class="tm-field-head">
-        <span>Mock date &amp; time</span>
+  <div class="tm-overlay" [class.closing]="panelClosing()">
+    <div
+      class="tm-backdrop"
+      role="button"
+      tabindex="0"
+      aria-label="Dismiss Time Machine"
+      (click)="cancel()"
+      (keydown.enter)="cancel()"
+      (keydown.space)="cancel()"
+    ></div>
+    <div class="tm-sheet" role="dialog" aria-modal="true" aria-label="Time Machine">
+      <div class="tm-handle"></div>
+
+      <div class="tm-header">
+        <span class="tm-title">
+          <app-icon name="clock" class="tm-title-icon" />
+          <span>Time Machine</span>
+        </span>
         <span class="tm-status" [class.mock]="isMocked()">
           <span class="tm-status-dot"></span>
           <span class="tm-status-text">{{ isMocked() ? 'Mock' : 'Live' }}</span>
         </span>
-      </span>
-      <input
-        type="datetime-local"
-        [value]="draft()"
-        (input)="draft.set($any($event.target).value)"
-      />
-    </label>
+      </div>
 
-    <div class="tm-slider">
-      <span class="tm-slider-label"
-        >Day <strong>{{ dayLabel() }}</strong></span
-      >
-      <input
-        type="range"
-        min="1"
-        [max]="maxDayOfYear()"
-        [value]="dayOfYear()"
-        (input)="onDaySlider($any($event.target).value)"
-      />
-    </div>
+      <div class="tm-section">
+        <div class="tm-row">
+          <span class="tm-row-label">Date &amp; Time</span>
+          <input
+            class="tm-row-value tm-datetime"
+            type="datetime-local"
+            [value]="draft()"
+            (input)="draft.set($any($event.target).value)"
+          />
+        </div>
 
-    <div class="tm-slider">
-      <span class="tm-slider-label"
-        >Time <strong>{{ timeLabel() }}</strong></span
-      >
-      <input
-        type="range"
-        min="0"
-        max="1439"
-        [value]="minuteOfDay()"
-        (input)="onTimeSlider($any($event.target).value)"
-      />
-    </div>
+        <div class="tm-row tm-row-slider">
+          <span class="tm-row-head">
+            <span class="tm-row-label">Day</span>
+            <span class="tm-row-value">{{ dayLabel() }}</span>
+          </span>
+          <input
+            type="range"
+            min="1"
+            [max]="maxDayOfYear()"
+            [value]="dayOfYear()"
+            (input)="onDaySlider($any($event.target).value)"
+          />
+        </div>
 
-    <div class="tm-actions">
-      <button type="button" class="tm-live" (click)="goLive()">Live</button>
-      <button type="button" class="tm-apply" (click)="apply()">Apply</button>
+        <div class="tm-row tm-row-slider">
+          <span class="tm-row-head">
+            <span class="tm-row-label">Time</span>
+            <span class="tm-row-value">{{ timeLabel() }}</span>
+          </span>
+          <input
+            type="range"
+            min="0"
+            max="1439"
+            [value]="minuteOfDay()"
+            (input)="onTimeSlider($any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <div class="tm-actions">
+        <button type="button" class="tm-apply" (click)="apply()">Apply</button>
+        <button type="button" class="tm-live" (click)="goLive()">Live</button>
+      </div>
     </div>
   </div>
 }

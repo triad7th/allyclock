@@ -2,16 +2,41 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ClockService } from './clock.service';
 
+const MOCK_KEY = 'allyclock.clock.mock';
+
 describe('ClockService', () => {
+  let mockStorage: Record<string, string>;
+
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-06-11T12:00:00.000Z'));
+    mockStorage = {};
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => mockStorage[key] ?? null,
+      setItem: (key: string, value: string) => {
+        mockStorage[key] = value;
+      },
+      removeItem: (key: string) => {
+        delete mockStorage[key];
+      },
+      clear: () => {
+        mockStorage = {};
+      },
+    });
     TestBed.configureTestingModule({});
   });
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.unstubAllGlobals();
   });
+
+  // A fresh service reads localStorage at construction, simulating a reload.
+  function freshService(): ClockService {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({});
+    return TestBed.inject(ClockService);
+  }
 
   it('starts at the current time', () => {
     const service = TestBed.inject(ClockService);
@@ -41,5 +66,36 @@ describe('ClockService', () => {
     service.clearMock();
     expect(service.isMocked()).toBe(false);
     expect(service.now().toISOString()).toBe('2026-06-11T12:00:00.000Z');
+  });
+
+  it('persists the mock to localStorage when set', () => {
+    const service = TestBed.inject(ClockService);
+    service.setMock(new Date('2020-01-01T08:30:00.000Z'));
+    expect(localStorage.getItem(MOCK_KEY)).toBe('2020-01-01T08:30:00.000Z');
+  });
+
+  it('restores the persisted mock on a fresh service instance', () => {
+    TestBed.inject(ClockService).setMock(new Date('2020-01-01T08:30:00.000Z'));
+
+    const restored = freshService();
+    expect(restored.isMocked()).toBe(true);
+    expect(restored.now().toISOString()).toBe('2020-01-01T08:30:00.000Z');
+  });
+
+  it('removes the persisted mock when cleared, so a reload stays live', () => {
+    const service = TestBed.inject(ClockService);
+    service.setMock(new Date('2020-01-01T08:30:00.000Z'));
+    service.clearMock();
+    expect(localStorage.getItem(MOCK_KEY)).toBeNull();
+
+    const restored = freshService();
+    expect(restored.isMocked()).toBe(false);
+    expect(restored.now().toISOString()).toBe('2026-06-11T12:00:00.000Z');
+  });
+
+  it('ignores an invalid stored value and starts live', () => {
+    mockStorage[MOCK_KEY] = 'not-a-date';
+    const restored = freshService();
+    expect(restored.isMocked()).toBe(false);
   });
 });

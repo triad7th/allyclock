@@ -1,8 +1,11 @@
 import { Component, ElementRef, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { ClockService } from '../../services/clock.service';
+import { IconComponent } from '../../ui/icon/icon.component';
 
 const HIDE_DELAY_MS = 4000;
 const MS_PER_DAY = 86400000;
+// Matches the slide-down/fade-out animation duration in the sheet SCSS.
+const CLOSE_MS = 280;
 
 // Format a Date as the local value a <input type="datetime-local"> expects.
 function toLocalInput(date: Date): string {
@@ -32,6 +35,7 @@ function dayOfYear(date: Date): number {
 
 @Component({
   selector: 'app-time-machine',
+  imports: [IconComponent],
   templateUrl: './time-machine.component.html',
   styleUrl: './time-machine.component.scss',
   host: {
@@ -46,6 +50,7 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
 
   readonly isMocked = this.clock.isMocked;
   readonly panelOpen = signal(false);
+  readonly panelClosing = signal(false);
   readonly visible = signal(true);
 
   // Canonical draft as a datetime-local string; the text input and both
@@ -67,6 +72,7 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
   // can roll back any live scrubbing. null means "was live".
   private mockBeforeOpen: Date | null = null;
   private hideTimer: ReturnType<typeof setTimeout> | undefined;
+  private closeTimer: ReturnType<typeof setTimeout> | undefined;
 
   ngOnInit(): void {
     this.armHideTimer();
@@ -74,6 +80,7 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearTimeout(this.hideTimer);
+    clearTimeout(this.closeTimer);
   }
 
   reveal(): void {
@@ -90,18 +97,20 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     this.mockBeforeOpen = this.clock.mock();
     // Seed the picker with whatever the clock currently reads.
     this.draft.set(toLocalInput(this.clock.now()));
+    this.panelClosing.set(false);
     this.panelOpen.set(true);
   }
 
-  // Dismiss without committing: close and restore the pre-open clock state.
+  // Dismiss without committing: restore the pre-open clock state now, then
+  // play the slide-out before unmounting the sheet.
   cancel(): void {
-    if (!this.panelOpen()) return;
+    if (!this.panelOpen() || this.panelClosing()) return;
     if (this.mockBeforeOpen) {
       this.clock.setMock(this.mockBeforeOpen);
     } else {
       this.clock.clearMock();
     }
-    this.panelOpen.set(false);
+    this.beginClose();
   }
 
   onDocumentPointerDown(event: Event): void {
@@ -138,18 +147,30 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     const date = fromLocalInput(this.draft());
     if (!date) return;
     this.clock.setMock(date);
-    this.panelOpen.set(false);
+    this.beginClose();
   }
 
   goLive(): void {
     this.clock.clearMock();
-    this.panelOpen.set(false);
+    this.beginClose();
   }
 
   // Update the draft and scrub the live clock to it so faces move as you drag.
   private scrubTo(date: Date): void {
     this.draft.set(toLocalInput(date));
     this.clock.setMock(date);
+  }
+
+  // Play the slide-out, then remove the sheet from the DOM once it finishes.
+  // The clock side-effects are applied by the caller before this runs.
+  private beginClose(): void {
+    if (this.panelClosing()) return;
+    this.panelClosing.set(true);
+    clearTimeout(this.closeTimer);
+    this.closeTimer = setTimeout(() => {
+      this.panelClosing.set(false);
+      this.panelOpen.set(false);
+    }, CLOSE_MS);
   }
 
   private armHideTimer(): void {

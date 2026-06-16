@@ -11,6 +11,7 @@ const ICON_PATHS: Record<string, string> = {
   'square.and.arrow.up': 'M12 15V4m0 0L8 8m4-4l4 4M5 13v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4',
   'square.on.square':
     'M9 9h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2zM7 15H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1',
+  clock: 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z',
   xmark: 'M6 6l12 12M18 6L6 18',
   checkmark: 'M5 13l4 4L19 7',
   'arrow.right': 'M5 12h14M13 6l6 6-6 6',

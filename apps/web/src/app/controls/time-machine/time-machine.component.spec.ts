@@ -3,10 +3,16 @@ import { TestBed } from '@angular/core/testing';
 import { TimeMachineComponent } from './time-machine.component';
 import { ClockService } from '../../services/clock.service';
 
+// Matches CLOSE_MS in the component: the slide-out before the sheet unmounts.
+const CLOSE_MS = 280;
+
 describe('TimeMachineComponent', () => {
   beforeEach(async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-06-11T12:00:00.000Z'));
+    // Reset the singleton ClockService between tests so a mock applied in one
+    // test does not leak into the next via the providedIn: 'root' instance.
+    TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
       imports: [TimeMachineComponent],
     }).compileComponents();
@@ -22,12 +28,13 @@ describe('TimeMachineComponent', () => {
     return { fixture, el: fixture.nativeElement as HTMLElement };
   }
 
-  it('opens the picker panel when the button is clicked', () => {
+  it('opens the bottom sheet when the button is clicked', () => {
     const { fixture, el } = create();
-    expect(el.querySelector('.tm-panel')).toBeNull();
+    expect(el.querySelector('.tm-sheet')).toBeNull();
     (el.querySelector('button.tm-button') as HTMLButtonElement).click();
     fixture.detectChanges();
-    expect(el.querySelector('.tm-panel')).toBeTruthy();
+    expect(el.querySelector('.tm-sheet')).toBeTruthy();
+    expect(el.querySelector('.tm-backdrop')).toBeTruthy();
   });
 
   it('shows a Live indicator when not mocked and Mock after applying', () => {
@@ -55,10 +62,15 @@ describe('TimeMachineComponent', () => {
     (el.querySelector('button.tm-apply') as HTMLButtonElement).click();
     fixture.detectChanges();
 
+    // Clock side-effect is immediate.
     expect(clock.isMocked()).toBe(true);
     expect(clock.now().getFullYear()).toBe(2020);
-    expect(el.querySelector('.tm-panel')).toBeNull();
     expect(el.querySelector('button.tm-button')?.classList.contains('active')).toBe(true);
+
+    // The sheet slides out, then unmounts after the animation.
+    vi.advanceTimersByTime(CLOSE_MS);
+    fixture.detectChanges();
+    expect(el.querySelector('.tm-sheet')).toBeNull();
   });
 
   it('scrubs the clock live when the time slider moves', () => {
@@ -74,8 +86,8 @@ describe('TimeMachineComponent', () => {
     expect(clock.isMocked()).toBe(true);
     expect(clock.now().getHours()).toBe(9);
     expect(clock.now().getMinutes()).toBe(30);
-    // Panel stays open while scrubbing.
-    expect(el.querySelector('.tm-panel')).toBeTruthy();
+    // Sheet stays open while scrubbing.
+    expect(el.querySelector('.tm-sheet')).toBeTruthy();
   });
 
   it('scrubs to a chosen day of the year via the day slider', () => {
@@ -93,7 +105,7 @@ describe('TimeMachineComponent', () => {
     expect(clock.now().getDate()).toBe(1);
   });
 
-  it('restores live time and closes when clicking outside after scrubbing', () => {
+  it('restores live time and closes when clicking the backdrop after scrubbing', () => {
     const clock = TestBed.inject(ClockService);
     const { fixture, el } = create();
     (el.querySelector('button.tm-button') as HTMLButtonElement).click();
@@ -103,14 +115,17 @@ describe('TimeMachineComponent', () => {
     fixture.detectChanges();
     expect(clock.isMocked()).toBe(true);
 
-    document.dispatchEvent(new Event('pointerdown'));
+    (el.querySelector('.tm-backdrop') as HTMLElement).click();
     fixture.detectChanges();
 
+    // Rollback is immediate; the sheet unmounts after the slide-out.
     expect(clock.isMocked()).toBe(false);
-    expect(el.querySelector('.tm-panel')).toBeNull();
+    vi.advanceTimersByTime(CLOSE_MS);
+    fixture.detectChanges();
+    expect(el.querySelector('.tm-sheet')).toBeNull();
   });
 
-  it('restores the prior mock when dismissed without applying', () => {
+  it('restores the prior mock when dismissed via Escape without applying', () => {
     const clock = TestBed.inject(ClockService);
     clock.setMock(new Date('2020-03-04T09:15:00.000Z'));
     const { fixture, el } = create();
@@ -120,12 +135,14 @@ describe('TimeMachineComponent', () => {
     fixture.componentInstance.onDaySlider('200');
     fixture.detectChanges();
 
-    document.dispatchEvent(new Event('pointerdown'));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     fixture.detectChanges();
 
     expect(clock.isMocked()).toBe(true);
     expect(clock.now().toISOString()).toBe('2020-03-04T09:15:00.000Z');
-    expect(el.querySelector('.tm-panel')).toBeNull();
+    vi.advanceTimersByTime(CLOSE_MS);
+    fixture.detectChanges();
+    expect(el.querySelector('.tm-sheet')).toBeNull();
   });
 
   it('returns to live time via the Live button', () => {
