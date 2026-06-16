@@ -11,12 +11,8 @@ import {
   type ScheduleState,
 } from './schedule-preset';
 
-// Legacy single-schedule keys; the methods that use them stay until Task 6,
-// when the face and config no longer call them.
-const SEGMENTS_KEY = 'allyclock.schedule';
 const IDB_DB_NAME = 'allyclock-schedule';
 const IDB_STORE_NAME = 'assets';
-const IDB_IMAGE_KEY = 'image';
 
 function imageKey(presetId: string): string {
   return `image:${presetId}`;
@@ -199,55 +195,6 @@ export class ScheduleStoreService {
     this.saveState(state);
   }
 
-  // ---- Legacy single-schedule API (consumed by the not-yet-migrated face and
-  // config; removed in Task 6) -----------------------------------------------
-
-  loadSegments(): ScheduleSegment[] {
-    try {
-      const raw = localStorage.getItem(SEGMENTS_KEY);
-      if (!raw) return DEFAULT_SEGMENTS;
-      return JSON.parse(raw) as ScheduleSegment[];
-    } catch {
-      return DEFAULT_SEGMENTS;
-    }
-  }
-
-  saveSegments(segments: ScheduleSegment[]): void {
-    try {
-      localStorage.setItem(SEGMENTS_KEY, JSON.stringify(segments));
-    } catch {
-      // quota or unavailable — keep in-memory only
-    }
-  }
-
-  async loadImage(): Promise<string | null> {
-    try {
-      const db = await openDb();
-      const blob = await idbGet<Blob>(db, IDB_STORE_NAME, IDB_IMAGE_KEY);
-      if (!blob) return null;
-      return URL.createObjectURL(blob);
-    } catch {
-      return null;
-    }
-  }
-
-  async saveImage(blob: Blob): Promise<void> {
-    try {
-      const db = await openDb();
-      await idbPut(db, IDB_STORE_NAME, IDB_IMAGE_KEY, blob);
-    } catch {
-      // IDB unavailable — silently ignored
-    }
-  }
-
-  async removeImage(): Promise<void> {
-    try {
-      const db = await openDb();
-      await idbDelete(db, IDB_STORE_NAME, IDB_IMAGE_KEY);
-    } catch {
-      // IDB unavailable — silently ignored
-    }
-  }
 }
 
 function newId(): string {

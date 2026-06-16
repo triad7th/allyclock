@@ -15,12 +15,6 @@ const mockStore = {
   loadPresetImage: () => Promise.resolve(null),
   savePresetImage: vi.fn(),
   removePresetImage: vi.fn(),
-  // Legacy methods still required by ScheduleConfigComponent until Task 5.
-  loadSegments: () => DEFAULT_SEGMENTS,
-  loadImage: () => Promise.resolve(null),
-  saveSegments: vi.fn(),
-  saveImage: vi.fn(),
-  removeImage: vi.fn(),
 };
 
 describe('ScheduleFaceComponent', () => {
