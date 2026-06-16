@@ -1,19 +1,28 @@
-import { Component, OnDestroy, OnInit, computed, inject, output, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  computed,
+  inject,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { ScheduleStoreService } from '../schedule-store.service';
 import { ScheduleSegment } from '../schedule-formatter';
 import { DEFAULT_IMAGE_SRC } from '../default-schedule';
-import { parseSegments, serializeSegments } from '../schedule-io';
+import { DEFAULT_PRESET_ID, type SchedulePreset } from '../schedule-preset';
 import { ScheduleMarkerComponent } from './schedule-marker.component';
+import { IconComponent } from '../../../ui/icon/icon.component';
 
 export interface DraftZone {
-  // Start time of the zone ("HH:MM"). The end time is inferred from the next
-  // zone's start (or "24:00" for the last zone), since zones are contiguous.
   from: string;
 }
 
 @Component({
   selector: 'app-schedule-config',
-  imports: [ScheduleMarkerComponent],
+  imports: [ScheduleMarkerComponent, IconComponent],
   templateUrl: './schedule-config.component.html',
   styleUrl: './schedule-config.component.scss',
 })
@@ -23,33 +32,35 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   readonly saved = output<void>();
   readonly cancelled = output<void>();
 
+  // Preset list + which one is being edited (always also the active one).
+  readonly presets = signal<SchedulePreset[]>([]);
+  readonly activeId = signal<string>(DEFAULT_PRESET_ID);
+  readonly thumbs = signal<Record<string, string>>({});
+
+  readonly activePreset = computed(
+    () => this.presets().find((p) => p.id === this.activeId()) ?? this.presets()[0],
+  );
+  readonly hasImage = computed(() => this.activePreset()?.hasImage ?? false);
+  readonly canDelete = computed(() => this.presets().length > 1);
+
+  // Editor state for the active preset.
   readonly previewSrc = signal(DEFAULT_IMAGE_SRC);
   readonly naturalWidth = signal(0);
   readonly naturalHeight = signal(0);
   readonly renderedWidth = signal(0);
-
-  // Boundary positions in SOURCE-image pixels, sorted ascending.
-  // draftZones.length === markerSourceY.length + 1
   readonly markerSourceY = signal<number[]>([]);
   readonly draftZones = signal<DraftZone[]>([{ from: '00:00' }]);
+  readonly renaming = signal(false);
 
-  // Uniform source-pixel -> rendered-pixel scale. Reactive, so it is correct
-  // regardless of when the image finishes loading.
   readonly scale = computed(() => {
     const nw = this.naturalWidth();
     return nw > 0 ? this.renderedWidth() / nw : 0;
   });
-
-  // Rendered Y for each boundary marker.
   readonly markerRenderedY = computed(() => this.markerSourceY().map((y) => y * this.scale()));
-
-  // Inferred end time of each zone: the next zone's start, or "24:00" for the last.
   readonly zoneEndTimes = computed(() => {
     const zones = this.draftZones();
     return zones.map((_, i) => (i < zones.length - 1 ? zones[i + 1].from : '24:00'));
   });
-
-  // One rendered band per draft zone: { top, height } in rendered px.
   readonly zoneBands = computed(() => {
     const s = this.scale();
     const nh = this.naturalHeight();
@@ -61,37 +72,109 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
     });
   });
 
-  private pendingBlob: Blob | null = null;
   private previewObjectUrl: string | null = null;
+  private readonly thumbUrls: string[] = [];
   private resizeObserver: ResizeObserver | null = null;
+  private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
 
   ngOnInit(): void {
-    this.initDraftFromSegments(this.store.loadSegments());
-    this.store.loadImage().then((url) => {
-      if (url) {
-        this.previewObjectUrl = url;
-        this.previewSrc.set(url);
-      }
-    });
+    const state = this.store.loadState();
+    this.presets.set(state.presets);
+    this.activeId.set(state.activePresetId);
+    this.loadEditorForActive();
+    this.refreshThumbs();
   }
 
   ngOnDestroy(): void {
-    if (this.previewObjectUrl) {
-      URL.revokeObjectURL(this.previewObjectUrl);
-      this.previewObjectUrl = null;
-    }
+    this.revokePreview();
+    for (const url of this.thumbUrls) URL.revokeObjectURL(url);
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
   }
 
+  // ---- Preset selection / lifecycle ----------------------------------------
+
+  selectPreset(id: string): void {
+    if (id === this.activeId()) return;
+    this.activeId.set(id);
+    this.store.setActive(id);
+    this.loadEditorForActive();
+  }
+
+  addPreset(): void {
+    const created = this.store.addPreset();
+    this.presets.set(this.store.loadState().presets);
+    this.activeId.set(created.id);
+    this.loadEditorForActive();
+    this.refreshThumbs();
+  }
+
+  deleteActive(): void {
+    if (!this.canDelete()) return;
+    const id = this.activeId();
+    this.store.deletePreset(id);
+    const state = this.store.loadState();
+    this.presets.set(state.presets);
+    this.activeId.set(state.activePresetId);
+    this.loadEditorForActive();
+    this.refreshThumbs();
+  }
+
+  startRename(): void {
+    this.renaming.set(true);
+    queueMicrotask(() => this.nameInput()?.nativeElement.focus());
+  }
+
+  commitRename(value: string): void {
+    const name = value.trim();
+    this.renaming.set(false);
+    if (!name) return;
+    this.store.renamePreset(this.activeId(), name);
+    this.presets.set(this.store.loadState().presets);
+    this.refreshThumbs();
+  }
+
+  cancel(): void {
+    this.revokePreview();
+    this.cancelled.emit();
+  }
+
+  // The face listens for `saved` to refresh; with immediate commit there is no
+  // staging, so "done" just signals the face to re-read and close.
+  done(): void {
+    this.saved.emit();
+  }
+
+  // ---- Editor: image -------------------------------------------------------
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
+    input.value = '';
     if (!file) return;
-    this.pendingBlob = file;
-    if (this.previewObjectUrl) URL.revokeObjectURL(this.previewObjectUrl);
+    void this.applyImage(file);
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    const file = event.dataTransfer?.files?.[0];
+    if (file && file.type.startsWith('image/')) void this.applyImage(file);
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+  }
+
+  private async applyImage(file: Blob): Promise<void> {
+    const id = this.activeId();
+    await this.store.savePresetImage(id, file);
+    const preset = this.activePreset();
+    if (preset) preset.hasImage = true;
+    this.presets.set([...this.presets()]);
+    this.revokePreview();
     this.previewObjectUrl = URL.createObjectURL(file);
     this.previewSrc.set(this.previewObjectUrl);
+    this.refreshThumbs();
   }
 
   onPreviewImageLoad(event: Event): void {
@@ -99,58 +182,30 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
     this.naturalWidth.set(img.naturalWidth);
     this.naturalHeight.set(img.naturalHeight);
     this.renderedWidth.set(img.clientWidth);
-    // Track the rendered width so `scale` stays correct when the viewport
-    // resizes; otherwise marker/zone positions drift from the image.
     if (!this.resizeObserver) {
       this.resizeObserver = new ResizeObserver(() => this.renderedWidth.set(img.clientWidth));
       this.resizeObserver.observe(img);
     }
   }
 
-  async removeImage(): Promise<void> {
-    this.pendingBlob = null;
-    if (this.previewObjectUrl) {
-      URL.revokeObjectURL(this.previewObjectUrl);
-      this.previewObjectUrl = null;
-    }
-    await this.store.removeImage();
-    this.previewSrc.set(DEFAULT_IMAGE_SRC);
-  }
-
-  async save(): Promise<void> {
-    if (this.pendingBlob) {
-      await this.store.saveImage(this.pendingBlob);
-      this.pendingBlob = null;
-    }
-    this.store.saveSegments(this.buildSegments());
-    this.saved.emit();
-  }
-
-  cancel(): void {
-    if (this.pendingBlob && this.previewObjectUrl) {
-      URL.revokeObjectURL(this.previewObjectUrl);
-      this.previewObjectUrl = null;
-      this.pendingBlob = null;
-    }
-    this.cancelled.emit();
-  }
+  // ---- Editor: segments ----------------------------------------------------
 
   addMarker(): void {
     const nh = this.naturalHeight() > 0 ? this.naturalHeight() : 1000;
     const positions = this.markerSourceY();
-    // Place the new boundary below the last existing one: midway between the
-    // lowest current marker (or the image top) and the image bottom.
     const last = positions.length > 0 ? positions[positions.length - 1] : 0;
     const newPos = (last + nh) / 2;
     const next = [...positions, newPos].sort((a, b) => a - b);
     this.markerSourceY.set(next);
     this.rebuildZones(next.length);
+    this.persistSegments();
   }
 
   removeMarker(index: number): void {
     const positions = this.markerSourceY().filter((_, i) => i !== index);
     this.markerSourceY.set(positions);
     this.rebuildZones(positions.length);
+    this.persistSegments();
   }
 
   updateMarkerPosition(index: number, renderedY: number): void {
@@ -160,12 +215,14 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
     positions[index] = renderedY / s;
     positions.sort((a, b) => a - b);
     this.markerSourceY.set(positions);
+    this.persistSegments();
   }
 
   updateZoneFrom(zoneIndex: number, value: string): void {
     const zones = [...this.draftZones()];
     zones[zoneIndex] = { from: value };
     this.draftZones.set(zones);
+    this.persistSegments();
   }
 
   buildSegments(): ScheduleSegment[] {
@@ -176,42 +233,32 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
       pixelStart: Math.round(bounds[i]),
       pixelEnd: Math.round(bounds[i + 1]),
       timeStart: zone.from,
-      // End is inferred from the next zone's start; the last zone ends at 24:00.
       timeEnd: i < zones.length - 1 ? zones[i + 1].from : '24:00',
     }));
   }
 
-  readonly importError = signal<string | null>(null);
-
-  exportSegments(): void {
-    const json = serializeSegments(this.buildSegments());
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'allyclock-schedule.json';
-    link.click();
-    URL.revokeObjectURL(url);
+  private persistSegments(): void {
+    this.store.updateSegments(this.activeId(), this.buildSegments());
   }
 
-  onImportFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    // Reset so selecting the same file again re-triggers the change event.
-    input.value = '';
-    if (!file) return;
-    file
-      .text()
-      .then((text) => {
-        const segments = parseSegments(text);
-        if (!segments) {
-          this.importError.set('Could not import: file is not a valid schedule export.');
-          return;
+  // ---- Helpers -------------------------------------------------------------
+
+  private loadEditorForActive(): void {
+    const preset = this.activePreset();
+    this.renaming.set(false);
+    this.naturalWidth.set(0);
+    this.naturalHeight.set(0);
+    if (preset) this.initDraftFromSegments(preset.segments);
+    this.revokePreview();
+    this.previewSrc.set(DEFAULT_IMAGE_SRC);
+    if (preset?.hasImage) {
+      this.store.loadPresetImage(preset.id).then((url) => {
+        if (url) {
+          this.previewObjectUrl = url;
+          this.previewSrc.set(url);
         }
-        this.importError.set(null);
-        this.initDraftFromSegments(segments);
-      })
-      .catch(() => this.importError.set('Could not read the selected file.'));
+      });
+    }
   }
 
   private initDraftFromSegments(segs: ScheduleSegment[]): void {
@@ -231,5 +278,36 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
       zones.push(current[i] ?? { from: '00:00' });
     }
     this.draftZones.set(zones);
+  }
+
+  private revokePreview(): void {
+    if (this.previewObjectUrl) {
+      URL.revokeObjectURL(this.previewObjectUrl);
+      this.previewObjectUrl = null;
+    }
+  }
+
+  // Thumbnail src per preset: stored image (object URL), the bundled default for
+  // the default preset, or empty (placeholder rendered by the template).
+  private refreshThumbs(): void {
+    for (const url of this.thumbUrls) URL.revokeObjectURL(url);
+    this.thumbUrls.length = 0;
+    const next: Record<string, string> = {};
+    for (const preset of this.presets()) {
+      if (!preset.hasImage) {
+        if (preset.id === DEFAULT_PRESET_ID) next[preset.id] = DEFAULT_IMAGE_SRC;
+        continue;
+      }
+      this.store.loadPresetImage(preset.id).then((url) => {
+        if (!url) return;
+        this.thumbUrls.push(url);
+        this.thumbs.set({ ...this.thumbs(), [preset.id]: url });
+      });
+    }
+    this.thumbs.set(next);
+  }
+
+  thumbFor(id: string): string | null {
+    return this.thumbs()[id] ?? null;
   }
 }

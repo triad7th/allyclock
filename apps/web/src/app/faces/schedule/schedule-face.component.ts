@@ -101,7 +101,7 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
 
   // The check button: commit the editor's changes (it emits saved on success).
   onSaveClick(): void {
-    this.config()?.save();
+    this.config()?.done();
   }
 
   onConfigSaved(): void {

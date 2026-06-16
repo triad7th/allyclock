@@ -1,61 +1,106 @@
 <div class="config-panel">
-  <div class="header">
-    <h2>Daily Schedule</h2>
-  </div>
-
-  <section class="image-section">
-    <h3>Schedule Image</h3>
-    <label class="upload-zone">
-      <input type="file" accept="image/*" (change)="onFileSelected($event)" />
-      <span>Tap to upload a schedule image</span>
-    </label>
-    <button type="button" class="remove-image" (click)="removeImage()">Remove image</button>
+  <section class="presets-section">
+    <h3>Presets</h3>
+    <div class="preset-row">
+      @for (preset of presets(); track preset.id) {
+        <button
+          type="button"
+          class="preset-card"
+          [class.active]="preset.id === activeId()"
+          (click)="selectPreset(preset.id)"
+        >
+          <span class="preset-thumb">
+            @if (thumbFor(preset.id)) {
+              <img [src]="thumbFor(preset.id)" alt="" />
+            } @else {
+              <app-icon name="photo" />
+            }
+          </span>
+          <span class="preset-name">{{ preset.name }}</span>
+        </button>
+      }
+      <button type="button" class="add-preset-card" (click)="addPreset()" aria-label="Add preset">
+        <app-icon name="plus" />
+      </button>
+    </div>
   </section>
 
   <section class="editor-section">
-    <h3>Time Segments</h3>
-    <p class="hint">Drag the lines to set segment boundaries. Set the time range for each zone.</p>
-    <button type="button" class="add-marker" (click)="addMarker()">+ Add segment boundary</button>
-    <div class="io-actions">
-      <button type="button" class="io-btn" (click)="exportSegments()">Export</button>
-      <label class="io-btn">
-        Import
+    <div class="editor-head">
+      @if (renaming()) {
         <input
-          type="file"
-          accept="application/json,.json"
-          (change)="onImportFileSelected($event)"
+          #nameInput
+          class="rename-input"
+          type="text"
+          [value]="activePreset()?.name ?? ''"
+          (keydown.enter)="commitRename($any($event.target).value)"
+          (blur)="commitRename($any($event.target).value)"
         />
-      </label>
-    </div>
-    @if (importError()) {
-      <p class="import-error">{{ importError() }}</p>
-    }
-    <div class="marker-preview-container">
-      <img
-        class="marker-preview-img"
-        [src]="previewSrc()"
-        alt="Schedule preview"
-        (load)="onPreviewImageLoad($event)"
-      />
-      @for (band of zoneBands(); track $index) {
-        <div class="zone-label" [style.top.px]="band.top" [style.height.px]="band.height">
-          <div class="zone-times">
-            <input
-              type="time"
-              [value]="draftZones()[$index].from"
-              (change)="updateZoneFrom($index, $any($event.target).value)"
-            />
-            <span class="zone-end">→ {{ zoneEndTimes()[$index] }}</span>
-          </div>
-        </div>
+      } @else {
+        <h3 class="editor-title">{{ activePreset()?.name }}</h3>
       }
-      @for (y of markerRenderedY(); track $index) {
-        <app-schedule-marker
-          [index]="$index"
-          [renderedY]="y"
-          (moved)="updateMarkerPosition($index, $event)"
-          (removed)="removeMarker($index)"
-        />
+    </div>
+
+    <div class="image-stage" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+      <div class="overlay-icons">
+        <button type="button" class="ov-btn" (click)="startRename()" aria-label="Rename preset">
+          <app-icon name="pencil" />
+        </button>
+        @if (hasImage()) {
+          <label class="ov-btn" aria-label="Swap image">
+            <app-icon name="photo" />
+            <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+          </label>
+          <button type="button" class="ov-btn" (click)="addMarker()" aria-label="Add segment">
+            <app-icon name="plus" />
+          </button>
+        }
+        <button
+          type="button"
+          class="ov-btn"
+          [disabled]="!canDelete()"
+          (click)="deleteActive()"
+          aria-label="Delete preset"
+        >
+          <app-icon name="trash" />
+        </button>
+      </div>
+
+      @if (hasImage()) {
+        <div class="marker-preview-container">
+          <img
+            class="marker-preview-img"
+            [src]="previewSrc()"
+            alt="Schedule preview"
+            (load)="onPreviewImageLoad($event)"
+          />
+          @for (band of zoneBands(); track $index) {
+            <div class="zone-label" [style.top.px]="band.top" [style.height.px]="band.height">
+              <div class="zone-times">
+                <input
+                  type="time"
+                  [value]="draftZones()[$index].from"
+                  (change)="updateZoneFrom($index, $any($event.target).value)"
+                />
+                <span class="zone-end">→ {{ zoneEndTimes()[$index] }}</span>
+              </div>
+            </div>
+          }
+          @for (y of markerRenderedY(); track $index) {
+            <app-schedule-marker
+              [index]="$index"
+              [renderedY]="y"
+              (moved)="updateMarkerPosition($index, $event)"
+              (removed)="removeMarker($index)"
+            />
+          }
+        </div>
+      } @else {
+        <label class="drop-zone">
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+          <app-icon name="square.and.arrow.up" />
+          <span>Tap to upload or drag &amp; drop a schedule image</span>
+        </label>
       }
     </div>
   </section>
