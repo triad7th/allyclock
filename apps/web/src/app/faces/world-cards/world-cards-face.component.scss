@@ -14,6 +14,10 @@
   // Fixed-height cards (their natural content height), aligned to the top —
   // never stretched, never vertically centered.
   align-content: start;
+  // Horizontal gutter between the two cards in the 2-column row, so their
+  // bottom borders are separated (like the original). No row gap — US sits
+  // directly above the UK/KR row. (No effect in the single-column layout.)
+  column-gap: 1.5rem;
   // Small screens: the 2-column row breaks into stacked single-column rows, so
   // US / UK / KR each get their own full-width row.
   grid-template-columns: 1fr;
