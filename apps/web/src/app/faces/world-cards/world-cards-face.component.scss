@@ -11,6 +11,9 @@
 
 .cards {
   display: grid;
+  // Tiny inset so the content and the (flush) bottom borders aren't hard against
+  // the screen edges — both shift together since the border lives inside here.
+  padding: 0 0.5rem;
   // Fixed-height cards (their natural content height), aligned to the top —
   // never stretched, never vertically centered.
   align-content: start;
