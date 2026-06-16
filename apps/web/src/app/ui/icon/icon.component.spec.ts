@@ -1,9 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { IconComponent } from './icon.component';
 
 @Component({
+  standalone: true,
   imports: [IconComponent],
   template: '<app-icon [name]="name" />',
 })
@@ -12,6 +13,12 @@ class HostComponent {
 }
 
 describe('IconComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HostComponent],
+    }).compileComponents();
+  });
+
   function render(name: string): SVGElement | null {
     const fixture = TestBed.createComponent(HostComponent);
     fixture.componentInstance.name = name;
@@ -27,7 +34,7 @@ describe('IconComponent', () => {
 
   it('renders each supported SF Symbol name', () => {
     for (const name of ['pencil', 'photo', 'plus', 'trash', 'square.and.arrow.up']) {
-      expect(render(name)).toBeTruthy();
+      expect(render(name)!.querySelector('path')).toBeTruthy();
     }
   });
 
