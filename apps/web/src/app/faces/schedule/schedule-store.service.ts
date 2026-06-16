@@ -97,6 +97,57 @@ export class ScheduleStoreService {
     }
   }
 
+  addPreset(): SchedulePreset {
+    const state = this.loadState();
+    const preset: SchedulePreset = {
+      id: newId(),
+      name: nextPresetName(state.presets),
+      segments: [{ pixelStart: 0, pixelEnd: 0, timeStart: '00:00', timeEnd: '24:00' }],
+      hasImage: false,
+    };
+    state.presets.push(preset);
+    state.activePresetId = preset.id;
+    this.saveState(state);
+    return preset;
+  }
+
+  renamePreset(id: string, name: string): void {
+    const state = this.loadState();
+    const preset = state.presets.find((p) => p.id === id);
+    if (!preset) return;
+    preset.name = name;
+    this.saveState(state);
+  }
+
+  updateSegments(id: string, segments: ScheduleSegment[]): void {
+    const state = this.loadState();
+    const preset = state.presets.find((p) => p.id === id);
+    if (!preset) return;
+    preset.segments = segments;
+    this.saveState(state);
+  }
+
+  setActive(id: string): void {
+    const state = this.loadState();
+    if (!state.presets.some((p) => p.id === id)) return;
+    state.activePresetId = id;
+    this.saveState(state);
+  }
+
+  deletePreset(id: string): void {
+    const state = this.loadState();
+    if (state.presets.length <= 1) return; // never delete the last preset
+    const index = state.presets.findIndex((p) => p.id === id);
+    if (index === -1) return;
+    state.presets.splice(index, 1);
+    if (state.activePresetId === id) {
+      const fallback = state.presets[Math.max(0, index - 1)];
+      state.activePresetId = fallback.id;
+    }
+    this.saveState(state);
+    void this.removePresetImage(id);
+  }
+
   // ---- Per-preset images (IndexedDB, one blob per preset id) ----------------
 
   async loadPresetImage(presetId: string): Promise<string | null> {
@@ -177,6 +228,24 @@ export class ScheduleStoreService {
       // IDB unavailable — silently ignored
     }
   }
+}
+
+function newId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return `p-${performance.now().toString(36)}-${Math.round(performance.now() * 1000)}`;
+}
+
+// Next "Preset #N": one greater than the highest existing N, minimum 2 (the
+// seeded default occupies the implicit #1 slot).
+function nextPresetName(presets: SchedulePreset[]): string {
+  let max = 1;
+  for (const p of presets) {
+    const m = /^Preset #(\d+)$/.exec(p.name);
+    if (m) max = Math.max(max, Number(m[1]));
+  }
+  return `Preset #${max + 1}`;
 }
 
 function openDb(): Promise<IDBDatabase> {

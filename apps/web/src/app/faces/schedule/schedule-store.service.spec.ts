@@ -153,4 +153,70 @@ describe('ScheduleStoreService', () => {
     expect(idb.store[LEGACY_IMAGE_KEY]).toBeUndefined();
     expect(service.loadState().presets[0].hasImage).toBe(true);
   });
+
+  it('addPreset appends a "Preset #N" preset and activates it', () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    const created = service.addPreset();
+    expect(created.name).toBe('Preset #2');
+    expect(created.segments).toEqual([
+      { pixelStart: 0, pixelEnd: 0, timeStart: '00:00', timeEnd: '24:00' },
+    ]);
+    expect(created.hasImage).toBe(false);
+    const state = service.loadState();
+    expect(state.presets).toHaveLength(2);
+    expect(state.activePresetId).toBe(created.id);
+  });
+
+  it('addPreset numbering increments past existing "Preset #N" names', () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    const a = service.addPreset();
+    service.renamePreset(a.id, 'Preset #5');
+    const b = service.addPreset();
+    expect(b.name).toBe('Preset #6');
+  });
+
+  it('renamePreset updates the name', () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    const p = service.addPreset();
+    service.renamePreset(p.id, 'Morning Routine');
+    expect(service.loadState().presets.find((x) => x.id === p.id)?.name).toBe('Morning Routine');
+  });
+
+  it('updateSegments replaces a preset segments', () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    const segs = [{ pixelStart: 0, pixelEnd: 100, timeStart: '00:00', timeEnd: '24:00' }];
+    service.updateSegments(DEFAULT_PRESET_ID, segs);
+    expect(service.loadState().presets[0].segments).toEqual(segs);
+  });
+
+  it('setActive changes the active preset id', () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    const p = service.addPreset();
+    service.setActive(DEFAULT_PRESET_ID);
+    expect(service.loadState().activePresetId).toBe(DEFAULT_PRESET_ID);
+    service.setActive(p.id);
+    expect(service.loadState().activePresetId).toBe(p.id);
+  });
+
+  it('deletePreset removes it and reselects active when the active was deleted', () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    const p = service.addPreset(); // p is now active
+    service.deletePreset(p.id);
+    const state = service.loadState();
+    expect(state.presets).toHaveLength(1);
+    expect(state.activePresetId).toBe(DEFAULT_PRESET_ID);
+  });
+
+  it('deletePreset refuses to delete the last remaining preset', () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    service.deletePreset(DEFAULT_PRESET_ID);
+    expect(service.loadState().presets).toHaveLength(1);
+  });
 });
