@@ -18,6 +18,13 @@ Future layout:
 
 - `packages/core` will contain shared region/timezone data when shared logic is extracted.
 
+## Platform Porting Goal
+
+The Web app is the reference implementation for native Apple ports (iOS, watchOS, tvOS). The goal is for porting to be almost mechanical, not a creative rewrite. When designing Web abstractions, prefer shapes that map 1:1 onto Apple platform APIs so the port is a direct translation:
+
+- Build an icon abstraction layer keyed to SF Symbol names (e.g. `pencil`, `photo`, `plus`, `trash`), rendered as SVG on the Web. The Apple ports swap the same semantic names to `Image(systemName:)`.
+- Apply the same principle to other abstractions (naming, component boundaries, data models): choose the form that an Apple-platform engineer would reach for, so native ports stay close to the Web source.
+
 ## Agent Harness
 
 This repo supports both Claude Code and Codex. The two harnesses share content through symlinks so switching agents never requires duplicating edits.
