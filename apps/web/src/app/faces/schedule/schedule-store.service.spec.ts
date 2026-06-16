@@ -146,8 +146,11 @@ describe('ScheduleStoreService', () => {
     vi.stubGlobal('indexedDB', idb);
     const service = TestBed.inject(ScheduleStoreService);
     service.loadState();
-    // Let the async re-key complete (IDB mock resolves on timers/microtasks).
-    await new Promise((r) => setTimeout(r, 30));
+    // Poll until the async re-key completes (legacy key removed), instead of a
+    // fixed sleep, so the test is deterministic under load.
+    for (let i = 0; i < 100 && idb.store[LEGACY_IMAGE_KEY] !== undefined; i++) {
+      await new Promise((r) => setTimeout(r, 5));
+    }
     const url = await service.loadPresetImage(DEFAULT_PRESET_ID);
     expect(url).toMatch(/^blob:/);
     expect(idb.store[LEGACY_IMAGE_KEY]).toBeUndefined();
@@ -185,7 +188,7 @@ describe('ScheduleStoreService', () => {
     expect(service.loadState().presets.find((x) => x.id === p.id)?.name).toBe('Morning Routine');
   });
 
-  it('updateSegments replaces a preset segments', () => {
+  it('updateSegments replaces the segments of a preset', () => {
     const service = TestBed.inject(ScheduleStoreService);
     service.loadState();
     const segs = [{ pixelStart: 0, pixelEnd: 100, timeStart: '00:00', timeEnd: '24:00' }];
@@ -218,5 +221,14 @@ describe('ScheduleStoreService', () => {
     service.loadState();
     service.deletePreset(DEFAULT_PRESET_ID);
     expect(service.loadState().presets).toHaveLength(1);
+  });
+
+  it('deletePreset leaves activePresetId unchanged when deleting a non-active preset', () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    const p = service.addPreset(); // p is now active
+    service.setActive(DEFAULT_PRESET_ID); // switch active back to default
+    service.deletePreset(p.id); // delete the non-active preset
+    expect(service.loadState().activePresetId).toBe(DEFAULT_PRESET_ID);
   });
 });

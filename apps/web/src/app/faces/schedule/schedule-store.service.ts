@@ -234,7 +234,8 @@ function newId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
   }
-  return `p-${performance.now().toString(36)}-${Math.round(performance.now() * 1000)}`;
+  const t = performance.now();
+  return `p-${t.toString(36)}-${Math.round(t * 1000)}`;
 }
 
 // Next "Preset #N": one greater than the highest existing N, minimum 2 (the
