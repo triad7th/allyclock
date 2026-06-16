@@ -29,14 +29,18 @@ export class ScheduleStoreService {
   // ---- State (localStorage) -------------------------------------------------
 
   loadState(): ScheduleState {
-    const raw = localStorage.getItem(PRESETS_KEY);
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw) as ScheduleState;
-        if (parsed?.presets?.length) return parsed;
-      } catch {
-        // fall through to seed
+    try {
+      const raw = localStorage.getItem(PRESETS_KEY);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw) as ScheduleState;
+          if (parsed?.presets?.length) return parsed;
+        } catch {
+          // fall through to seed
+        }
       }
+    } catch {
+      // localStorage unavailable — fall through to seed
     }
     const state = this.migrateOrSeed();
     this.saveState(state);
@@ -55,15 +59,19 @@ export class ScheduleStoreService {
   // otherwise from the bundled defaults. Legacy keys are cleaned up here.
   private migrateOrSeed(): ScheduleState {
     let segments = DEFAULT_SEGMENTS;
-    const legacy = localStorage.getItem(LEGACY_SEGMENTS_KEY);
-    if (legacy) {
-      try {
-        const parsed = JSON.parse(legacy) as ScheduleSegment[];
-        if (Array.isArray(parsed) && parsed.length) segments = parsed;
-      } catch {
-        // ignore malformed legacy segments
+    try {
+      const legacy = localStorage.getItem(LEGACY_SEGMENTS_KEY);
+      if (legacy) {
+        try {
+          const parsed = JSON.parse(legacy) as ScheduleSegment[];
+          if (Array.isArray(parsed) && parsed.length) segments = parsed;
+        } catch {
+          // ignore malformed legacy segments
+        }
+        localStorage.removeItem(LEGACY_SEGMENTS_KEY);
       }
-      localStorage.removeItem(LEGACY_SEGMENTS_KEY);
+    } catch {
+      // localStorage unavailable — use default segments
     }
     const preset: SchedulePreset = {
       id: DEFAULT_PRESET_ID,

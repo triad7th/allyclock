@@ -3,13 +3,24 @@ import { TestBed } from '@angular/core/testing';
 import { ScheduleFaceComponent } from './schedule-face.component';
 import { ScheduleStoreService } from './schedule-store.service';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
+import { DEFAULT_PRESET_ID } from './schedule-preset';
 
 const mockStore = {
+  loadState: () => ({
+    presets: [
+      { id: DEFAULT_PRESET_ID, name: 'Summer Break', segments: DEFAULT_SEGMENTS, hasImage: false },
+    ],
+    activePresetId: DEFAULT_PRESET_ID,
+  }),
+  loadPresetImage: () => Promise.resolve(null),
+  savePresetImage: vi.fn(),
+  removePresetImage: vi.fn(),
+  // Legacy methods still required by ScheduleConfigComponent until Task 5.
   loadSegments: () => DEFAULT_SEGMENTS,
   loadImage: () => Promise.resolve(null),
+  saveSegments: vi.fn(),
   saveImage: vi.fn(),
   removeImage: vi.fn(),
-  saveSegments: vi.fn(),
 };
 
 describe('ScheduleFaceComponent', () => {

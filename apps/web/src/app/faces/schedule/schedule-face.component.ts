@@ -67,10 +67,7 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     window.addEventListener('resize', this.onResize);
     this.armGearTimer();
-    this.segments.set(this.store.loadSegments());
-    this.store.loadImage().then((url) => {
-      if (url) this.imageUrl.set(url);
-    });
+    this.loadActivePreset();
   }
 
   ngOnDestroy(): void {
@@ -108,15 +105,22 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   }
 
   onConfigSaved(): void {
-    this.segments.set(this.store.loadSegments());
-    this.store.loadImage().then((url) => {
-      if (url) this.imageUrl.set(url);
-    });
+    this.loadActivePreset();
     this.beginConfigClose();
   }
 
   onConfigCancelled(): void {
     this.beginConfigClose();
+  }
+
+  private loadActivePreset(): void {
+    const state = this.store.loadState();
+    const active = state.presets.find((p) => p.id === state.activePresetId) ?? state.presets[0];
+    this.segments.set(active.segments);
+    this.imageUrl.set(DEFAULT_IMAGE_SRC);
+    this.store.loadPresetImage(active.id).then((url) => {
+      if (url) this.imageUrl.set(url);
+    });
   }
 
   // Run the slide-out animation, then remove the config page from the DOM.
