@@ -52,3 +52,4 @@ npm test
 - Keep UI changes consistent with the current Bootstrap utility-class approach unless intentionally introducing a design-system change.
 - This app is the reference implementation for native Apple ports (iOS/watchOS/tvOS); prefer abstractions that map 1:1 onto Apple APIs so porting is mechanical (see the root `CLAUDE.md` "Platform Porting Goal").
 - Use SF Symbol names for iconography. Render icons through the icon abstraction layer keyed to SF Symbol names (e.g. `pencil`, `photo`, `plus`, `trash`) as SVG, rather than ad-hoc emoji or one-off Bootstrap Icons, so the Apple ports swap to `Image(systemName:)` with the same names.
+- Clock faces must look great in any dimension: size to the host container (e.g. via `ResizeObserver`), not `window.innerWidth`/`window.innerHeight`, and frame complete content (no half-rows) across portrait, landscape, and the face-picker preview size. See the root `CLAUDE.md` "Faces Look Great in Any Dimension".

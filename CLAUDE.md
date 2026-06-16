@@ -25,6 +25,14 @@ The Web app is the reference implementation for native Apple ports (iOS, watchOS
 - Build an icon abstraction layer keyed to SF Symbol names (e.g. `pencil`, `photo`, `plus`, `trash`), rendered as SVG on the Web. The Apple ports swap the same semantic names to `Image(systemName:)`.
 - Apply the same principle to other abstractions (naming, component boundaries, data models): choose the form that an Apple-platform engineer would reach for, so native ports stay close to the Web source.
 
+## Faces Look Great in Any Dimension
+
+Every clock face must render well in any viewport dimension — portrait, landscape, square, and small embedded previews (e.g. the face-picker thumbnails). The guiding rule: in any given dimension, the clock must look great.
+
+- Faces size to their actual host container, never to `window.innerWidth`/`window.innerHeight`. Measure the host (e.g. with a `ResizeObserver`) so the same component renders correctly full-screen and inside a scaled preview.
+- Never show awkward partial content such as a row cut in half at a viewport edge; frame complete content (e.g. whole schedule rows/segments) and letterbox cleanly when there is spare space.
+- Validate visual changes across multiple aspect ratios and at the face-picker preview size before considering them done.
+
 ## Agent Harness
 
 This repo supports both Claude Code and Codex. The two harnesses share content through symlinks so switching agents never requires duplicating edits.

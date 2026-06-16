@@ -1,9 +1,19 @@
-import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  afterNextRender,
+  computed,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { ClockService } from '../../services/clock.service';
 import { ScheduleStoreService } from './schedule-store.service';
 import { ScheduleConfigComponent } from './schedule-config/schedule-config.component';
 import { IconComponent } from '../../ui/icon/icon.component';
-import { activeSegment, currentPixelY } from './schedule-formatter';
+import { activeSegment, framedWindow } from './schedule-formatter';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 
 const HIDE_DELAY_MS = 4000;
@@ -24,13 +34,17 @@ const CONFIG_CLOSE_MS = 300;
 export class ScheduleFaceComponent implements OnInit, OnDestroy {
   private readonly clock = inject(ClockService);
   private readonly store = inject(ScheduleStoreService);
+  private readonly host = inject(ElementRef<HTMLElement>);
 
   readonly defaultImageSrc = DEFAULT_IMAGE_SRC;
   readonly imageUrl = signal(DEFAULT_IMAGE_SRC);
   readonly segments = signal(DEFAULT_SEGMENTS);
   readonly naturalWidth = signal(0);
-  readonly viewportWidth = signal(window.innerWidth);
-  readonly viewportHeight = signal(window.innerHeight);
+  // Measured from the host element so the face frames correctly full-screen AND
+  // inside the scaled face-picker preview (a ResizeObserver reports the layout
+  // box, unaffected by any ancestor CSS transform).
+  readonly containerWidth = signal(0);
+  readonly containerHeight = signal(0);
   readonly gearVisible = signal(true);
   readonly configOpen = signal(false);
   readonly configClosing = signal(false);
@@ -39,21 +53,23 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
 
   private gearTimer: ReturnType<typeof setTimeout> | undefined;
   private closeTimer: ReturnType<typeof setTimeout> | undefined;
-  private readonly onResize = () => {
-    this.viewportWidth.set(window.innerWidth);
-    this.viewportHeight.set(window.innerHeight);
-  };
+  private resizeObserver: ResizeObserver | undefined;
 
   readonly scaleFactor = computed(() => {
     const nw = this.naturalWidth();
-    return nw === 0 ? 1 : this.viewportWidth() / nw;
+    return nw === 0 ? 1 : this.containerWidth() / nw;
   });
 
-  readonly translateY = computed(() => {
-    const pixY = currentPixelY(this.clock.now(), this.segments());
-    const vh = this.viewportHeight();
-    return -(pixY * this.scaleFactor() - vh / 2);
+  readonly activeIndex = computed(() => {
+    const seg = activeSegment(this.clock.now(), this.segments());
+    return seg ? this.segments().indexOf(seg) : 0;
   });
+
+  readonly translateY = computed(
+    () =>
+      framedWindow(this.segments(), this.activeIndex(), this.scaleFactor(), this.containerHeight())
+        .translateY,
+  );
 
   readonly redBoxTop = computed(() => {
     const seg = activeSegment(this.clock.now(), this.segments());
@@ -65,16 +81,35 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
     return seg ? (seg.pixelEnd - seg.pixelStart) * this.scaleFactor() : 0;
   });
 
+  constructor() {
+    // Seed the sizes once the host is laid out, so the first frame is framed
+    // correctly even before any ResizeObserver callback fires (and in jsdom,
+    // where ResizeObserver may be absent, this is the only measurement).
+    afterNextRender(() => this.measureHost());
+  }
+
   ngOnInit(): void {
-    window.addEventListener('resize', this.onResize);
+    const el = this.host.nativeElement;
+    // Guard for environments without ResizeObserver (e.g. tests/jsdom).
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => this.measureHost());
+      this.resizeObserver.observe(el);
+    }
+    this.measureHost();
     this.armGearTimer();
     this.loadActivePreset();
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('resize', this.onResize);
+    this.resizeObserver?.disconnect();
     clearTimeout(this.gearTimer);
     clearTimeout(this.closeTimer);
+  }
+
+  private measureHost(): void {
+    const el = this.host.nativeElement;
+    this.containerWidth.set(el.clientWidth);
+    this.containerHeight.set(el.clientHeight);
   }
 
   onImageLoad(event: Event): void {

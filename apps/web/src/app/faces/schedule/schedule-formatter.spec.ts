@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { activeSegment, currentPixelY } from './schedule-formatter';
+import { activeSegment, currentPixelY, framedWindow } from './schedule-formatter';
 import type { ScheduleSegment } from './schedule-formatter';
 
 // new Date('...T...:...') without Z = local time, getHours() is deterministic
@@ -78,5 +78,39 @@ describe('activeSegment', () => {
 
   it('returns first segment for empty array', () => {
     expect(activeSegment(at(12, 0), [])).toBeNull();
+  });
+});
+
+describe('framedWindow', () => {
+  const UNIFORM: ScheduleSegment[] = [
+    { pixelStart: 0, pixelEnd: 100, timeStart: '00:00', timeEnd: '06:00' },
+    { pixelStart: 100, pixelEnd: 200, timeStart: '06:00', timeEnd: '12:00' },
+    { pixelStart: 200, pixelEnd: 300, timeStart: '12:00', timeEnd: '18:00' },
+    { pixelStart: 300, pixelEnd: 400, timeStart: '18:00', timeEnd: '24:00' },
+  ];
+
+  it('frames all segments when they all fit, centered in the container', () => {
+    // All 4 (height 400) fit in 1000; window top is 0 → (1000-400)/2 - 0 = 300.
+    expect(framedWindow(UNIFORM, 0, 1, 1000).translateY).toBe(300);
+  });
+
+  it('frames a complete-segment window when only some fit', () => {
+    // active 1 grows to window [1,2] (height 200) in 250; top is 100 →
+    // (250-200)/2 - 100 = 25 - 100 = -75.
+    expect(framedWindow(UNIFORM, 1, 1, 250).translateY).toBe(-75);
+  });
+
+  it('frames just the active segment when it is taller than the container', () => {
+    // active 2 alone (height 100) exceeds 50; window stays [2], top 200 →
+    // (50-100)/2 - 200 = -25 - 200 = -225.
+    expect(framedWindow(UNIFORM, 2, 1, 50).translateY).toBe(-225);
+  });
+
+  it('returns 0 for empty segments', () => {
+    expect(framedWindow([], 0, 1, 1000).translateY).toBe(0);
+  });
+
+  it('returns 0 when scale is 0', () => {
+    expect(framedWindow(UNIFORM, 0, 0, 1000).translateY).toBe(0);
   });
 });

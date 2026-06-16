@@ -45,3 +45,39 @@ export function activeSegment(date: Date, segments: ScheduleSegment[]): Schedule
 
   return segments.find((s) => now >= toMinutes(s.timeStart) && now < toMinutes(s.timeEnd)) ?? last;
 }
+
+// Choose the vertical offset (in displayed px) that frames a window of COMPLETE
+// segments around the active one, fit to the container height and centered, so
+// no row is ever cut in half. Returns translateY for the image stage.
+export function framedWindow(
+  segments: ScheduleSegment[],
+  activeIndex: number,
+  scale: number,
+  containerHeight: number,
+): { translateY: number } {
+  if (segments.length === 0 || scale <= 0) return { translateY: 0 };
+  const i = Math.max(0, Math.min(activeIndex, segments.length - 1));
+  const segHeight = (k: number) => (segments[k].pixelEnd - segments[k].pixelStart) * scale;
+  let lo = i;
+  let hi = i;
+  let used = segHeight(i);
+  // Grow outward (below first, then above) while whole segments still fit.
+  let grew = true;
+  while (grew) {
+    grew = false;
+    if (hi + 1 < segments.length && used + segHeight(hi + 1) <= containerHeight) {
+      hi += 1;
+      used += segHeight(hi);
+      grew = true;
+    }
+    if (lo - 1 >= 0 && used + segHeight(lo - 1) <= containerHeight) {
+      lo -= 1;
+      used += segHeight(lo);
+      grew = true;
+    }
+  }
+  const topPx = segments[lo].pixelStart * scale;
+  const windowHeight = (segments[hi].pixelEnd - segments[lo].pixelStart) * scale;
+  // Center the complete-segment window in the container (clean letterbox margins).
+  return { translateY: (containerHeight - windowHeight) / 2 - topPx };
+}
