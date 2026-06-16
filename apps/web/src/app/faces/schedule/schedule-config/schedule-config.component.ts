@@ -37,7 +37,7 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   readonly activeId = signal<string>(DEFAULT_PRESET_ID);
   readonly thumbs = signal<Record<string, string>>({});
 
-  readonly activePreset = computed(
+  readonly activePreset = computed<SchedulePreset | undefined>(
     () => this.presets().find((p) => p.id === this.activeId()) ?? this.presets()[0],
   );
   readonly hasImage = computed(() => this.activePreset()?.hasImage ?? false);
@@ -74,6 +74,7 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
 
   private previewObjectUrl: string | null = null;
   private readonly thumbUrls: string[] = [];
+  private thumbGeneration = 0;
   private resizeObserver: ResizeObserver | null = null;
   private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
 
@@ -126,6 +127,7 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   }
 
   commitRename(value: string): void {
+    if (!this.renaming()) return;
     const name = value.trim();
     this.renaming.set(false);
     if (!name) return;
@@ -168,9 +170,7 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   private async applyImage(file: Blob): Promise<void> {
     const id = this.activeId();
     await this.store.savePresetImage(id, file);
-    const preset = this.activePreset();
-    if (preset) preset.hasImage = true;
-    this.presets.set([...this.presets()]);
+    this.presets.set(this.store.loadState().presets);
     this.revokePreview();
     this.previewObjectUrl = URL.createObjectURL(file);
     this.previewSrc.set(this.previewObjectUrl);
@@ -252,11 +252,16 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
     this.revokePreview();
     this.previewSrc.set(DEFAULT_IMAGE_SRC);
     if (preset?.hasImage) {
+      const requestedId = preset.id;
       this.store.loadPresetImage(preset.id).then((url) => {
-        if (url) {
-          this.previewObjectUrl = url;
-          this.previewSrc.set(url);
+        if (!url) return;
+        if (requestedId !== this.activeId()) {
+          URL.revokeObjectURL(url);
+          return;
         }
+        this.revokePreview();
+        this.previewObjectUrl = url;
+        this.previewSrc.set(url);
       });
     }
   }
@@ -292,6 +297,7 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   private refreshThumbs(): void {
     for (const url of this.thumbUrls) URL.revokeObjectURL(url);
     this.thumbUrls.length = 0;
+    const generation = ++this.thumbGeneration;
     const next: Record<string, string> = {};
     for (const preset of this.presets()) {
       if (!preset.hasImage) {
@@ -300,6 +306,10 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
       }
       this.store.loadPresetImage(preset.id).then((url) => {
         if (!url) return;
+        if (generation !== this.thumbGeneration) {
+          URL.revokeObjectURL(url);
+          return;
+        }
         this.thumbUrls.push(url);
         this.thumbs.set({ ...this.thumbs(), [preset.id]: url });
       });

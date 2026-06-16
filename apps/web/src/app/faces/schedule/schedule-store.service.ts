@@ -173,6 +173,7 @@ export class ScheduleStoreService {
     try {
       const db = await openDb();
       await idbPut(db, IDB_STORE_NAME, imageKey(presetId), blob);
+      this.setHasImage(presetId, true);
     } catch {
       // IDB unavailable — silently ignored
     }
@@ -185,6 +186,17 @@ export class ScheduleStoreService {
     } catch {
       // IDB unavailable — silently ignored
     }
+    this.setHasImage(presetId, false);
+  }
+
+  // Flip a preset's hasImage flag in the persisted state. No-op if the preset
+  // is gone (e.g. removePresetImage called from deletePreset after the splice).
+  private setHasImage(presetId: string, hasImage: boolean): void {
+    const state = this.loadState();
+    const preset = state.presets.find((p) => p.id === presetId);
+    if (!preset || preset.hasImage === hasImage) return;
+    preset.hasImage = hasImage;
+    this.saveState(state);
   }
 
   // ---- Legacy single-schedule API (consumed by the not-yet-migrated face and

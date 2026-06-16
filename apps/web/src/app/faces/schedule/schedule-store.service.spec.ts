@@ -233,4 +233,19 @@ describe('ScheduleStoreService', () => {
     service.deletePreset(p.id); // delete the non-active preset
     expect(service.loadState().activePresetId).toBe(DEFAULT_PRESET_ID);
   });
+
+  it('savePresetImage persists hasImage=true on the preset', async () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    await service.savePresetImage(DEFAULT_PRESET_ID, new Blob(['x'], { type: 'image/png' }));
+    expect(service.loadState().presets[0].hasImage).toBe(true);
+  });
+
+  it('removePresetImage persists hasImage=false on the preset', async () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    await service.savePresetImage(DEFAULT_PRESET_ID, new Blob(['x'], { type: 'image/png' }));
+    await service.removePresetImage(DEFAULT_PRESET_ID);
+    expect(service.loadState().presets[0].hasImage).toBe(false);
+  });
 });
