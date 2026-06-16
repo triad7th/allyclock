@@ -157,6 +157,75 @@ describe('TimeMachineComponent', () => {
     expect(clock.isMocked()).toBe(false);
   });
 
+  it('live-applies a chosen time zone via onTimeZone', () => {
+    const clock = TestBed.inject(ClockService);
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    fixture.componentInstance.onTimeZone('Asia/Seoul');
+    fixture.detectChanges();
+
+    expect(clock.timeZone()).toBe('Asia/Seoul');
+    expect(clock.isMocked()).toBe(true);
+    // Sheet stays open while picking.
+    expect(el.querySelector('.tm-sheet')).toBeTruthy();
+  });
+
+  it('returns the zone to local via the Live button', () => {
+    const clock = TestBed.inject(ClockService);
+    const localTz = clock.timeZone();
+    clock.setTimeZone('Asia/Seoul');
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    (el.querySelector('.tm-live-btn') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(clock.timeZone()).toBe(localTz);
+    expect(clock.isMocked()).toBe(false);
+  });
+
+  it('restores the prior zone when dismissed via the backdrop', () => {
+    const clock = TestBed.inject(ClockService);
+    clock.setTimeZone('Europe/Paris');
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    fixture.componentInstance.onTimeZone('Asia/Tokyo');
+    fixture.detectChanges();
+    expect(clock.timeZone()).toBe('Asia/Tokyo');
+
+    (el.querySelector('.tm-backdrop') as HTMLElement).click();
+    fixture.detectChanges();
+
+    // Rollback to the zone captured on open is immediate.
+    expect(clock.timeZone()).toBe('Europe/Paris');
+    vi.advanceTimersByTime(CLOSE_MS);
+    fixture.detectChanges();
+    expect(el.querySelector('.tm-sheet')).toBeNull();
+  });
+
+  it('clears the zone on cancel when none was set before opening', () => {
+    const clock = TestBed.inject(ClockService);
+    const localTz = clock.timeZone();
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    fixture.componentInstance.onTimeZone('Asia/Tokyo');
+    fixture.detectChanges();
+    expect(clock.timeZone()).toBe('Asia/Tokyo');
+
+    (el.querySelector('button.tm-corner-cancel') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(clock.timeZone()).toBe(localTz);
+    expect(clock.isMocked()).toBe(false);
+  });
+
   it('cancels and rolls back when the X button is clicked', () => {
     const clock = TestBed.inject(ClockService);
     const { fixture, el } = create();

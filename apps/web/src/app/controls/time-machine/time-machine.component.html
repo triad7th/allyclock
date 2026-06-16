@@ -93,6 +93,14 @@
             (input)="onTimeSlider($any($event.target).value)"
           />
         </div>
+        <div class="tm-field tm-field-tz">
+          <span class="tm-field-label">Time Zone</span>
+          <select class="tm-tz" [value]="tzDraft()" (change)="onTimeZone($any($event.target).value)">
+            @for (z of timeZones; track z) {
+              <option [value]="z">{{ z }}</option>
+            }
+          </select>
+        </div>
       </div>
     </div>
   </div>

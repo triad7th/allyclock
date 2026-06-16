@@ -27,6 +27,29 @@ function isLeapYear(year: number): boolean {
   return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 }
 
+// Curated zones for the rare runtime without Intl.supportedValuesOf, spanning the
+// common offsets so the picker is still useful.
+const FALLBACK_TIME_ZONES = [
+  'UTC',
+  'America/Los_Angeles',
+  'America/New_York',
+  'Europe/London',
+  'Europe/Paris',
+  'Asia/Seoul',
+  'Asia/Tokyo',
+  'Australia/Sydney',
+];
+
+// All selectable IANA zones: the platform's full list when available, else the
+// curated fallback. Either way the device's local zone is guaranteed present.
+function buildTimeZones(localZone: string): string[] {
+  const base =
+    typeof Intl.supportedValuesOf === 'function'
+      ? Intl.supportedValuesOf('timeZone')
+      : FALLBACK_TIME_ZONES;
+  return base.includes(localZone) ? base : [localZone, ...base];
+}
+
 // 1-based day of the year (Jan 1 === 1). Rounded so DST shifts don't bias it.
 function dayOfYear(date: Date): number {
   const startOfYear = new Date(date.getFullYear(), 0, 0).getTime();
@@ -53,6 +76,12 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
   readonly panelClosing = signal(false);
   readonly visible = signal(true);
 
+  // Selectable zones for the Time Zone field; always includes the active zone.
+  readonly timeZones = buildTimeZones(this.clock.timeZone());
+
+  // The drafted zone, mirroring `draft` for the time. Seeded on open.
+  readonly tzDraft = signal(this.clock.timeZone());
+
   // Canonical draft as a datetime-local string; the text input and both
   // sliders are all derived from it so they stay in sync while scrubbing.
   readonly draft = signal('');
@@ -78,6 +107,9 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
   // Clock state captured when the panel opened, so dismissing without applying
   // can roll back any live scrubbing. null means "was live".
   private mockBeforeOpen: Date | null = null;
+  // The mocked zone captured when the panel opened, for the same rollback. null
+  // means "was following local".
+  private tzBeforeOpen: string | null = null;
   private hideTimer: ReturnType<typeof setTimeout> | undefined;
   private closeTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -102,8 +134,10 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     }
     // Remember the clock state so an outside click / Escape can roll back.
     this.mockBeforeOpen = this.clock.mock();
+    this.tzBeforeOpen = this.clock.mockTz();
     // Seed the picker with whatever the clock currently reads.
     this.draft.set(toLocalInput(this.clock.now()));
+    this.tzDraft.set(this.clock.timeZone());
     this.panelClosing.set(false);
     this.panelOpen.set(true);
   }
@@ -116,6 +150,11 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
       this.clock.setMock(this.mockBeforeOpen);
     } else {
       this.clock.clearMock();
+    }
+    if (this.tzBeforeOpen) {
+      this.clock.setTimeZone(this.tzBeforeOpen);
+    } else {
+      this.clock.clearTimeZone();
     }
     this.beginClose();
   }
@@ -158,15 +197,24 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     else this.draft.set(value);
   }
 
+  // Pick a zone: live-apply it like the sliders/datetime so faces shift now.
+  onTimeZone(tz: string): void {
+    this.tzDraft.set(tz);
+    this.clock.setTimeZone(tz);
+  }
+
   apply(): void {
     const date = fromLocalInput(this.draft());
     if (!date) return;
     this.clock.setMock(date);
+    this.clock.setTimeZone(this.tzDraft());
     this.beginClose();
   }
 
   goLive(): void {
+    // "Live" resets BOTH the time and the zone to the device's local values.
     this.clock.clearMock();
+    this.clock.clearTimeZone();
     this.beginClose();
   }
 

@@ -10,14 +10,22 @@ function toMinutes(time: string): number {
   return h * 60 + m;
 }
 
-function nowMinutes(date: Date): number {
-  return date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60;
+function nowMinutesInZone(date: Date, timeZone: string): number {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+    timeZone,
+  }).formatToParts(date);
+  const get = (t: Intl.DateTimeFormatPartTypes) => Number(parts.find((p) => p.type === t)?.value ?? 0);
+  return get('hour') * 60 + get('minute') + get('second') / 60;
 }
 
-export function currentPixelY(date: Date, segments: ScheduleSegment[]): number {
+export function currentPixelY(date: Date, segments: ScheduleSegment[], timeZone: string): number {
   if (segments.length === 0) return 0;
 
-  const now = nowMinutes(date);
+  const now = nowMinutesInZone(date, timeZone);
   const first = segments[0];
   const last = segments[segments.length - 1];
 
@@ -33,10 +41,14 @@ export function currentPixelY(date: Date, segments: ScheduleSegment[]): number {
   return seg.pixelStart + progress * (seg.pixelEnd - seg.pixelStart);
 }
 
-export function activeSegment(date: Date, segments: ScheduleSegment[]): ScheduleSegment | null {
+export function activeSegment(
+  date: Date,
+  segments: ScheduleSegment[],
+  timeZone: string,
+): ScheduleSegment | null {
   if (segments.length === 0) return null;
 
-  const now = nowMinutes(date);
+  const now = nowMinutesInZone(date, timeZone);
   const first = segments[0];
   const last = segments[segments.length - 1];
 

@@ -2,6 +2,7 @@ import { Injectable, OnDestroy, computed, signal } from '@angular/core';
 
 const TICK_MS = 33; // ~30fps, matching the iOS TimelineView interval
 const MOCK_KEY = 'allyclock.clock.mock';
+const TZ_KEY = 'allyclock.clock.tz';
 
 @Injectable({
   providedIn: 'root',
@@ -15,14 +16,26 @@ export class ClockService implements OnDestroy {
   // Restored from localStorage so a set mock survives a page refresh.
   private readonly mockNow = signal<Date | null>(restoreMock());
 
+  // Time Machine time-zone override. When set, the "primary" faces (Fullscreen,
+  // Daily Schedule) read this IANA zone instead of the device's local zone.
+  // Null means "follow local". Restored from localStorage like the mock instant.
+  private readonly mockTimeZone = signal<string | null>(restoreTimeZone());
+  private readonly localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   // The time every face observes: the mocked instant if set, otherwise live.
   readonly now = computed(() => this.mockNow() ?? this.realNow());
 
-  // Whether the Time Machine is currently overriding the clock.
-  readonly isMocked = computed(() => this.mockNow() !== null);
+  // The active zone every "primary" face uses: the mocked zone if set, else local.
+  readonly timeZone = computed(() => this.mockTimeZone() ?? this.localTimeZone);
+
+  // Whether the Time Machine is currently overriding the clock (time or zone).
+  readonly isMocked = computed(() => this.mockNow() !== null || this.mockTimeZone() !== null);
 
   // The current mock instant, or null when live.
   readonly mock = this.mockNow.asReadonly();
+
+  // The current mocked zone, or null when following local (for rollback).
+  readonly mockTz = this.mockTimeZone.asReadonly();
 
   private readonly intervalId = setInterval(() => this.realNow.set(new Date()), TICK_MS);
 
@@ -46,6 +59,26 @@ export class ClockService implements OnDestroy {
     }
   }
 
+  // Override the active zone with the given IANA zone.
+  setTimeZone(tz: string): void {
+    this.mockTimeZone.set(tz);
+    try {
+      localStorage.setItem(TZ_KEY, tz);
+    } catch {
+      // localStorage unavailable (e.g. private browsing): keep the in-memory value
+    }
+  }
+
+  // Return to the device's local zone.
+  clearTimeZone(): void {
+    this.mockTimeZone.set(null);
+    try {
+      localStorage.removeItem(TZ_KEY);
+    } catch {
+      // localStorage unavailable: the in-memory value is already cleared
+    }
+  }
+
   ngOnDestroy(): void {
     clearInterval(this.intervalId);
   }
@@ -61,6 +94,21 @@ function restoreMock(): Date | null {
     }
   } catch {
     // localStorage unavailable: fall through to live time
+  }
+  return null;
+}
+
+// Restore a persisted mock zone, or null when none/invalid is stored. A zone is
+// usable only if Intl accepts it, so a stale or malformed value is ignored.
+function restoreTimeZone(): string | null {
+  try {
+    const stored = localStorage.getItem(TZ_KEY);
+    if (stored) {
+      new Intl.DateTimeFormat('en-US', { timeZone: stored });
+      return stored;
+    }
+  } catch {
+    // localStorage unavailable, or stored value is not a usable IANA zone
   }
   return null;
 }

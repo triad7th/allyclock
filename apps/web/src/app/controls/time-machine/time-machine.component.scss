@@ -273,6 +273,21 @@
   }
 }
 
+// Time-zone select: matches the datetime field — blue text on a subtle rounded
+// field, dark color scheme so the native dropdown renders for dark mode.
+.tm-tz {
+  appearance: none;
+  width: 100%;
+  background: rgba(118, 118, 128, 0.24);
+  border: none;
+  border-radius: 8px;
+  color: #0a84ff;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.75rem;
+  color-scheme: dark;
+  cursor: pointer;
+}
+
 // iOS UISlider look. The input is a tall, transparent hit-area; the visible
 // 4px track is painted on the track pseudo-element so the 27px thumb centers on
 // it cleanly. The blue minimum-track fill comes from the `--fill` percentage the

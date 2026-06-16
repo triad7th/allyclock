@@ -60,7 +60,7 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   });
 
   readonly activeIndex = computed(() => {
-    const seg = activeSegment(this.clock.now(), this.segments());
+    const seg = activeSegment(this.clock.now(), this.segments(), this.clock.timeZone());
     return seg ? this.segments().indexOf(seg) : 0;
   });
 
@@ -71,12 +71,12 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   );
 
   readonly redBoxTop = computed(() => {
-    const seg = activeSegment(this.clock.now(), this.segments());
+    const seg = activeSegment(this.clock.now(), this.segments(), this.clock.timeZone());
     return seg ? seg.pixelStart * this.scaleFactor() : 0;
   });
 
   readonly redBoxHeight = computed(() => {
-    const seg = activeSegment(this.clock.now(), this.segments());
+    const seg = activeSegment(this.clock.now(), this.segments(), this.clock.timeZone());
     return seg ? (seg.pixelEnd - seg.pixelStart) * this.scaleFactor() : 0;
   });
 

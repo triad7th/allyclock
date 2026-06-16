@@ -10,9 +10,8 @@ import { bigTime, dateTZ, precise } from './clock-formatter';
 export class FullscreenFaceComponent {
   private readonly clock = inject(ClockService);
   private readonly locale = navigator.language || 'en-US';
-  private readonly timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  readonly big = computed(() => bigTime(this.clock.now(), this.locale, this.timeZone));
-  readonly preciseText = computed(() => precise(this.clock.now(), this.timeZone));
-  readonly dateTZText = computed(() => dateTZ(this.clock.now(), this.locale, this.timeZone));
+  readonly big = computed(() => bigTime(this.clock.now(), this.locale, this.clock.timeZone()));
+  readonly preciseText = computed(() => precise(this.clock.now(), this.clock.timeZone()));
+  readonly dateTZText = computed(() => dateTZ(this.clock.now(), this.locale, this.clock.timeZone()));
 }

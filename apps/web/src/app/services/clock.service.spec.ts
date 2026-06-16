@@ -3,6 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { ClockService } from './clock.service';
 
 const MOCK_KEY = 'allyclock.clock.mock';
+const TZ_KEY = 'allyclock.clock.tz';
+
+const LOCAL_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 describe('ClockService', () => {
   let mockStorage: Record<string, string>;
@@ -96,6 +99,52 @@ describe('ClockService', () => {
   it('ignores an invalid stored value and starts live', () => {
     mockStorage[MOCK_KEY] = 'not-a-date';
     const restored = freshService();
+    expect(restored.isMocked()).toBe(false);
+  });
+
+  it('uses the local zone when no zone is mocked', () => {
+    const service = TestBed.inject(ClockService);
+    expect(service.timeZone()).toBe(LOCAL_TZ);
+  });
+
+  it('returns the mocked zone once set', () => {
+    const service = TestBed.inject(ClockService);
+    service.setTimeZone('Asia/Seoul');
+    expect(service.timeZone()).toBe('Asia/Seoul');
+  });
+
+  it('counts a mocked zone alone as mocked', () => {
+    const service = TestBed.inject(ClockService);
+    expect(service.isMocked()).toBe(false);
+    service.setTimeZone('Asia/Seoul');
+    expect(service.isMocked()).toBe(true);
+  });
+
+  it('persists the mocked zone and a fresh service restores it', () => {
+    TestBed.inject(ClockService).setTimeZone('Europe/Paris');
+    expect(localStorage.getItem(TZ_KEY)).toBe('Europe/Paris');
+
+    const restored = freshService();
+    expect(restored.timeZone()).toBe('Europe/Paris');
+    expect(restored.isMocked()).toBe(true);
+  });
+
+  it('clears the mocked zone, so a reload follows local again', () => {
+    const service = TestBed.inject(ClockService);
+    service.setTimeZone('Europe/Paris');
+    service.clearTimeZone();
+    expect(localStorage.getItem(TZ_KEY)).toBeNull();
+    expect(service.timeZone()).toBe(LOCAL_TZ);
+
+    const restored = freshService();
+    expect(restored.timeZone()).toBe(LOCAL_TZ);
+    expect(restored.isMocked()).toBe(false);
+  });
+
+  it('ignores an invalid stored zone and follows local', () => {
+    mockStorage[TZ_KEY] = 'Not/AZone';
+    const restored = freshService();
+    expect(restored.timeZone()).toBe(LOCAL_TZ);
     expect(restored.isMocked()).toBe(false);
   });
 });
