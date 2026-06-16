@@ -50,20 +50,26 @@ describe('TimeMachineComponent', () => {
     expect(liveBtn().classList.contains('is-live')).toBe(false);
   });
 
-  it('applies the drafted time as a mock and marks the button active', () => {
+  it('mocks the clock to the chosen instant live and keeps it on close', () => {
     const clock = TestBed.inject(ClockService);
     const { fixture, el } = create();
     (el.querySelector('button.tm-button') as HTMLButtonElement).click();
     fixture.detectChanges();
 
-    fixture.componentInstance.draft.set('2020-03-04T09:15');
-    (el.querySelector('button[aria-label="Apply"]') as HTMLButtonElement).click();
+    // Editing the datetime field applies the mock live (no Apply button).
+    fixture.componentInstance.onDateTime('2020-03-04T09:15');
     fixture.detectChanges();
 
     // Clock side-effect is immediate.
     expect(clock.isMocked()).toBe(true);
     expect(clock.now().getFullYear()).toBe(2020);
     expect(el.querySelector('button.tm-button')?.classList.contains('active')).toBe(true);
+
+    // Closing via the X keeps the mocked instant.
+    (el.querySelector('button[aria-label="Close"]') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(clock.isMocked()).toBe(true);
+    expect(clock.now().getFullYear()).toBe(2020);
 
     // The sheet slides out, then unmounts after the animation.
     vi.advanceTimersByTime(SHEET_ANIMATION_MS);
@@ -219,7 +225,7 @@ describe('TimeMachineComponent', () => {
     fixture.detectChanges();
     expect(clock.timeZone()).toBe('Asia/Tokyo');
 
-    (el.querySelector('button[aria-label="Cancel"]') as HTMLButtonElement).click();
+    (el.querySelector('button[aria-label="Close"]') as HTMLButtonElement).click();
     fixture.detectChanges();
 
     expect(clock.timeZone()).toBe('Asia/Tokyo');
@@ -302,7 +308,7 @@ describe('TimeMachineComponent', () => {
     fixture.detectChanges();
     expect(clock.isMocked()).toBe(true);
 
-    (el.querySelector('button[aria-label="Cancel"]') as HTMLButtonElement).click();
+    (el.querySelector('button[aria-label="Close"]') as HTMLButtonElement).click();
     fixture.detectChanges();
 
     // Closing accepts: the mock is kept.

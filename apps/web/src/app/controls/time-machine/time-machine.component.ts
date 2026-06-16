@@ -240,14 +240,6 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     this.tzQuery.set('');
   }
 
-  apply(): void {
-    const date = fromLocalInput(this.draft());
-    if (!date) return;
-    this.clock.setMock(date);
-    this.clock.setTimeZone(this.tzDraft());
-    this.sheet()?.close();
-  }
-
   // Live/Mock switch: toggle between following the live timer and freezing at
   // the current instant. Does NOT close the panel; re-syncs the editor (datetime
   // + zone combobox) to the resulting state — including the zone back to local.

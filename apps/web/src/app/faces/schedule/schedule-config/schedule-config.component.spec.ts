@@ -126,52 +126,51 @@ describe('ScheduleConfigComponent', () => {
     expect(fixture.nativeElement.querySelectorAll('.preset-delete')).toHaveLength(0);
   });
 
-  it('emits cancelled when cancel() is called, after the sheet exit animation', () => {
+  it('emits closed when close() is called, after the sheet exit animation', () => {
     vi.useFakeTimers();
     try {
       const fixture = TestBed.createComponent(ScheduleConfigComponent);
       fixture.detectChanges();
-      let cancelled = false;
-      fixture.componentInstance.cancelled.subscribe(() => (cancelled = true));
-      fixture.componentInstance.cancel();
+      let closed = false;
+      fixture.componentInstance.closed.subscribe(() => (closed = true));
+      fixture.componentInstance.close();
       // Routed through <app-sheet>: nothing emits until the exit animation ends.
-      expect(cancelled).toBe(false);
+      expect(closed).toBe(false);
       vi.advanceTimersByTime(SHEET_ANIMATION_MS);
-      expect(cancelled).toBe(true);
+      expect(closed).toBe(true);
     } finally {
       vi.useRealTimers();
     }
   });
 
-  it('clicking the header cancel button emits cancelled after the exit animation', () => {
+  it('clicking the header X button emits closed after the exit animation', () => {
     vi.useFakeTimers();
     try {
       const fixture = TestBed.createComponent(ScheduleConfigComponent);
       fixture.detectChanges();
-      let cancelled = false;
-      fixture.componentInstance.cancelled.subscribe(() => (cancelled = true));
+      let closed = false;
+      fixture.componentInstance.closed.subscribe(() => (closed = true));
       (
-        fixture.nativeElement.querySelector('button[aria-label="Cancel"]') as HTMLButtonElement
+        fixture.nativeElement.querySelector('button[aria-label="Close"]') as HTMLButtonElement
       ).click();
       vi.advanceTimersByTime(SHEET_ANIMATION_MS);
-      expect(cancelled).toBe(true);
+      expect(closed).toBe(true);
     } finally {
       vi.useRealTimers();
     }
   });
 
-  it('clicking the header done button emits saved after the exit animation', () => {
+  it('dismissing via Escape emits closed after the exit animation', () => {
     vi.useFakeTimers();
     try {
       const fixture = TestBed.createComponent(ScheduleConfigComponent);
       fixture.detectChanges();
-      let saved = false;
-      fixture.componentInstance.saved.subscribe(() => (saved = true));
-      (
-        fixture.nativeElement.querySelector('button[aria-label="Done"]') as HTMLButtonElement
-      ).click();
+      let closed = false;
+      fixture.componentInstance.closed.subscribe(() => (closed = true));
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      fixture.detectChanges();
       vi.advanceTimersByTime(SHEET_ANIMATION_MS);
-      expect(saved).toBe(true);
+      expect(closed).toBe(true);
     } finally {
       vi.useRealTimers();
     }

@@ -40,8 +40,7 @@ export interface DraftZone {
 export class ScheduleConfigComponent implements OnInit, OnDestroy {
   private readonly store = inject(ScheduleStoreService);
 
-  readonly saved = output<void>();
-  readonly cancelled = output<void>();
+  readonly closed = output<void>();
 
   // Preset list + which one is being edited (always also the active one).
   readonly presets = signal<SchedulePreset[]>([]);
@@ -99,9 +98,6 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   // Measures the lazily-created preview <img>; returns undefined while the img
   // is hidden behind @if(showImageStage()).
   private readonly imgSize = viewChild(ContainerSizeDirective);
-  // Which terminal action started the exit, resolved once the sheet finishes its
-  // exit animation and calls `onSheetClosed()`.
-  private savedOnClose = false;
 
   ngOnInit(): void {
     const state = this.store.loadState();
@@ -172,28 +168,16 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
     this.refreshThumbs();
   }
 
-  // Both terminal actions route through `<app-sheet>`: they record the outcome,
-  // then start the exit animation. `onSheetClosed()` fires once the sheet has
-  // finished animating and emits `cancelled`/`saved` accordingly.
-  cancel(): void {
-    this.savedOnClose = false;
-    this.sheet()?.close();
-  }
-
-  // The face listens for `saved` to refresh; with immediate commit there is no
-  // staging, so "done" just signals the face to re-read and close.
-  done(): void {
-    this.savedOnClose = true;
+  // Edits commit to the store immediately, so closing the sheet is the only
+  // terminal action: the X, the backdrop, and Escape all route through
+  // `<app-sheet>` and arrive as `onSheetClosed()` once the exit animation ends.
+  close(): void {
     this.sheet()?.close();
   }
 
   onSheetClosed(): void {
-    if (this.savedOnClose) {
-      this.saved.emit();
-    } else {
-      this.revokePreview();
-      this.cancelled.emit();
-    }
+    this.revokePreview();
+    this.closed.emit();
   }
 
   // ---- Editor: image -------------------------------------------------------

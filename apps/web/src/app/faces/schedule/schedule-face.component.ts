@@ -97,15 +97,12 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
     this.faceConfig.open.set(true);
   }
 
-  // The config runs its own exit animation via <app-sheet> and emits these only
-  // after it finishes, so the face unmounts the config immediately.
-  onConfigSaved(): void {
+  // The config commits every edit to the store immediately and runs its own exit
+  // animation via <app-sheet>, emitting `closed` only after it finishes. Every
+  // close path (X / backdrop / Escape) lands here, so we always reload the active
+  // preset — a preset switch shows immediately, with no page refresh.
+  onConfigClosed(): void {
     this.loadActivePreset();
-    this.faceConfig.open.set(false);
-    this.configOpen.set(false);
-  }
-
-  onConfigCancelled(): void {
     this.faceConfig.open.set(false);
     this.configOpen.set(false);
   }
