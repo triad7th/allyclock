@@ -41,6 +41,11 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
     () => this.presets().find((p) => p.id === this.activeId()) ?? this.presets()[0],
   );
   readonly hasImage = computed(() => this.activePreset()?.hasImage ?? false);
+  // The default preset shows the bundled image; any preset with an uploaded
+  // image shows that. Only a brand-new, image-less preset shows the drop-zone.
+  readonly showImageStage = computed(
+    () => this.hasImage() || this.activePreset()?.id === DEFAULT_PRESET_ID,
+  );
   readonly canDelete = computed(() => this.presets().length > 1);
 
   // Editor state for the active preset.
@@ -106,6 +111,16 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
     const created = this.store.addPreset();
     this.presets.set(this.store.loadState().presets);
     this.activeId.set(created.id);
+    this.loadEditorForActive();
+    this.refreshThumbs();
+  }
+
+  async duplicateActive(): Promise<void> {
+    const created = await this.store.duplicatePreset(this.activeId());
+    if (!created) return;
+    const state = this.store.loadState();
+    this.presets.set(state.presets);
+    this.activeId.set(state.activePresetId);
     this.loadEditorForActive();
     this.refreshThumbs();
   }

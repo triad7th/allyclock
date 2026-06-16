@@ -46,13 +46,16 @@
         <button type="button" class="ov-btn" (click)="startRename()" aria-label="Rename preset" title="Rename preset">
           <app-icon name="pencil" />
         </button>
-        @if (hasImage()) {
+        @if (showImageStage()) {
           <label class="ov-btn" aria-label="Swap image" title="Swap image">
             <app-icon name="photo" />
             <input type="file" accept="image/*" (change)="onFileSelected($event)" />
           </label>
           <button type="button" class="ov-btn" (click)="addMarker()" aria-label="Add segment" title="Add segment">
             <app-icon name="plus" />
+          </button>
+          <button type="button" class="ov-btn" (click)="duplicateActive()" aria-label="Duplicate preset" title="Duplicate preset">
+            <app-icon name="square.on.square" />
           </button>
         }
         <button
@@ -67,7 +70,7 @@
         </button>
       </div>
 
-      @if (hasImage()) {
+      @if (showImageStage()) {
         <div class="marker-preview-container">
           <img
             class="marker-preview-img"

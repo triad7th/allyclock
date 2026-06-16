@@ -33,7 +33,14 @@ describe('IconComponent', () => {
   });
 
   it('renders each supported SF Symbol name', () => {
-    for (const name of ['pencil', 'photo', 'plus', 'trash', 'square.and.arrow.up']) {
+    for (const name of [
+      'pencil',
+      'photo',
+      'plus',
+      'trash',
+      'square.and.arrow.up',
+      'square.on.square',
+    ]) {
       expect(render(name)!.querySelector('path')).toBeTruthy();
     }
   });

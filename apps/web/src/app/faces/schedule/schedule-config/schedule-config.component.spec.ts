@@ -18,6 +18,14 @@ const mockStore = {
   state: makeState(),
   loadState: vi.fn(),
   addPreset: vi.fn(),
+  duplicatePreset: vi.fn(() =>
+    Promise.resolve({
+      id: 'dup',
+      name: 'Summer Break - 2',
+      segments: DEFAULT_SEGMENTS,
+      hasImage: true,
+    }),
+  ),
   renamePreset: vi.fn(),
   deletePreset: vi.fn(),
   setActive: vi.fn(),
@@ -37,6 +45,12 @@ describe('ScheduleConfigComponent', () => {
       mockStore.state.presets.push(p);
       mockStore.state.activePresetId = 'p2';
       return p;
+    });
+    mockStore.duplicatePreset.mockImplementation(() => {
+      const p = { id: 'dup', name: 'Summer Break - 2', segments: DEFAULT_SEGMENTS, hasImage: true };
+      mockStore.state.presets.push(p);
+      mockStore.state.activePresetId = 'dup';
+      return Promise.resolve(p);
     });
     mockStore.setActive.mockImplementation((id: string) => {
       mockStore.state.activePresetId = id;
@@ -95,6 +109,22 @@ describe('ScheduleConfigComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.drop-zone')).toBeTruthy();
     expect(fixture.nativeElement.querySelectorAll('.overlay-icons app-icon')).toHaveLength(2);
+  });
+
+  it('default preset shows the image stage and a duplicate button', () => {
+    const fixture = TestBed.createComponent(ScheduleConfigComponent);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.drop-zone')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.marker-preview-container')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('.ov-btn[aria-label="Duplicate preset"]')).toBeTruthy();
+  });
+
+  it('clicking the duplicate button calls store.duplicatePreset', async () => {
+    const fixture = TestBed.createComponent(ScheduleConfigComponent);
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector('.ov-btn[aria-label="Duplicate preset"]') as HTMLElement).click();
+    await fixture.whenStable();
+    expect(mockStore.duplicatePreset).toHaveBeenCalled();
   });
 
   it('clicking .editor-title enters rename mode and shows the rename input', () => {

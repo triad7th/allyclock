@@ -248,4 +248,28 @@ describe('ScheduleStoreService', () => {
     await service.removePresetImage(DEFAULT_PRESET_ID);
     expect(service.loadState().presets[0].hasImage).toBe(false);
   });
+
+  it('duplicatePreset clones an image-bearing preset right after the source and activates it', async () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    const source = service.loadState().presets[0];
+    await service.savePresetImage(DEFAULT_PRESET_ID, new Blob(['x'], { type: 'image/png' }));
+    const copy = await service.duplicatePreset(DEFAULT_PRESET_ID);
+    expect(copy).not.toBeNull();
+    expect(copy!.name).toBe('Summer Break - 2');
+    const state = service.loadState();
+    expect(state.presets).toHaveLength(2);
+    expect(state.presets[1].id).toBe(copy!.id);
+    expect(state.activePresetId).toBe(copy!.id);
+    expect(copy!.segments).toEqual(source.segments);
+    expect(state.presets.find((p) => p.id === copy!.id)!.hasImage).toBe(true);
+  });
+
+  it('duplicatePreset increments the suffix when the previous name is taken', async () => {
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    const first = await service.duplicatePreset(DEFAULT_PRESET_ID);
+    expect(first!.name).toBe('Summer Break - 2');
+    const second = await service.duplicatePreset(DEFAULT_PRESET_ID);
+    expect(second!.name).toBe('Summer Break - 3');
+  });
 });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DEFAULT_SEGMENTS } from './default-schedule';
+import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 import type { ScheduleSegment } from './schedule-formatter';
 import {
   DEFAULT_PRESET_ID,
@@ -115,6 +115,42 @@ export class ScheduleStoreService {
     return preset;
   }
 
+  async duplicatePreset(id: string): Promise<SchedulePreset | null> {
+    const state = this.loadState();
+    const index = state.presets.findIndex((p) => p.id === id);
+    if (index === -1) return null;
+    const source = state.presets[index];
+    const copy: SchedulePreset = {
+      id: newId(),
+      name: nextDuplicateName(source.name, state.presets),
+      segments: source.segments.map((s) => ({ ...s })),
+      hasImage: false,
+    };
+    state.presets.splice(index + 1, 0, copy);
+    state.activePresetId = copy.id;
+    this.saveState(state);
+    await this.copyImageForDuplicate(source, copy.id);
+    return this.loadState().presets.find((p) => p.id === copy.id) ?? copy;
+  }
+
+  // Give the duplicate its own image: copy the source's IDB blob, or — when the
+  // source is the default preset (which shows the bundled asset, not a blob) —
+  // fetch the bundled image and store it. savePresetImage flips hasImage + persists.
+  private async copyImageForDuplicate(source: SchedulePreset, copyId: string): Promise<void> {
+    try {
+      let blob: Blob | undefined;
+      if (source.hasImage) {
+        const db = await openDb();
+        blob = await idbGet<Blob>(db, IDB_STORE_NAME, imageKey(source.id));
+      } else if (source.id === DEFAULT_PRESET_ID) {
+        blob = await (await fetch(DEFAULT_IMAGE_SRC)).blob();
+      }
+      if (blob) await this.savePresetImage(copyId, blob);
+    } catch {
+      // IDB/network unavailable — the duplicate falls back to the bundled image
+    }
+  }
+
   renamePreset(id: string, name: string): void {
     const state = this.loadState();
     const preset = state.presets.find((p) => p.id === id);
@@ -214,6 +250,17 @@ function nextPresetName(presets: SchedulePreset[]): string {
     if (m) max = Math.max(max, Number(m[1]));
   }
   return `Preset #${max + 1}`;
+}
+
+// Name for a duplicated preset: "<base> - N", where base strips any existing
+// " - <num>" suffix and N is the lowest integer ≥ 2 that isn't already taken.
+function nextDuplicateName(sourceName: string, presets: SchedulePreset[]): string {
+  const base = sourceName.replace(/ - \d+$/, '');
+  const taken = new Set(presets.map((p) => p.name));
+  for (let n = 2; ; n++) {
+    const candidate = `${base} - ${n}`;
+    if (!taken.has(candidate)) return candidate;
+  }
 }
 
 function openDb(): Promise<IDBDatabase> {
