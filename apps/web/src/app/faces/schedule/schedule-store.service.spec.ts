@@ -2,6 +2,13 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ScheduleStoreService } from './schedule-store.service';
 import { DEFAULT_SEGMENTS } from './default-schedule';
+import {
+  DEFAULT_PRESET_ID,
+  DEFAULT_PRESET_NAME,
+  LEGACY_IMAGE_KEY,
+  LEGACY_SEGMENTS_KEY,
+  PRESETS_KEY,
+} from './schedule-preset';
 
 // Minimal IDB mock — open() creates a fresh request each time so multiple
 // openDb() calls in a single test all resolve correctly.
@@ -62,7 +69,6 @@ function makeIdbMock() {
   };
 }
 
-// Minimal localStorage mock for environments that lack full Storage API
 function makeLsMock(): Storage {
   const store: Record<string, string> = {};
   return {
@@ -89,6 +95,7 @@ describe('ScheduleStoreService', () => {
   beforeEach(() => {
     lsMock = makeLsMock();
     vi.stubGlobal('localStorage', lsMock);
+    vi.stubGlobal('indexedDB', makeIdbMock());
     TestBed.configureTestingModule({});
   });
 
@@ -96,59 +103,54 @@ describe('ScheduleStoreService', () => {
     vi.unstubAllGlobals();
   });
 
-  it('loadSegments returns DEFAULT_SEGMENTS when nothing stored', () => {
+  it('seeds a default preset when nothing is stored', () => {
     const service = TestBed.inject(ScheduleStoreService);
-    expect(service.loadSegments()).toEqual(DEFAULT_SEGMENTS);
+    const state = service.loadState();
+    expect(state.presets).toHaveLength(1);
+    expect(state.presets[0].id).toBe(DEFAULT_PRESET_ID);
+    expect(state.presets[0].name).toBe(DEFAULT_PRESET_NAME);
+    expect(state.presets[0].segments).toEqual(DEFAULT_SEGMENTS);
+    expect(state.presets[0].hasImage).toBe(false);
+    expect(state.activePresetId).toBe(DEFAULT_PRESET_ID);
   });
 
-  it('saveSegments persists and loadSegments restores', () => {
+  it('migrates legacy segments into the default preset and removes the legacy key', () => {
+    const legacy = [{ pixelStart: 0, pixelEnd: 500, timeStart: '00:00', timeEnd: '12:00' }];
+    localStorage.setItem(LEGACY_SEGMENTS_KEY, JSON.stringify(legacy));
     const service = TestBed.inject(ScheduleStoreService);
-    const segs = [{ pixelStart: 0, pixelEnd: 500, timeStart: '00:00', timeEnd: '12:00' }];
-    service.saveSegments(segs);
-    expect(service.loadSegments()).toEqual(segs);
+    const state = service.loadState();
+    expect(state.presets[0].segments).toEqual(legacy);
+    expect(localStorage.getItem(LEGACY_SEGMENTS_KEY)).toBeNull();
+    expect(localStorage.getItem(PRESETS_KEY)).not.toBeNull();
   });
 
-  it('loadSegments returns DEFAULT_SEGMENTS on invalid JSON', () => {
-    localStorage.setItem('allyclock.schedule', '{bad json}');
+  it('persists the seeded state so a second load is stable', () => {
     const service = TestBed.inject(ScheduleStoreService);
-    expect(service.loadSegments()).toEqual(DEFAULT_SEGMENTS);
+    service.loadState();
+    const raw = localStorage.getItem(PRESETS_KEY);
+    expect(raw).not.toBeNull();
+    const again = service.loadState();
+    expect(again.presets).toHaveLength(1);
   });
 
-  it('saveSegments swallows localStorage quota errors', () => {
+  it('falls back to a fresh default state on corrupt JSON', () => {
+    localStorage.setItem(PRESETS_KEY, '{bad json}');
     const service = TestBed.inject(ScheduleStoreService);
-    vi.spyOn(lsMock, 'setItem').mockImplementation(() => {
-      throw new Error('quota');
-    });
-    expect(() => service.saveSegments([])).not.toThrow();
+    const state = service.loadState();
+    expect(state.presets[0].id).toBe(DEFAULT_PRESET_ID);
   });
 
-  it('saveImage stores blob in IDB and loadImage returns an object URL', async () => {
+  it('migrates a legacy image blob to the default preset id', async () => {
     const idb = makeIdbMock();
+    idb.store[LEGACY_IMAGE_KEY] = new Blob(['x'], { type: 'image/png' });
     vi.stubGlobal('indexedDB', idb);
     const service = TestBed.inject(ScheduleStoreService);
-    const blob = new Blob(['test'], { type: 'image/png' });
-    await service.saveImage(blob);
-    const url = await service.loadImage();
-    expect(url).toBeTruthy();
+    service.loadState();
+    // Let the async re-key complete (IDB mock resolves on timers/microtasks).
+    await new Promise((r) => setTimeout(r, 30));
+    const url = await service.loadPresetImage(DEFAULT_PRESET_ID);
     expect(url).toMatch(/^blob:/);
-  });
-
-  it('loadImage returns null when no image stored', async () => {
-    const idb = makeIdbMock();
-    vi.stubGlobal('indexedDB', idb);
-    const service = TestBed.inject(ScheduleStoreService);
-    const url = await service.loadImage();
-    expect(url).toBeNull();
-  });
-
-  it('removeImage clears the stored blob', async () => {
-    const idb = makeIdbMock();
-    vi.stubGlobal('indexedDB', idb);
-    const service = TestBed.inject(ScheduleStoreService);
-    const blob = new Blob(['test'], { type: 'image/png' });
-    await service.saveImage(blob);
-    await service.removeImage();
-    const url = await service.loadImage();
-    expect(url).toBeNull();
+    expect(idb.store[LEGACY_IMAGE_KEY]).toBeUndefined();
+    expect(service.loadState().presets[0].hasImage).toBe(true);
   });
 });
