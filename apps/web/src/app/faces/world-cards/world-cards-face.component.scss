@@ -4,30 +4,39 @@
   height: 100%;
   overflow-y: auto;
   background: #000;
-  // Establish a query container so the layout reacts to the face's OWN width
-  // (not the window), which keeps it correct inside the scaled face-picker
-  // preview as well as full-screen.
+  // React to the face's OWN width (not the window) so the layout is correct
+  // full-screen AND inside the scaled face-picker preview.
   container-type: inline-size;
 }
 
 .cards {
   display: grid;
   min-height: 100%;
-  // Narrow / cramped: stack into three full-width rows so the clock never
-  // gets squished. Rows fill the height but never crush their content.
+  // Fixed-height cards (their natural content height) centered vertically —
+  // never stretched to fill.
+  align-content: center;
+  // Narrow: three full-width stacked rows.
   grid-template-columns: 1fr;
-  grid-auto-rows: minmax(min-content, 1fr);
 }
 
-// Wide enough for two comfortable side-by-side cards: feature US across the top
-// and place UK / KR beside each other. Below this width the cards reflow to the
-// three stacked rows above.
-@container (min-width: 820px) {
+// Medium: feature US across the top with UK / KR beside it.
+@container (min-width: 800px) {
   .cards {
     grid-template-columns: 1fr 1fr;
   }
 
   app-card:first-child {
     grid-column: 1 / -1;
+  }
+}
+
+// Wide: all three cards in a single row.
+@container (min-width: 1200px) {
+  .cards {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  app-card:first-child {
+    grid-column: auto;
   }
 }

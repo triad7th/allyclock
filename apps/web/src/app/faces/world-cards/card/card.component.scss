@@ -1,23 +1,16 @@
 :host {
   display: block;
-  height: 100%;
-  // Size the clock to the card's OWN width so the time never wraps or squishes,
-  // whether the card is full-width (stacked) or half-width (side by side).
-  container-type: inline-size;
 }
 
 .card-row {
   gap: 0.75rem;
-  height: 100%;
-  padding: 0.5rem 0.25rem;
+  padding: 1rem 0.5rem;
   border-bottom: 1px solid #fff;
 }
 
 .flag {
   flex: 0 0 auto;
-  // Scales with the card's own width; grows well past the old fixed 110px on
-  // roomy cards instead of staying tiny.
-  width: clamp(72px, 22cqi, 240px);
+  width: 110px;
   height: auto;
 }
 
@@ -27,20 +20,20 @@
 
 .time-primary {
   margin: 0 0 0.4rem;
-  font-size: clamp(2rem, 14cqi, 8rem);
+  font-size: 3.77rem;
   line-height: 1;
   white-space: nowrap;
 }
 
 .time-detail {
   margin: 0;
-  font-size: clamp(0.85rem, 5cqi, 1.5rem);
+  font-size: 1.3rem;
   white-space: nowrap;
 }
 
 .time-date {
   margin: 0;
-  font-size: clamp(0.72rem, 3.8cqi, 1.2rem);
+  font-size: 1rem;
   white-space: nowrap;
 }
 
