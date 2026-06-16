@@ -37,19 +37,19 @@ describe('TimeMachineComponent', () => {
     expect(el.querySelector('.tm-backdrop')).toBeTruthy();
   });
 
-  it('shows a Live indicator when not mocked and Mock after applying', () => {
+  it('shows a Live indicator when not mocked and Mock after scrubbing', () => {
     const { fixture, el } = create();
     (el.querySelector('button.tm-button') as HTMLButtonElement).click();
     fixture.detectChanges();
 
-    const status = () => el.querySelector('.tm-status') as HTMLElement;
-    expect(status().textContent?.trim()).toBe('Live');
-    expect(status().classList.contains('mock')).toBe(false);
+    const liveBtn = () => el.querySelector('.tm-live-btn') as HTMLElement;
+    expect(liveBtn().textContent?.trim()).toBe('Live');
+    expect(liveBtn().classList.contains('is-live')).toBe(true);
 
     fixture.componentInstance.onTimeSlider('600');
     fixture.detectChanges();
-    expect(status().textContent?.trim()).toBe('Mock');
-    expect(status().classList.contains('mock')).toBe(true);
+    expect(liveBtn().textContent?.trim()).toBe('Mock');
+    expect(liveBtn().classList.contains('is-live')).toBe(false);
   });
 
   it('applies the drafted time as a mock and marks the button active', () => {
@@ -59,7 +59,7 @@ describe('TimeMachineComponent', () => {
     fixture.detectChanges();
 
     fixture.componentInstance.draft.set('2020-03-04T09:15');
-    (el.querySelector('button.tm-apply') as HTMLButtonElement).click();
+    (el.querySelector('button.tm-corner-apply') as HTMLButtonElement).click();
     fixture.detectChanges();
 
     // Clock side-effect is immediate.
@@ -151,9 +151,29 @@ describe('TimeMachineComponent', () => {
     const { fixture, el } = create();
     (el.querySelector('button.tm-button') as HTMLButtonElement).click();
     fixture.detectChanges();
-    (el.querySelector('button.tm-live') as HTMLButtonElement).click();
+    (el.querySelector('.tm-live-btn') as HTMLButtonElement).click();
     fixture.detectChanges();
 
     expect(clock.isMocked()).toBe(false);
+  });
+
+  it('cancels and rolls back when the X button is clicked', () => {
+    const clock = TestBed.inject(ClockService);
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    fixture.componentInstance.onTimeSlider('570');
+    fixture.detectChanges();
+    expect(clock.isMocked()).toBe(true);
+
+    (el.querySelector('button.tm-corner-cancel') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    // Rollback is immediate; the sheet unmounts after the slide-out.
+    expect(clock.isMocked()).toBe(false);
+    vi.advanceTimersByTime(CLOSE_MS);
+    fixture.detectChanges();
+    expect(el.querySelector('.tm-sheet')).toBeNull();
   });
 });

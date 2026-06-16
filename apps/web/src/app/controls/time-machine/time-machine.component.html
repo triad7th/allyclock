@@ -19,35 +19,57 @@
       (keydown.space)="cancel()"
     ></div>
     <div class="tm-sheet" role="dialog" aria-modal="true" aria-label="Time Machine">
-      <div class="tm-handle"></div>
+      <div class="tm-grabber"></div>
 
-      <div class="tm-header">
-        <span class="tm-title">
-          <app-icon name="clock" class="tm-title-icon" />
-          <span>Time Machine</span>
-        </span>
-        <span class="tm-status" [class.mock]="isMocked()">
-          <span class="tm-status-dot"></span>
-          <span class="tm-status-text">{{ isMocked() ? 'Mock' : 'Live' }}</span>
-        </span>
-      </div>
+      <header class="tm-nav">
+        <button
+          type="button"
+          class="tm-corner tm-corner-cancel"
+          (click)="cancel()"
+          aria-label="Cancel"
+          title="Cancel"
+        >
+          <app-icon name="xmark" />
+        </button>
+        <div class="tm-titlebox">
+          <span class="tm-title">Time Machine</span>
+          <button
+            type="button"
+            class="tm-live-btn"
+            [class.is-live]="!isMocked()"
+            (click)="goLive()"
+            aria-label="Set to live time"
+          >
+            <span class="tm-live-dot"></span>
+            <span>{{ isMocked() ? 'Mock' : 'Live' }}</span>
+          </button>
+        </div>
+        <button
+          type="button"
+          class="tm-corner tm-corner-apply"
+          (click)="apply()"
+          aria-label="Apply time"
+          title="Apply"
+        >
+          <app-icon name="checkmark" />
+        </button>
+      </header>
 
-      <div class="tm-section">
-        <div class="tm-row">
-          <span class="tm-row-label">Date &amp; Time</span>
+      <div class="tm-controls">
+        <div class="tm-field tm-field-datetime">
+          <span class="tm-field-label">Date &amp; Time</span>
           <input
-            class="tm-row-value tm-datetime"
+            class="tm-datetime"
             type="datetime-local"
             [value]="draft()"
             (input)="draft.set($any($event.target).value)"
           />
         </div>
-
-        <div class="tm-row tm-row-slider">
-          <span class="tm-row-head">
-            <span class="tm-row-label">Day</span>
-            <span class="tm-row-value">{{ dayLabel() }}</span>
-          </span>
+        <div class="tm-field tm-field-slider">
+          <div class="tm-field-head">
+            <span class="tm-field-label">Day</span>
+            <span class="tm-field-value">{{ dayLabel() }}</span>
+          </div>
           <input
             type="range"
             min="1"
@@ -57,12 +79,11 @@
             (input)="onDaySlider($any($event.target).value)"
           />
         </div>
-
-        <div class="tm-row tm-row-slider">
-          <span class="tm-row-head">
-            <span class="tm-row-label">Time</span>
-            <span class="tm-row-value">{{ timeLabel() }}</span>
-          </span>
+        <div class="tm-field tm-field-slider">
+          <div class="tm-field-head">
+            <span class="tm-field-label">Time</span>
+            <span class="tm-field-value">{{ timeLabel() }}</span>
+          </div>
           <input
             type="range"
             min="0"
@@ -72,11 +93,6 @@
             (input)="onTimeSlider($any($event.target).value)"
           />
         </div>
-      </div>
-
-      <div class="tm-actions">
-        <button type="button" class="tm-apply" (click)="apply()">Apply</button>
-        <button type="button" class="tm-live" (click)="goLive()">Live</button>
       </div>
     </div>
   </div>

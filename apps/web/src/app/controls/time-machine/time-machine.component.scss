@@ -52,6 +52,9 @@
   left: 0;
   right: 0;
   bottom: 0;
+  // Query container so the controls reflow to columns based on the sheet's
+  // own width, independent of the window.
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -98,7 +101,7 @@
   }
 }
 
-.tm-handle {
+.tm-grabber {
   width: 36px;
   height: 5px;
   background: #555;
@@ -106,117 +109,163 @@
   margin: 0.25rem auto 0.25rem;
 }
 
-.tm-header {
-  display: flex;
+// Nav-bar header: leading corner button, centered title, trailing corner button.
+.tm-nav {
+  display: grid;
+  grid-template-columns: 34px 1fr 34px;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
   padding: 0 1.25rem;
 }
 
-.tm-title {
-  display: flex;
+.tm-corner {
+  display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  font-size: 17px;
+  transition:
+    transform 0.12s ease,
+    background 0.2s ease;
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+// Leading action: cancel — discard everything done in the panel.
+.tm-corner-cancel {
+  background: rgba(118, 118, 128, 0.24);
+  color: #fff;
+
+  &:hover {
+    background: rgba(118, 118, 128, 0.34);
+  }
+}
+
+// Trailing (primary) action: apply the drafted time.
+.tm-corner-apply {
+  background: #0a84ff;
+  color: #fff;
+
+  &:hover {
+    background: #2691ff;
+  }
+}
+
+.tm-titlebox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.tm-title {
   font-size: 1.05rem;
   font-weight: 600;
   color: #fff;
+  line-height: 1.1;
 }
 
-.tm-title-icon {
-  font-size: 1.1rem;
-  color: #0a84ff;
-}
-
-.tm-status {
-  display: flex;
+// Dedicated "go live" button that doubles as the Mock/Live indicator: tapping
+// it sets the clock live, and the label + colour flip to reflect the state.
+.tm-live-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
+  border: none;
+  background: rgba(118, 118, 128, 0.24);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0a84ff; // mocked = iOS blue
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.12s ease;
+
+  &.is-live {
+    color: #30d158; // live = iOS green
+  }
+
+  &:hover {
+    background: rgba(118, 118, 128, 0.34);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+}
+
+.tm-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 5px currentColor;
+}
+
+// Controls grid: one column when narrow, three across on a wide sheet.
+.tm-controls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  padding: 0.25rem 1.25rem 0;
+}
+
+@container (min-width: 820px) {
+  .tm-controls {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: start;
+  }
+}
+
+// Each field is a clean vertical block, no card or separators.
+.tm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tm-field-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.tm-field-label {
+  color: #98989e; // secondaryLabel (dark)
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #30d158; // live = iOS green
-  background: rgba(48, 209, 88, 0.16);
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
-
-  &.mock {
-    color: #0a84ff; // mock = iOS blue
-    background: rgba(10, 132, 255, 0.16);
-  }
 }
 
-.tm-status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 6px currentColor;
-}
-
-// iOS inset-grouped section "card".
-.tm-section {
-  margin: 0 1rem;
-  background: #2c2c2e; // secondarySystemGroupedBackground (dark)
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.tm-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  min-height: 44px;
-  padding: 0.5rem 1rem;
-  position: relative;
-
-  // Hairline separator inset from the left, iOS style.
-  &:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 1rem;
-    right: 0;
-    bottom: 0;
-    height: 0.5px;
-    background: rgba(255, 255, 255, 0.12);
-  }
-}
-
-.tm-row-slider {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.5rem;
-}
-
-.tm-row-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.tm-row-label {
+.tm-field-value {
   color: #fff;
-  font-size: 0.95rem;
-}
-
-.tm-row-value {
-  color: #98989e; // secondaryLabel (dark)
   font-size: 0.95rem;
   font-variant-numeric: tabular-nums;
 }
 
-// iOS inline value capsule for the datetime picker.
+// Clean iOS datetime control: blue text on a subtle rounded field.
 .tm-datetime {
   appearance: none;
+  width: 100%;
   background: rgba(118, 118, 128, 0.24);
   border: none;
   border-radius: 8px;
   color: #0a84ff;
-  font-size: 0.9rem;
-  padding: 0.25rem 0.5rem;
-  text-align: right;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.75rem;
   color-scheme: dark;
 
   &::-webkit-calendar-picker-indicator {
@@ -278,56 +327,5 @@ input[type='range'] {
     background: #fff;
     border: none;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
-  }
-}
-
-.tm-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.25rem 1rem 0;
-}
-
-.tm-apply {
-  background: #0a84ff;
-  color: #fff;
-  font-weight: 600;
-  border: none;
-  border-radius: 12px;
-  min-height: 44px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition:
-    transform 0.12s ease,
-    background 0.2s ease;
-
-  &:hover {
-    background: #2691ff;
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-}
-
-.tm-live {
-  background: rgba(118, 118, 128, 0.24);
-  color: #0a84ff;
-  font-weight: 600;
-  border: none;
-  border-radius: 12px;
-  min-height: 44px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition:
-    transform 0.12s ease,
-    background 0.2s ease;
-
-  &:hover {
-    background: rgba(118, 118, 128, 0.34);
-  }
-
-  &:active {
-    transform: scale(0.98);
   }
 }
