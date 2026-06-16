@@ -96,4 +96,30 @@ describe('ScheduleConfigComponent', () => {
     expect(fixture.nativeElement.querySelector('.drop-zone')).toBeTruthy();
     expect(fixture.nativeElement.querySelectorAll('.overlay-icons app-icon')).toHaveLength(2);
   });
+
+  it('clicking .editor-title enters rename mode and shows the rename input', () => {
+    const fixture = TestBed.createComponent(ScheduleConfigComponent);
+    fixture.detectChanges();
+    const title = fixture.nativeElement.querySelector('.editor-title') as HTMLElement;
+    expect(title).toBeTruthy();
+    title.click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.editor-title')).toBeNull();
+    expect(fixture.nativeElement.querySelector('input.rename-input')).toBeTruthy();
+  });
+
+  it('overlay icon buttons carry title attributes matching their aria-labels', () => {
+    const fixture = TestBed.createComponent(ScheduleConfigComponent);
+    fixture.detectChanges();
+    const renameBtn = fixture.nativeElement.querySelector(
+      '.ov-btn[aria-label="Rename preset"]',
+    ) as HTMLElement;
+    expect(renameBtn).toBeTruthy();
+    expect(renameBtn.getAttribute('title')).toBe('Rename preset');
+    const deleteBtn = fixture.nativeElement.querySelector(
+      '.ov-btn[aria-label="Delete preset"]',
+    ) as HTMLElement;
+    expect(deleteBtn).toBeTruthy();
+    expect(deleteBtn.getAttribute('title')).toBe('Delete preset');
+  });
 });

@@ -37,21 +37,21 @@
           (blur)="commitRename($any($event.target).value)"
         />
       } @else {
-        <h3 class="editor-title">{{ activePreset()?.name }}</h3>
+        <h3 class="editor-title" (click)="startRename()">{{ activePreset()?.name }}</h3>
       }
     </div>
 
     <div class="image-stage" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
       <div class="overlay-icons">
-        <button type="button" class="ov-btn" (click)="startRename()" aria-label="Rename preset">
+        <button type="button" class="ov-btn" (click)="startRename()" aria-label="Rename preset" title="Rename preset">
           <app-icon name="pencil" />
         </button>
         @if (hasImage()) {
-          <label class="ov-btn" aria-label="Swap image">
+          <label class="ov-btn" aria-label="Swap image" title="Swap image">
             <app-icon name="photo" />
             <input type="file" accept="image/*" (change)="onFileSelected($event)" />
           </label>
-          <button type="button" class="ov-btn" (click)="addMarker()" aria-label="Add segment">
+          <button type="button" class="ov-btn" (click)="addMarker()" aria-label="Add segment" title="Add segment">
             <app-icon name="plus" />
           </button>
         }
@@ -61,6 +61,7 @@
           [disabled]="!canDelete()"
           (click)="deleteActive()"
           aria-label="Delete preset"
+          title="Delete preset"
         >
           <app-icon name="trash" />
         </button>
