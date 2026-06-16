@@ -105,7 +105,7 @@ describe('TimeMachineComponent', () => {
     expect(clock.now().getDate()).toBe(1);
   });
 
-  it('restores live time and closes when clicking the backdrop after scrubbing', () => {
+  it('keeps the scrubbed time and closes when clicking the backdrop', () => {
     const clock = TestBed.inject(ClockService);
     const { fixture, el } = create();
     (el.querySelector('button.tm-button') as HTMLButtonElement).click();
@@ -118,14 +118,16 @@ describe('TimeMachineComponent', () => {
     (el.querySelector('.tm-backdrop') as HTMLElement).click();
     fixture.detectChanges();
 
-    // Rollback is immediate; the sheet unmounts after the slide-out.
-    expect(clock.isMocked()).toBe(false);
+    // Closing accepts: the scrubbed mock is kept.
+    expect(clock.isMocked()).toBe(true);
+    expect(clock.now().getHours()).toBe(9);
+    expect(clock.now().getMinutes()).toBe(30);
     vi.advanceTimersByTime(CLOSE_MS);
     fixture.detectChanges();
     expect(el.querySelector('.tm-sheet')).toBeNull();
   });
 
-  it('restores the prior mock when dismissed via Escape without applying', () => {
+  it('keeps the scrubbed time when dismissed via Escape', () => {
     const clock = TestBed.inject(ClockService);
     clock.setMock(new Date('2020-03-04T09:15:00.000Z'));
     const { fixture, el } = create();
@@ -138,8 +140,9 @@ describe('TimeMachineComponent', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     fixture.detectChanges();
 
+    // Closing accepts the scrub (day 200 of 2020), not the pre-open mock.
     expect(clock.isMocked()).toBe(true);
-    expect(clock.now().toISOString()).toBe('2020-03-04T09:15:00.000Z');
+    expect(clock.now().getFullYear()).toBe(2020);
     vi.advanceTimersByTime(CLOSE_MS);
     fixture.detectChanges();
     expect(el.querySelector('.tm-sheet')).toBeNull();
@@ -187,7 +190,7 @@ describe('TimeMachineComponent', () => {
     expect(clock.isMocked()).toBe(false);
   });
 
-  it('restores the prior zone when dismissed via the backdrop', () => {
+  it('keeps the picked zone when dismissed via the backdrop', () => {
     const clock = TestBed.inject(ClockService);
     clock.setTimeZone('Europe/Paris');
     const { fixture, el } = create();
@@ -201,16 +204,15 @@ describe('TimeMachineComponent', () => {
     (el.querySelector('.tm-backdrop') as HTMLElement).click();
     fixture.detectChanges();
 
-    // Rollback to the zone captured on open is immediate.
-    expect(clock.timeZone()).toBe('Europe/Paris');
+    // Closing accepts the picked zone.
+    expect(clock.timeZone()).toBe('Asia/Tokyo');
     vi.advanceTimersByTime(CLOSE_MS);
     fixture.detectChanges();
     expect(el.querySelector('.tm-sheet')).toBeNull();
   });
 
-  it('clears the zone on cancel when none was set before opening', () => {
+  it('keeps the picked zone when the X is clicked', () => {
     const clock = TestBed.inject(ClockService);
-    const localTz = clock.timeZone();
     const { fixture, el } = create();
     (el.querySelector('button.tm-button') as HTMLButtonElement).click();
     fixture.detectChanges();
@@ -222,8 +224,7 @@ describe('TimeMachineComponent', () => {
     (el.querySelector('button.tm-corner-cancel') as HTMLButtonElement).click();
     fixture.detectChanges();
 
-    expect(clock.timeZone()).toBe(localTz);
-    expect(clock.isMocked()).toBe(false);
+    expect(clock.timeZone()).toBe('Asia/Tokyo');
   });
 
   it('freezes at the current time when the Live switch is toggled to mock, without closing', () => {
@@ -258,20 +259,20 @@ describe('TimeMachineComponent', () => {
     expect(fixture.componentInstance.tzDraft()).toBe(localTz);
   });
 
-  it('labels zone options with a GMT offset and sorts them by offset', () => {
+  it('labels zone options with their offset and sorts them by offset', () => {
     const { fixture, el } = create();
     (el.querySelector('button.tm-button') as HTMLButtonElement).click();
     fixture.detectChanges();
 
     const opts = fixture.componentInstance.timeZoneOptions();
     expect(opts.length).toBeGreaterThan(0);
-    expect(opts.every((o) => /GMT[+−]\d{2}:\d{2}/.test(o.label))).toBe(true);
+    expect(opts.every((o) => /[+−]\d{2}:\d{2}/.test(o.label))).toBe(true);
     for (let i = 1; i < opts.length; i++) {
       expect(opts[i].offset).toBeGreaterThanOrEqual(opts[i - 1].offset);
     }
   });
 
-  it('cancels and rolls back when the X button is clicked', () => {
+  it('keeps the scrubbed time when the X is clicked', () => {
     const clock = TestBed.inject(ClockService);
     const { fixture, el } = create();
     (el.querySelector('button.tm-button') as HTMLButtonElement).click();
@@ -284,8 +285,8 @@ describe('TimeMachineComponent', () => {
     (el.querySelector('button.tm-corner-cancel') as HTMLButtonElement).click();
     fixture.detectChanges();
 
-    // Rollback is immediate; the sheet unmounts after the slide-out.
-    expect(clock.isMocked()).toBe(false);
+    // Closing accepts: the mock is kept.
+    expect(clock.isMocked()).toBe(true);
     vi.advanceTimersByTime(CLOSE_MS);
     fixture.detectChanges();
     expect(el.querySelector('.tm-sheet')).toBeNull();

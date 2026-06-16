@@ -67,12 +67,12 @@ function zoneOffsetMinutes(timeZone: string, at: Date): number {
   return (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3]));
 }
 
-// "GMT+09:00" / "GMT−07:00" (U+2212 minus, matching the rest of the app).
+// "+09:00" / "−07:00" (U+2212 minus, matching the rest of the app).
 function formatOffset(min: number): string {
   const pad = (n: number) => String(n).padStart(2, '0');
   const sign = min < 0 ? '−' : '+';
   const abs = Math.abs(min);
-  return `GMT${sign}${pad(Math.floor(abs / 60))}:${pad(abs % 60)}`;
+  return `${sign}${pad(Math.floor(abs / 60))}:${pad(abs % 60)}`;
 }
 
 // Picker options: each zone labelled with its current GMT offset, sorted by
@@ -142,12 +142,6 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
   });
   readonly timeFillPercent = computed(() => (this.minuteOfDay() / 1439) * 100);
 
-  // Clock state captured when the panel opened, so dismissing without applying
-  // can roll back any live scrubbing. null means "was live".
-  private mockBeforeOpen: Date | null = null;
-  // The mocked zone captured when the panel opened, for the same rollback. null
-  // means "was following local".
-  private tzBeforeOpen: string | null = null;
   private hideTimer: ReturnType<typeof setTimeout> | undefined;
   private closeTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -170,9 +164,6 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
       this.cancel();
       return;
     }
-    // Remember the clock state so an outside click / Escape can roll back.
-    this.mockBeforeOpen = this.clock.mock();
-    this.tzBeforeOpen = this.clock.mockTz();
     // Seed the picker with whatever the clock currently reads.
     this.draft.set(toLocalInput(this.clock.now()));
     this.tzDraft.set(this.clock.timeZone());
@@ -184,20 +175,10 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     this.panelOpen.set(true);
   }
 
-  // Dismiss without committing: restore the pre-open clock state now, then
-  // play the slide-out before unmounting the sheet.
+  // Close the panel, accepting the live-scrubbed state. The X, the backdrop, and
+  // Escape are all "accept and close" — whatever the user set is kept.
   cancel(): void {
     if (!this.panelOpen() || this.panelClosing()) return;
-    if (this.mockBeforeOpen) {
-      this.clock.setMock(this.mockBeforeOpen);
-    } else {
-      this.clock.clearMock();
-    }
-    if (this.tzBeforeOpen) {
-      this.clock.setTimeZone(this.tzBeforeOpen);
-    } else {
-      this.clock.clearTimeZone();
-    }
     this.beginClose();
   }
 
