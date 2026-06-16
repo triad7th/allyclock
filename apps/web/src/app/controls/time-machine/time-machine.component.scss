@@ -289,9 +289,8 @@
   }
 }
 
-// Time-zone select: matches the datetime field — blue text on a subtle rounded
-// field, dark color scheme so the native dropdown renders for dark mode.
-.tm-tz {
+// GMT-offset select on the Date & Time field — matches the datetime control.
+.tm-gmt {
   appearance: none;
   width: 100%;
   background: rgba(118, 118, 128, 0.24);
@@ -301,6 +300,97 @@
   font-size: 0.95rem;
   padding: 0.5rem 0.75rem;
   color-scheme: dark;
+  cursor: pointer;
+}
+
+// Time-zone trigger: a left-aligned field showing the current zone; opens the
+// searchable picker. Matches the datetime field's look.
+.tm-tz {
+  width: 100%;
+  background: rgba(118, 118, 128, 0.24);
+  border: none;
+  border-radius: 8px;
+  color: #0a84ff;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(118, 118, 128, 0.34);
+  }
+}
+
+// Searchable zone picker: a search box over a scrollable, filtered list, shown
+// in place of the controls.
+.tm-tzpicker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.25rem 1.25rem 0;
+  min-width: 0;
+}
+
+.tm-tz-search {
+  appearance: none;
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(118, 118, 128, 0.24);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.75rem;
+
+  &::placeholder {
+    color: #98989e;
+  }
+}
+
+.tm-tz-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 45vh;
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+.tm-tz-option {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 0.95rem;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+  border-radius: 6px;
+
+  &:hover {
+    background: rgba(118, 118, 128, 0.18);
+  }
+
+  &.active {
+    color: #0a84ff;
+    font-weight: 600;
+  }
+}
+
+.tm-tz-empty {
+  color: #98989e;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem 0;
+  margin: 0;
+}
+
+.tm-tz-back {
+  align-self: center;
+  background: none;
+  border: none;
+  color: #0a84ff;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.75rem;
   cursor: pointer;
 }
 

@@ -272,6 +272,46 @@ describe('TimeMachineComponent', () => {
     }
   });
 
+  it('searches and picks a zone from the Time Zone picker', () => {
+    const clock = TestBed.inject(ClockService);
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    fixture.componentInstance.openTzPicker();
+    fixture.detectChanges();
+    expect(el.querySelector('.tm-tzpicker')).toBeTruthy();
+
+    fixture.componentInstance.tzQuery.set('Seoul');
+    fixture.detectChanges();
+    const filtered = fixture.componentInstance.filteredZones();
+    expect(filtered.length).toBeGreaterThan(0);
+    expect(filtered.every((z) => z.label.toLowerCase().includes('seoul'))).toBe(true);
+
+    fixture.componentInstance.pickTimeZone('Asia/Seoul');
+    fixture.detectChanges();
+    expect(clock.timeZone()).toBe('Asia/Seoul');
+    expect(fixture.componentInstance.tzPickerOpen()).toBe(false);
+  });
+
+  it('jumps to the alphanumerically-first zone at a selected GMT offset', () => {
+    const clock = TestBed.inject(ClockService);
+    const { fixture, el } = create();
+    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    const seoul = fixture.componentInstance.timeZoneOptions().find((z) => z.id === 'Asia/Seoul');
+    expect(seoul).toBeTruthy();
+    const firstAtOffset = fixture.componentInstance
+      .timeZoneOptions()
+      .find((z) => z.offset === seoul!.offset)!.id;
+
+    fixture.componentInstance.onGmtSelect(String(seoul!.offset));
+    fixture.detectChanges();
+
+    expect(clock.timeZone()).toBe(firstAtOffset);
+  });
+
   it('keeps the scrubbed time when the X is clicked', () => {
     const clock = TestBed.inject(ClockService);
     const { fixture, el } = create();

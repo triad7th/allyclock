@@ -57,53 +57,83 @@
         </div>
       </header>
 
-      <div class="tm-controls">
-        <div class="tm-field tm-field-datetime">
-          <span class="tm-field-label">Date &amp; Time</span>
+      @if (tzPickerOpen()) {
+        <div class="tm-tzpicker">
           <input
-            class="tm-datetime"
-            type="datetime-local"
-            [value]="draft()"
-            (input)="onDateTime($any($event.target).value)"
+            class="tm-tz-search"
+            type="text"
+            [value]="tzQuery()"
+            (input)="tzQuery.set($any($event.target).value)"
+            placeholder="Search time zone"
+            aria-label="Search time zone"
+            autofocus
           />
-        </div>
-        <div class="tm-field tm-field-slider">
-          <div class="tm-field-head">
-            <span class="tm-field-label">Day</span>
-            <span class="tm-field-value">{{ dayLabel() }}</span>
-          </div>
-          <input
-            type="range"
-            min="1"
-            [max]="maxDayOfYear()"
-            [value]="dayOfYear()"
-            [style.--fill.%]="dayFillPercent()"
-            (input)="onDaySlider($any($event.target).value)"
-          />
-        </div>
-        <div class="tm-field tm-field-slider">
-          <div class="tm-field-head">
-            <span class="tm-field-label">Time</span>
-            <span class="tm-field-value">{{ timeLabel() }}</span>
-          </div>
-          <input
-            type="range"
-            min="0"
-            max="1439"
-            [value]="minuteOfDay()"
-            [style.--fill.%]="timeFillPercent()"
-            (input)="onTimeSlider($any($event.target).value)"
-          />
-        </div>
-        <div class="tm-field tm-field-tz">
-          <span class="tm-field-label">Time Zone</span>
-          <select class="tm-tz" (change)="onTimeZone($any($event.target).value)">
-            @for (z of timeZoneOptions(); track z.id) {
-              <option [value]="z.id" [selected]="z.id === tzDraft()">{{ z.label }}</option>
+          <div class="tm-tz-list">
+            @for (z of filteredZones(); track z.id) {
+              <button
+                type="button"
+                class="tm-tz-option"
+                [class.active]="z.id === tzDraft()"
+                (click)="pickTimeZone(z.id)"
+              >
+                {{ z.label }}
+              </button>
+            } @empty {
+              <p class="tm-tz-empty">No matching time zone</p>
             }
-          </select>
+          </div>
+          <button type="button" class="tm-tz-back" (click)="closeTzPicker()">Cancel</button>
         </div>
-      </div>
+      } @else {
+        <div class="tm-controls">
+          <div class="tm-field tm-field-datetime">
+            <span class="tm-field-label">Date &amp; Time</span>
+            <input
+              class="tm-datetime"
+              type="datetime-local"
+              [value]="draft()"
+              (input)="onDateTime($any($event.target).value)"
+            />
+            <select class="tm-gmt" (change)="onGmtSelect($any($event.target).value)" aria-label="GMT offset">
+              @for (g of gmtOptions(); track g.offset) {
+                <option [value]="g.offset" [selected]="g.offset === selectedOffset()">{{ g.label }}</option>
+              }
+            </select>
+          </div>
+          <div class="tm-field tm-field-slider">
+            <div class="tm-field-head">
+              <span class="tm-field-label">Day</span>
+              <span class="tm-field-value">{{ dayLabel() }}</span>
+            </div>
+            <input
+              type="range"
+              min="1"
+              [max]="maxDayOfYear()"
+              [value]="dayOfYear()"
+              [style.--fill.%]="dayFillPercent()"
+              (input)="onDaySlider($any($event.target).value)"
+            />
+          </div>
+          <div class="tm-field tm-field-slider">
+            <div class="tm-field-head">
+              <span class="tm-field-label">Time</span>
+              <span class="tm-field-value">{{ timeLabel() }}</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="1439"
+              [value]="minuteOfDay()"
+              [style.--fill.%]="timeFillPercent()"
+              (input)="onTimeSlider($any($event.target).value)"
+            />
+          </div>
+          <div class="tm-field tm-field-tz">
+            <span class="tm-field-label">Time Zone</span>
+            <button type="button" class="tm-tz" (click)="openTzPicker()">{{ activeZoneLabel() }}</button>
+          </div>
+        </div>
+      }
     </div>
   </div>
 }
