@@ -115,12 +115,17 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
 
   private loadActivePreset(): void {
     const state = this.store.loadState();
+    // The store always seeds at least one preset and never deletes the last, so
+    // presets[0] is a safe fallback if activePresetId ever points nowhere.
     const active = state.presets.find((p) => p.id === state.activePresetId) ?? state.presets[0];
     this.segments.set(active.segments);
-    this.imageUrl.set(DEFAULT_IMAGE_SRC);
-    this.store.loadPresetImage(active.id).then((url) => {
-      if (url) this.imageUrl.set(url);
-    });
+    // Only touch imageUrl once we know the source, so re-loading after a save
+    // doesn't flash the default image before the per-preset image resolves.
+    if (!active.hasImage) {
+      this.imageUrl.set(DEFAULT_IMAGE_SRC);
+    } else {
+      this.store.loadPresetImage(active.id).then((url) => this.imageUrl.set(url ?? DEFAULT_IMAGE_SRC));
+    }
   }
 
   // Run the slide-out animation, then remove the config page from the DOM.
