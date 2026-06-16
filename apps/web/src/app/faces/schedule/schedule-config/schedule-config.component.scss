@@ -37,6 +37,68 @@
   padding: 1.5rem 1.5rem 2rem;
 }
 
+// iOS nav-bar header: leading cancel, centered title, trailing done. Sits at
+// the top of the panel above the scrollable presets/editor content.
+.config-nav {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 34px 1fr 34px;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.config-title {
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.config-corner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    transform 0.12s ease,
+    background 0.2s ease;
+
+  app-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+// Leading action: cancel — close the panel.
+.config-cancel {
+  background: rgba(118, 118, 128, 0.24);
+  color: #fff;
+
+  &:hover {
+    background: rgba(118, 118, 128, 0.34);
+  }
+}
+
+// Trailing (primary) action: done.
+.config-done {
+  background: #0a84ff;
+  color: #fff;
+
+  &:hover {
+    background: #2691ff;
+  }
+}
+
 section {
   margin-bottom: 1.5rem;
 

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { FaceConfigService } from './services/face-config.service';
 
 const mockStorage: Record<string, string> = {};
 
@@ -69,6 +70,18 @@ describe('AppComponent', () => {
     expect(el.querySelector('app-face-picker-sheet')).toBeNull();
     expect(localStorage.getItem('allyclock.face')).toBe('world-cards');
     vi.useRealTimers();
+  });
+
+  it('hides the controls bar while a face config panel is open', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const bar = el.querySelector('.controls-bar') as HTMLElement;
+    expect(bar.classList.contains('hidden')).toBe(false);
+
+    TestBed.inject(FaceConfigService).open.set(true);
+    fixture.detectChanges();
+    expect(bar.classList.contains('hidden')).toBe(true);
   });
 
   it('restores the persisted face on startup', () => {

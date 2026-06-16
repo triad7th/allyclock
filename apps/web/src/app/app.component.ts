@@ -5,6 +5,7 @@ import { FacePreferenceService } from './services/face-preference.service';
 import { ConfigureButtonComponent } from './controls/configure-button/configure-button.component';
 import { FacePickerSheetComponent } from './controls/face-picker-sheet/face-picker-sheet.component';
 import { TimeMachineComponent } from './controls/time-machine/time-machine.component';
+import { FaceConfigService } from './services/face-config.service';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,7 @@ import { TimeMachineComponent } from './controls/time-machine/time-machine.compo
 })
 export class AppComponent {
   private readonly preference = inject(FacePreferenceService);
+  protected readonly faceConfig = inject(FaceConfigService);
   private readonly configureButton = viewChild.required(ConfigureButtonComponent);
 
   readonly sheetOpen = signal(false);

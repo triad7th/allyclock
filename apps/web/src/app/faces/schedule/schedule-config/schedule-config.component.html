@@ -1,4 +1,14 @@
 <div class="config-panel">
+  <header class="config-nav">
+    <button type="button" class="config-corner config-cancel" (click)="cancel()" aria-label="Cancel" title="Cancel">
+      <app-icon name="xmark" />
+    </button>
+    <span class="config-title">Daily Schedule</span>
+    <button type="button" class="config-corner config-done" (click)="done()" aria-label="Done" title="Done">
+      <app-icon name="checkmark" />
+    </button>
+  </header>
+
   <section class="presets-section">
     <h3>Presets</h3>
     <div class="preset-row">

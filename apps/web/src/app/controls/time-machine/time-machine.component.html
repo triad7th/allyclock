@@ -62,7 +62,7 @@
             class="tm-datetime"
             type="datetime-local"
             [value]="draft()"
-            (input)="draft.set($any($event.target).value)"
+            (input)="onDateTime($any($event.target).value)"
           />
         </div>
         <div class="tm-field tm-field-slider">

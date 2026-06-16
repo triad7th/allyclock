@@ -7,12 +7,12 @@ import {
   computed,
   inject,
   signal,
-  viewChild,
 } from '@angular/core';
 import { ClockService } from '../../services/clock.service';
 import { ScheduleStoreService } from './schedule-store.service';
 import { ScheduleConfigComponent } from './schedule-config/schedule-config.component';
 import { IconComponent } from '../../ui/icon/icon.component';
+import { FaceConfigService } from '../../services/face-config.service';
 import { activeSegment, framedWindow } from './schedule-formatter';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 
@@ -35,6 +35,7 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   private readonly clock = inject(ClockService);
   private readonly store = inject(ScheduleStoreService);
   private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly faceConfig = inject(FaceConfigService);
 
   readonly defaultImageSrc = DEFAULT_IMAGE_SRC;
   readonly imageUrl = signal(DEFAULT_IMAGE_SRC);
@@ -48,8 +49,6 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   readonly gearVisible = signal(true);
   readonly configOpen = signal(false);
   readonly configClosing = signal(false);
-
-  private readonly config = viewChild(ScheduleConfigComponent);
 
   private gearTimer: ReturnType<typeof setTimeout> | undefined;
   private closeTimer: ReturnType<typeof setTimeout> | undefined;
@@ -104,6 +103,7 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
     this.resizeObserver?.disconnect();
     clearTimeout(this.gearTimer);
     clearTimeout(this.closeTimer);
+    this.faceConfig.open.set(false);
   }
 
   private measureHost(): void {
@@ -124,28 +124,21 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   }
 
   onGearClick(): void {
-    // Closed → open the editor. Open → the gear is the "X": cancel without
-    // saving, letting the config clean up any pending image/object URL.
-    if (!this.configOpen()) {
-      this.configOpen.set(true);
-      return;
-    }
-    const cfg = this.config();
-    if (cfg) cfg.cancel();
-    else this.configOpen.set(false);
-  }
-
-  // The check button: commit the editor's changes (it emits saved on success).
-  onSaveClick(): void {
-    this.config()?.done();
+    // Open the editor. The header's X/checkmark close it; the gear is hidden
+    // while the config is open. Setting the shared signal hides the app's
+    // Face/Time controls so you can't switch face from inside this config.
+    this.configOpen.set(true);
+    this.faceConfig.open.set(true);
   }
 
   onConfigSaved(): void {
     this.loadActivePreset();
+    this.faceConfig.open.set(false);
     this.beginConfigClose();
   }
 
   onConfigCancelled(): void {
+    this.faceConfig.open.set(false);
     this.beginConfigClose();
   }
 

@@ -150,6 +150,14 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     this.scrubTo(next);
   }
 
+  // Edit the date & time field: scrub the clock live too, so the change takes
+  // effect immediately instead of waiting for a slider move.
+  onDateTime(value: string): void {
+    const date = fromLocalInput(value);
+    if (date) this.scrubTo(date);
+    else this.draft.set(value);
+  }
+
   apply(): void {
     const date = fromLocalInput(this.draft());
     if (!date) return;

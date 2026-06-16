@@ -134,6 +134,24 @@ describe('ScheduleConfigComponent', () => {
     expect(cancelled).toBe(true);
   });
 
+  it('clicking the header cancel button emits cancelled', () => {
+    const fixture = TestBed.createComponent(ScheduleConfigComponent);
+    fixture.detectChanges();
+    let cancelled = false;
+    fixture.componentInstance.cancelled.subscribe(() => (cancelled = true));
+    (fixture.nativeElement.querySelector('.config-cancel') as HTMLButtonElement).click();
+    expect(cancelled).toBe(true);
+  });
+
+  it('clicking the header done button emits saved', () => {
+    const fixture = TestBed.createComponent(ScheduleConfigComponent);
+    fixture.detectChanges();
+    let saved = false;
+    fixture.componentInstance.saved.subscribe(() => (saved = true));
+    (fixture.nativeElement.querySelector('.config-done') as HTMLButtonElement).click();
+    expect(saved).toBe(true);
+  });
+
   it('empty preset shows a drop zone and only rename + delete overlay icons', () => {
     const fixture = TestBed.createComponent(ScheduleConfigComponent);
     fixture.detectChanges();

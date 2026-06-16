@@ -14,8 +14,20 @@
   gap: 0.75rem;
   z-index: 10;
   pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  &.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .controls-bar > * {
   pointer-events: auto;
+}
+
+// While hidden, also block the children (which re-enable pointer-events above),
+// so the invisible Face/Time buttons aren't clickable behind a face's config.
+.controls-bar.hidden > * {
+  pointer-events: none;
 }
