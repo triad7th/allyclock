@@ -34,7 +34,17 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1.5rem 2rem;
+  padding: 0.5rem 1.5rem 2rem;
+}
+
+// Top-centered grab handle, matching the Time Machine sheet.
+.config-grabber {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 5px;
+  background: #555;
+  border-radius: 2.5px;
+  margin: 0.25rem auto 0.75rem;
 }
 
 // iOS nav-bar header: leading cancel, centered title, trailing done. Sits at
