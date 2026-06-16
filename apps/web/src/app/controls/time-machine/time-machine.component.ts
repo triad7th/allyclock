@@ -133,23 +133,6 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     () => this.timeZoneOptions().find((z) => z.id === this.tzDraft())?.label ?? this.tzDraft(),
   );
 
-  // GMT-offset picker on the Date & Time field: the distinct offsets among all
-  // zones (ascending). timeZoneOptions is sorted by offset then id, so the first
-  // zone at a given offset is the alphanumerically-first one.
-  readonly gmtOptions = computed(() => {
-    const seen = new Set<number>();
-    const out: { offset: number; label: string }[] = [];
-    for (const z of this.timeZoneOptions()) {
-      if (!seen.has(z.offset)) {
-        seen.add(z.offset);
-        out.push({ offset: z.offset, label: formatOffset(z.offset) });
-      }
-    }
-    return out;
-  });
-  readonly selectedOffset = computed(
-    () => this.timeZoneOptions().find((z) => z.id === this.tzDraft())?.offset ?? 0,
-  );
 
   // Canonical draft as a datetime-local string; the text input and both
   // sliders are all derived from it so they stay in sync while scrubbing.
@@ -257,14 +240,6 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
   onTimeZone(tz: string): void {
     this.tzDraft.set(tz);
     this.clock.setTimeZone(tz);
-  }
-
-  // Pick a GMT offset: jump to the alphanumerically-first zone at that offset,
-  // which keeps the Time Zone field in sync.
-  onGmtSelect(value: string): void {
-    const offset = Number(value);
-    const id = this.timeZoneOptions().find((z) => z.offset === offset)?.id;
-    if (id) this.onTimeZone(id);
   }
 
   // Searchable Time Zone picker (a view that replaces the controls while open).

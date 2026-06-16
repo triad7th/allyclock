@@ -94,11 +94,6 @@
               [value]="draft()"
               (input)="onDateTime($any($event.target).value)"
             />
-            <select class="tm-gmt" (change)="onGmtSelect($any($event.target).value)" aria-label="GMT offset">
-              @for (g of gmtOptions(); track g.offset) {
-                <option [value]="g.offset" [selected]="g.offset === selectedOffset()">{{ g.label }}</option>
-              }
-            </select>
           </div>
           <div class="tm-field tm-field-slider">
             <div class="tm-field-head">

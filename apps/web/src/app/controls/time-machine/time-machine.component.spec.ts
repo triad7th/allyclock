@@ -294,24 +294,6 @@ describe('TimeMachineComponent', () => {
     expect(fixture.componentInstance.tzPickerOpen()).toBe(false);
   });
 
-  it('jumps to the alphanumerically-first zone at a selected GMT offset', () => {
-    const clock = TestBed.inject(ClockService);
-    const { fixture, el } = create();
-    (el.querySelector('button.tm-button') as HTMLButtonElement).click();
-    fixture.detectChanges();
-
-    const seoul = fixture.componentInstance.timeZoneOptions().find((z) => z.id === 'Asia/Seoul');
-    expect(seoul).toBeTruthy();
-    const firstAtOffset = fixture.componentInstance
-      .timeZoneOptions()
-      .find((z) => z.offset === seoul!.offset)!.id;
-
-    fixture.componentInstance.onGmtSelect(String(seoul!.offset));
-    fixture.detectChanges();
-
-    expect(clock.timeZone()).toBe(firstAtOffset);
-  });
-
   it('keeps the scrubbed time when the X is clicked', () => {
     const clock = TestBed.inject(ClockService);
     const { fixture, el } = create();

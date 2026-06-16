@@ -289,20 +289,6 @@
   }
 }
 
-// GMT-offset select on the Date & Time field — matches the datetime control.
-.tm-gmt {
-  appearance: none;
-  width: 100%;
-  background: rgba(118, 118, 128, 0.24);
-  border: none;
-  border-radius: 8px;
-  color: #0a84ff;
-  font-size: 0.95rem;
-  padding: 0.5rem 0.75rem;
-  color-scheme: dark;
-  cursor: pointer;
-}
-
 // Time-zone trigger: a left-aligned field showing the current zone; opens the
 // searchable picker. Matches the datetime field's look.
 .tm-tz {
