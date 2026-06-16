@@ -1,3 +1,47 @@
+:host {
+  display: block;
+  height: 100%;
+  // Size the clock to the card's OWN width so the time never wraps or squishes,
+  // whether the card is full-width (stacked) or half-width (side by side).
+  container-type: inline-size;
+}
+
+.card-row {
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0.5rem 0.25rem;
+  border-bottom: 1px solid #fff;
+}
+
+.flag {
+  flex: 0 0 auto;
+  width: clamp(64px, 18cqi, 110px);
+  height: auto;
+}
+
+.times {
+  min-width: 0;
+}
+
+.time-primary {
+  margin: 0 0 0.4rem;
+  font-size: clamp(2rem, 13cqi, 3.77rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.time-detail {
+  margin: 0;
+  font-size: clamp(0.8rem, 4.6cqi, 1.3rem);
+  white-space: nowrap;
+}
+
+.time-date {
+  margin: 0;
+  font-size: clamp(0.7rem, 3.6cqi, 1rem);
+  white-space: nowrap;
+}
+
 // Cross-platform monospace stack. `consolas` alone only resolves on Windows;
 // macOS has no Consolas, so it fell back to the default sans-serif. Ending in
 // the generic `monospace` keyword guarantees a monospace face on every OS.
