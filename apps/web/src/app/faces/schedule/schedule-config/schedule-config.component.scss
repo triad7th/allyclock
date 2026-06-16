@@ -311,4 +311,15 @@ section {
     color: #888;
     font-size: 0.75rem;
   }
+
+  .zone-end {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+
+    app-icon {
+      width: 0.7rem;
+      height: 0.7rem;
+    }
+  }
 }

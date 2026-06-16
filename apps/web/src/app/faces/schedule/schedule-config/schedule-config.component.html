@@ -99,7 +99,7 @@
                   [value]="draftZones()[$index].from"
                   (change)="updateZoneFrom($index, $any($event.target).value)"
                 />
-                <span class="zone-end">→ {{ zoneEndTimes()[$index] }}</span>
+                <span class="zone-end"><app-icon name="arrow.right" />{{ zoneEndTimes()[$index] }}</span>
               </div>
             </div>
           }

@@ -43,6 +43,7 @@ describe('IconComponent', () => {
       'xmark',
       'checkmark',
       'gearshape',
+      'arrow.right',
     ]) {
       expect(render(name)!.querySelector('path')).toBeTruthy();
     }
