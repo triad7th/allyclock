@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { FaceConfigService } from './services/face-config.service';
+import { FACE_TRANSITION_MS } from './config/animation-timing';
 
 const mockStorage: Record<string, string> = {};
 
@@ -69,6 +70,38 @@ describe('AppComponent', () => {
     expect(el.querySelector('app-world-cards-face')).toBeTruthy();
     expect(el.querySelector('app-face-picker-sheet')).toBeNull();
     expect(localStorage.getItem('allyclock.face')).toBe('world-cards');
+    vi.useRealTimers();
+  });
+
+  it('crossfades the old and new face during a switch', () => {
+    vi.useFakeTimers();
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    (el.querySelector('button.configure') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    const options = el.querySelectorAll('button.face-option');
+    (options[1] as HTMLButtonElement).click();
+    // The sheet plays its slide-out before faceSelect fires and the crossfade begins.
+    vi.advanceTimersByTime(300);
+    fixture.detectChanges();
+
+    // Mid-crossfade: both faces are stacked, exactly one layer is leaving.
+    const layers = el.querySelectorAll('.face-layer');
+    expect(layers.length).toBe(2);
+    expect(el.querySelectorAll('.face-layer.leaving').length).toBe(1);
+    expect(el.querySelector('app-fullscreen-face')).toBeTruthy();
+    expect(el.querySelector('app-world-cards-face')).toBeTruthy();
+
+    // After the transition completes, only the incoming face remains.
+    vi.advanceTimersByTime(FACE_TRANSITION_MS);
+    fixture.detectChanges();
+    const settled = el.querySelectorAll('.face-layer');
+    expect(settled.length).toBe(1);
+    expect(settled[0].querySelector('app-world-cards-face')).toBeTruthy();
+    expect(el.querySelector('app-fullscreen-face')).toBeNull();
     vi.useRealTimers();
   });
 

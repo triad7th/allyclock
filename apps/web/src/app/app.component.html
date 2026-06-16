@@ -1,5 +1,9 @@
 <main class="face-host">
-  <ng-container [ngComponentOutlet]="activeFace().component" />
+  @for (layer of layers(); track layer.key) {
+    <div class="face-layer" [class.leaving]="layer.leaving">
+      <ng-container [ngComponentOutlet]="layer.face.component" />
+    </div>
+  }
 </main>
 <div class="controls-bar" [class.hidden]="faceConfig.open()">
   <app-configure-button [pinned]="sheetOpen()" (open)="openSheet()" />

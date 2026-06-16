@@ -1,6 +1,37 @@
+@use 'tokens' as t;
+
 .face-host {
   position: fixed;
   inset: 0;
+}
+
+.face-layer {
+  position: absolute;
+  inset: 0;
+  animation: face-fade-in t.$face-anim ease both;
+}
+
+.face-layer.leaving {
+  pointer-events: none;
+  animation: face-fade-out t.$face-anim ease forwards;
+}
+
+@keyframes face-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes face-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 .controls-bar {
