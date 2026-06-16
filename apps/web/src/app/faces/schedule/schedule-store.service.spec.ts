@@ -146,9 +146,11 @@ describe('ScheduleStoreService', () => {
     vi.stubGlobal('indexedDB', idb);
     const service = TestBed.inject(ScheduleStoreService);
     service.loadState();
-    // Poll until the async re-key completes (legacy key removed), instead of a
-    // fixed sleep, so the test is deterministic under load.
-    for (let i = 0; i < 100 && idb.store[LEGACY_IMAGE_KEY] !== undefined; i++) {
+    // Poll on the migration's final effect — hasImage flipped + re-persisted —
+    // rather than on the legacy key's deletion. The mock deletes the key
+    // synchronously a few ms before migrateLegacyImage persists hasImage, so
+    // polling on the key would exit early and read a stale hasImage=false.
+    for (let i = 0; i < 200 && !service.loadState().presets[0].hasImage; i++) {
       await new Promise((r) => setTimeout(r, 5));
     }
     const url = await service.loadPresetImage(DEFAULT_PRESET_ID);
