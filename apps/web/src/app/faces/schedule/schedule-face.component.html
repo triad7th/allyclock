@@ -10,7 +10,7 @@
 </div>
 @if (configOpen() && !configClosing()) {
   <button type="button" class="gear check" aria-label="Save configuration" (click)="onSaveClick()">
-    ✓
+    <app-icon name="checkmark" />
   </button>
 }
 <button
@@ -21,7 +21,11 @@
   [attr.aria-label]="configOpen() ? 'Cancel configuration' : 'Configure schedule'"
   (click)="onGearClick()"
 >
-  {{ configOpen() ? '✕' : '⚙' }}
+  @if (configOpen()) {
+    <app-icon name="xmark" />
+  } @else {
+    <app-icon name="gearshape" />
+  }
 </button>
 @if (configOpen()) {
   <app-schedule-config

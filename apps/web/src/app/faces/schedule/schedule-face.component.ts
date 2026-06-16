@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } fro
 import { ClockService } from '../../services/clock.service';
 import { ScheduleStoreService } from './schedule-store.service';
 import { ScheduleConfigComponent } from './schedule-config/schedule-config.component';
+import { IconComponent } from '../../ui/icon/icon.component';
 import { activeSegment, currentPixelY } from './schedule-formatter';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 
@@ -11,7 +12,7 @@ const CONFIG_CLOSE_MS = 300;
 
 @Component({
   selector: 'app-schedule-face',
-  imports: [ScheduleConfigComponent],
+  imports: [ScheduleConfigComponent, IconComponent],
   templateUrl: './schedule-face.component.html',
   styleUrl: './schedule-face.component.scss',
   host: {

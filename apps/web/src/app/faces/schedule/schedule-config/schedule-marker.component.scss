@@ -35,4 +35,9 @@
   cursor: pointer;
   padding: 0;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.6);
+
+  app-icon {
+    width: 12px;
+    height: 12px;
+  }
 }

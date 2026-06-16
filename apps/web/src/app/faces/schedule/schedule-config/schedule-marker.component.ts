@@ -1,7 +1,9 @@
 import { Component, ElementRef, OnDestroy, inject, input, output } from '@angular/core';
+import { IconComponent } from '../../../ui/icon/icon.component';
 
 @Component({
   selector: 'app-schedule-marker',
+  imports: [IconComponent],
   templateUrl: './schedule-marker.component.html',
   styleUrl: './schedule-marker.component.scss',
 })
