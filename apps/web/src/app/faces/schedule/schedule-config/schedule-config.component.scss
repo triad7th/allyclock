@@ -56,9 +56,13 @@ section {
   padding-bottom: 0.25rem;
 }
 
+.preset-card-wrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
 .preset-card,
 .add-preset-card {
-  flex: 0 0 auto;
   background: #1a1a1a;
   border: 2px solid transparent;
   border-radius: 12px;
@@ -74,6 +78,10 @@ section {
   }
 }
 
+.add-preset-card {
+  flex: 0 0 auto;
+}
+
 .preset-card {
   width: 88px;
   display: flex;
@@ -82,6 +90,33 @@ section {
 
   &.active {
     border-color: #0a84ff;
+  }
+}
+
+.preset-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+
+  app-icon {
+    width: 13px;
+    height: 13px;
+  }
+
+  &:active {
+    transform: scale(0.9);
   }
 }
 

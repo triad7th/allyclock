@@ -272,4 +272,17 @@ describe('ScheduleStoreService', () => {
     const second = await service.duplicatePreset(DEFAULT_PRESET_ID);
     expect(second!.name).toBe('Summer Break - 3');
   });
+
+  it('duplicatePreset of the default fetches the bundled image so the copy has an image', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve({
+        blob: () => Promise.resolve(new Blob(['img'], { type: 'image/png' })),
+      }),
+    );
+    const service = TestBed.inject(ScheduleStoreService);
+    service.loadState();
+    const copy = await service.duplicatePreset(DEFAULT_PRESET_ID);
+    expect(copy).not.toBeNull();
+    expect(service.loadState().presets.find((p) => p.id === copy!.id)!.hasImage).toBe(true);
+  });
 });

@@ -40,6 +40,7 @@ describe('IconComponent', () => {
       'trash',
       'square.and.arrow.up',
       'square.on.square',
+      'xmark',
     ]) {
       expect(render(name)!.querySelector('path')).toBeTruthy();
     }

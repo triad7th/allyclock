@@ -39,7 +39,12 @@ describe('ScheduleConfigComponent', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     mockStore.state = makeState();
-    mockStore.loadState.mockImplementation(() => mockStore.state);
+    // Mirror the real store: each load yields a fresh array (the real store
+    // re-parses from localStorage), so signal updates trigger recomputation.
+    mockStore.loadState.mockImplementation(() => ({
+      presets: mockStore.state.presets.map((p) => ({ ...p })),
+      activePresetId: mockStore.state.activePresetId,
+    }));
     mockStore.addPreset.mockImplementation(() => {
       const p = { id: 'p2', name: 'Preset #2', segments: DEFAULT_SEGMENTS, hasImage: false };
       mockStore.state.presets.push(p);
@@ -54,6 +59,14 @@ describe('ScheduleConfigComponent', () => {
     });
     mockStore.setActive.mockImplementation((id: string) => {
       mockStore.state.activePresetId = id;
+    });
+    mockStore.deletePreset.mockImplementation((id: string) => {
+      const i = mockStore.state.presets.findIndex((p) => p.id === id);
+      if (i === -1 || mockStore.state.presets.length <= 1) return;
+      mockStore.state.presets.splice(i, 1);
+      if (mockStore.state.activePresetId === id) {
+        mockStore.state.activePresetId = mockStore.state.presets[Math.max(0, i - 1)].id;
+      }
     });
     await TestBed.configureTestingModule({
       imports: [ScheduleConfigComponent],
@@ -91,6 +104,25 @@ describe('ScheduleConfigComponent', () => {
     expect(fixture.nativeElement.querySelector('.editor-title')?.textContent).toContain(
       'Preset #2',
     );
+  });
+
+  it('renders a per-card delete button and clicking it deletes that preset when more than one exists', () => {
+    const fixture = TestBed.createComponent(ScheduleConfigComponent);
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector('.add-preset-card') as HTMLElement).click();
+    fixture.detectChanges();
+    const deleteButtons = fixture.nativeElement.querySelectorAll('.preset-delete');
+    expect(deleteButtons).toHaveLength(2);
+    const firstId = mockStore.state.presets[0].id;
+    (deleteButtons[0] as HTMLElement).click();
+    fixture.detectChanges();
+    expect(mockStore.deletePreset).toHaveBeenCalledWith(firstId);
+  });
+
+  it('renders no per-card delete button when only one preset exists', () => {
+    const fixture = TestBed.createComponent(ScheduleConfigComponent);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('.preset-delete')).toHaveLength(0);
   });
 
   it('emits cancelled when cancel() is called', () => {

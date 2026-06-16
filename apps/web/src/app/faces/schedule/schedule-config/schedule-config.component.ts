@@ -126,8 +126,11 @@ export class ScheduleConfigComponent implements OnInit, OnDestroy {
   }
 
   deleteActive(): void {
+    this.deletePresetById(this.activeId());
+  }
+
+  deletePresetById(id: string): void {
     if (!this.canDelete()) return;
-    const id = this.activeId();
     this.store.deletePreset(id);
     const state = this.store.loadState();
     this.presets.set(state.presets);

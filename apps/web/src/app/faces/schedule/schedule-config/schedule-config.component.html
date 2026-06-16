@@ -3,21 +3,34 @@
     <h3>Presets</h3>
     <div class="preset-row">
       @for (preset of presets(); track preset.id) {
-        <button
-          type="button"
-          class="preset-card"
-          [class.active]="preset.id === activeId()"
-          (click)="selectPreset(preset.id)"
-        >
-          <span class="preset-thumb">
-            @if (thumbFor(preset.id)) {
-              <img [src]="thumbFor(preset.id)" alt="" />
-            } @else {
-              <app-icon name="photo" />
-            }
-          </span>
-          <span class="preset-name">{{ preset.name }}</span>
-        </button>
+        <div class="preset-card-wrap">
+          <button
+            type="button"
+            class="preset-card"
+            [class.active]="preset.id === activeId()"
+            (click)="selectPreset(preset.id)"
+          >
+            <span class="preset-thumb">
+              @if (thumbFor(preset.id)) {
+                <img [src]="thumbFor(preset.id)" alt="" />
+              } @else {
+                <app-icon name="photo" />
+              }
+            </span>
+            <span class="preset-name">{{ preset.name }}</span>
+          </button>
+          @if (canDelete()) {
+            <button
+              type="button"
+              class="preset-delete"
+              (click)="deletePresetById(preset.id)"
+              aria-label="Delete preset"
+              title="Delete preset"
+            >
+              <app-icon name="xmark" />
+            </button>
+          }
+        </div>
       }
       <button type="button" class="add-preset-card" (click)="addPreset()" aria-label="Add preset">
         <app-icon name="plus" />
