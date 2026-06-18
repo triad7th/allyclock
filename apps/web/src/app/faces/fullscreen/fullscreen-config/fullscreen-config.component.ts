@@ -8,6 +8,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { FullscreenConfigStore } from '../fullscreen-config-store.service';
 import { SheetComponent } from '../../../ui/sheet/sheet.component';
 import { NavHeaderComponent } from '../../../ui/nav-header/nav-header.component';
@@ -16,11 +17,12 @@ import { IconComponent } from '../../../ui/icon/icon.component';
 import { ClockService } from '../../../services/clock.service';
 import { bigTime, dateParts, minuteFraction } from '../clock-formatter';
 import { varsFor } from '../fullscreen-style';
+import { type SectionKey, type BarMode, type FullscreenPreset } from '../fullscreen-preset';
 
 @Component({
   selector: 'app-fullscreen-config',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, IconComponent],
+  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, IconComponent, DecimalPipe],
   templateUrl: './fullscreen-config.component.html',
   styleUrl: './fullscreen-config.component.scss',
 })
@@ -112,4 +114,70 @@ export class FullscreenConfigComponent {
     if (minRatio === 0) return `<${maxRatio}`;
     return `${minRatio}–${maxRatio}`;
   }
+
+  // ── Section knobs ────────────────────────────────────────────────────────
+
+  /** The ordered list of section rows rendered in the knobs panel. */
+  readonly sectionRows: { key: SectionKey; label: string }[] = [
+    { key: 'time', label: 'Time' },
+    { key: 'weekday', label: 'Weekday' },
+    { key: 'month', label: 'Month' },
+    { key: 'day', label: 'Day' },
+    { key: 'gmt', label: 'GMT' },
+  ];
+
+  /** Compute --fill % for a slider given its current value and range. */
+  fillPct(value: number, min: number, max: number): string {
+    const pct = Math.round(((value - min) / (max - min)) * 100);
+    return `${Math.max(0, Math.min(100, pct))}%`;
+  }
+
+  toggleVisible(key: SectionKey): void {
+    const current = this.editingPreset().sections[key].visible;
+    this.store.updateSection(this.editingId(), key, { visible: !current });
+  }
+
+  onSectionSize(key: SectionKey, event: Event): void {
+    const value = Number((event.target as HTMLInputElement).value);
+    this.store.updateSection(this.editingId(), key, { sizeScale: value });
+  }
+
+  onSectionWeight(key: SectionKey, event: Event): void {
+    const value = Number((event.target as HTMLInputElement).value);
+    this.store.updateSection(this.editingId(), key, { weight: value });
+  }
+
+  onSectionOpacity(key: SectionKey, event: Event): void {
+    const value = Number((event.target as HTMLInputElement).value);
+    this.store.updateSection(this.editingId(), key, { opacity: value });
+  }
+
+  setBarMode(mode: BarMode): void {
+    this.store.updateBar(this.editingId(), { mode });
+  }
+
+  onBarSize(event: Event): void {
+    const value = Number((event.target as HTMLInputElement).value);
+    this.store.updateBar(this.editingId(), { sizeScale: value });
+  }
+
+  onBarOpacity(event: Event): void {
+    const value = Number((event.target as HTMLInputElement).value);
+    this.store.updateBar(this.editingId(), { opacity: value });
+  }
+
+  onGap(key: keyof FullscreenPreset['gaps'], event: Event): void {
+    const value = Number((event.target as HTMLInputElement).value);
+    this.store.updateGap(this.editingId(), key, value);
+  }
+
+  togglePin(): void {
+    const current = this.store.state().pinnedPresetId;
+    this.store.setPin(current === this.editingId() ? null : this.editingId());
+  }
+
+  // Reactive so the toggle reflects pin changes immediately under OnPush.
+  readonly isPinned = computed(
+    () => this.store.state().pinnedPresetId === this.editingId(),
+  );
 }

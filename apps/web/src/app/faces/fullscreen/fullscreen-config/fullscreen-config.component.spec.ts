@@ -181,4 +181,104 @@ describe('FullscreenConfigComponent', () => {
     expect(component.editingId()).toBe(store.state().presets[0].id);
     expect(component.editingId()).not.toBe(firstPresetId);
   });
+
+  // ── Task 9: Section knobs, gaps, bar mode, pin ────────────────────────────
+
+  it('moving the Time size slider updates sections.time.sizeScale in the store', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const id = component.editingId();
+
+    const slider = fixture.nativeElement.querySelector(
+      '[data-knob="time-size"]',
+    ) as HTMLInputElement;
+    expect(slider).not.toBeNull();
+
+    slider.value = '1.5';
+    slider.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    const preset = store.state().presets.find((p) => p.id === id)!;
+    expect(preset.sections.time.sizeScale).toBeCloseTo(1.5);
+  });
+
+  it('toggling a section show/hide flips sections.weekday.visible in the store', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const id = component.editingId();
+
+    const before = store.state().presets.find((p) => p.id === id)!.sections.weekday.visible;
+
+    const toggle = fixture.nativeElement.querySelector(
+      '[data-knob="weekday-visible"]',
+    ) as HTMLInputElement;
+    expect(toggle).not.toBeNull();
+
+    toggle.click();
+    fixture.detectChanges();
+
+    const after = store.state().presets.find((p) => p.id === id)!.sections.weekday.visible;
+    expect(after).toBe(!before);
+  });
+
+  it('clicking the Bar segmented "progress" button sets bar.mode to progress', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const id = component.editingId();
+
+    const btn = fixture.nativeElement.querySelector(
+      '[data-knob="bar-mode-progress"]',
+    ) as HTMLButtonElement;
+    expect(btn).not.toBeNull();
+
+    btn.click();
+    fixture.detectChanges();
+
+    const preset = store.state().presets.find((p) => p.id === id)!;
+    expect(preset.bar.mode).toBe('progress');
+  });
+
+  it('moving a gap slider updates gaps.timeToBar in the store', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const id = component.editingId();
+
+    const slider = fixture.nativeElement.querySelector(
+      '[data-knob="gap-timeToBar"]',
+    ) as HTMLInputElement;
+    expect(slider).not.toBeNull();
+
+    slider.value = '0.8';
+    slider.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    const preset = store.state().presets.find((p) => p.id === id)!;
+    expect(preset.gaps.timeToBar).toBeCloseTo(0.8);
+  });
+
+  it('toggling pin on sets pinnedPresetId to editingId, toggling off sets it back to null', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const id = component.editingId();
+
+    const toggle = fixture.nativeElement.querySelector(
+      '[data-knob="pin-toggle"]',
+    ) as HTMLInputElement;
+    expect(toggle).not.toBeNull();
+
+    // Toggle on
+    toggle.click();
+    fixture.detectChanges();
+    expect(store.state().pinnedPresetId).toBe(id);
+
+    // Toggle off
+    toggle.click();
+    fixture.detectChanges();
+    expect(store.state().pinnedPresetId).toBeNull();
+  });
 });
