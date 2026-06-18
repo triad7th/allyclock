@@ -48,8 +48,8 @@
                 class="rename-input"
                 type="text"
                 [value]="editingPreset().name"
-                (keydown.enter)="commitRename($any($event.target).value)"
-                (blur)="commitRename($any($event.target).value)"
+                (keydown.enter)="onCommitRenameEvent($event)"
+                (blur)="onCommitRenameEvent($event)"
               />
             } @else {
               <span class="preset-title">{{ preset.name }}</span>
@@ -77,6 +77,42 @@
       >
         <app-icon name="plus" />
       </button>
+    </div>
+
+    <!-- ── Device search ──────────────────────────────────────────────── -->
+    <div class="fc-device-search">
+      @if (devicePickerOpen()) {
+        <div class="fc-device-picker">
+          <input
+            #deviceInput
+            class="fc-device-input"
+            type="text"
+            [value]="deviceQuery()"
+            (input)="onDeviceQuery($event)"
+            placeholder="Search device…"
+            aria-label="Search device"
+          />
+          <div class="fc-device-list">
+            @for (device of filteredDevices(); track device.name) {
+              <button
+                type="button"
+                class="fc-device-option"
+                (click)="pickDevice(device)"
+              >
+                <span class="fc-device-name">{{ device.name }}</span>
+                <span class="fc-device-ratio">{{ device.ratio.toFixed(2) }}:1</span>
+              </button>
+            } @empty {
+              <p class="fc-device-empty">No matching device</p>
+            }
+          </div>
+          <button type="button" class="fc-device-cancel" (click)="closeDevicePicker()">Cancel</button>
+        </div>
+      } @else {
+        <button type="button" class="fc-device-trigger" (click)="openDevicePicker()">
+          Find your device
+        </button>
+      }
     </div>
 
     <!-- ── Knobs panel ─────────────────────────────────────────────────── -->

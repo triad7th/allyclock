@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { FullscreenConfigComponent } from './fullscreen-config.component';
 import { FullscreenConfigStore } from '../fullscreen-config-store.service';
 import { SHEET_ANIMATION_MS } from '../../../config/animation-timing';
+import { searchDevices } from '../device-ratios';
 
 const mem: Record<string, string> = {};
 const storageMock = {
@@ -180,6 +181,95 @@ describe('FullscreenConfigComponent', () => {
     // editingId should now be the new first preset
     expect(component.editingId()).toBe(store.state().presets[0].id);
     expect(component.editingId()).not.toBe(firstPresetId);
+  });
+
+  // ── Task 10: Device search combobox ──────────────────────────────────────
+
+  it('typing a device query filters filteredDevices to only matching entries', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    // Set query to 'iphone' — only iPhone entries should remain
+    component.deviceQuery.set('iphone');
+    fixture.detectChanges();
+
+    const expected = searchDevices('iphone');
+    expect(component.filteredDevices().length).toBe(expected.length);
+    expect(component.filteredDevices().every((d) => d.name.toLowerCase().includes('iphone'))).toBe(true);
+  });
+
+  it('filtering by query also updates the rendered device list items', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    // Open picker first so the list is rendered in the DOM
+    component.devicePickerOpen.set(true);
+    component.deviceQuery.set('ipad');
+    fixture.detectChanges();
+
+    const options = fixture.nativeElement.querySelectorAll('.fc-device-option');
+    expect(options.length).toBeGreaterThan(0);
+    for (const opt of Array.from(options) as HTMLElement[]) {
+      expect(opt.textContent!.toLowerCase()).toContain('ipad');
+    }
+  });
+
+  it('picking an ultrawide device sets editingId to the ultrawide band preset', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    // Ultrawide monitor (21:9) ratio ≈ 2.33 → resolves to 'ultrawide' band (≥1.95)
+    const ultrawideDevice = component.filteredDevices().find(
+      (d) => d.name.toLowerCase().includes('ultrawide'),
+    );
+    expect(ultrawideDevice).toBeDefined();
+
+    component.pickDevice(ultrawideDevice!);
+    fixture.detectChanges();
+
+    const expectedId = store.resolveForRatio(ultrawideDevice!.ratio).id;
+    expect(component.editingId()).toBe(expectedId);
+    expect(component.editingId()).toBe('ultrawide');
+  });
+
+  it('picking an iPhone portrait device sets editingId to the phone band preset', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    // iPhone portrait ratio < 0.62 → resolves to 'phone' band
+    const iphonePortrait = component.filteredDevices().find(
+      (d) => d.name.toLowerCase().includes('iphone') && d.name.toLowerCase().includes('portrait'),
+    );
+    expect(iphonePortrait).toBeDefined();
+    expect(iphonePortrait!.ratio).toBeLessThan(0.62);
+
+    component.pickDevice(iphonePortrait!);
+    fixture.detectChanges();
+
+    const expectedId = store.resolveForRatio(iphonePortrait!.ratio).id;
+    expect(component.editingId()).toBe(expectedId);
+    expect(component.editingId()).toBe('phone');
+  });
+
+  it('picking a device clears the deviceQuery and closes the list', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    component.deviceQuery.set('iphone');
+    component.devicePickerOpen.set(true);
+    fixture.detectChanges();
+
+    const anyDevice = component.filteredDevices()[0];
+    component.pickDevice(anyDevice);
+    fixture.detectChanges();
+
+    expect(component.deviceQuery()).toBe('');
+    expect(component.devicePickerOpen()).toBe(false);
   });
 
   // ── Task 9: Section knobs, gaps, bar mode, pin ────────────────────────────

@@ -18,6 +18,7 @@ import { ClockService } from '../../../services/clock.service';
 import { bigTime, dateParts, minuteFraction } from '../clock-formatter';
 import { varsFor } from '../fullscreen-style';
 import { type SectionKey, type BarMode, type FullscreenPreset } from '../fullscreen-preset';
+import { searchDevices, type DeviceRatio } from '../device-ratios';
 
 @Component({
   selector: 'app-fullscreen-config',
@@ -34,6 +35,7 @@ export class FullscreenConfigComponent {
   private readonly sheet = viewChild(SheetComponent);
 
   private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
+  private readonly deviceInput = viewChild<ElementRef<HTMLInputElement>>('deviceInput');
 
   // Editing selection
   readonly editingId = signal<string>(
@@ -108,6 +110,14 @@ export class FullscreenConfigComponent {
     this.renaming.set(false);
   }
 
+  onCommitRenameEvent(event: Event): void {
+    this.commitRename((event.target as HTMLInputElement).value);
+  }
+
+  onDeviceQuery(event: Event): void {
+    this.deviceQuery.set((event.target as HTMLInputElement).value);
+  }
+
   /** Format ratio band label, e.g. "≥1.95" / "1.7–1.95" / "<0.62" */
   bandLabel(minRatio: number, maxRatio: number): string {
     if (!isFinite(maxRatio)) return `≥${minRatio}`;
@@ -180,4 +190,28 @@ export class FullscreenConfigComponent {
   readonly isPinned = computed(
     () => this.store.state().pinnedPresetId === this.editingId(),
   );
+
+  // ── Device search ────────────────────────────────────────────────────────
+
+  readonly deviceQuery = signal('');
+  readonly devicePickerOpen = signal(false);
+
+  readonly filteredDevices = computed(() => searchDevices(this.deviceQuery()));
+
+  openDevicePicker(): void {
+    this.deviceQuery.set('');
+    this.devicePickerOpen.set(true);
+    queueMicrotask(() => this.deviceInput()?.nativeElement.focus());
+  }
+
+  closeDevicePicker(): void {
+    this.devicePickerOpen.set(false);
+    this.deviceQuery.set('');
+  }
+
+  pickDevice(device: DeviceRatio): void {
+    this.editingId.set(this.store.resolveForRatio(device.ratio).id);
+    this.deviceQuery.set('');
+    this.devicePickerOpen.set(false);
+  }
 }
