@@ -4,10 +4,7 @@
     @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
   </div>
 
-  @switch (activePreset().bar.mode) {
-    @case ('progress') { <div class="bar"><i [style.width.%]="barFill() * 100"></i></div> }
-    @case ('divider') { <div class="bar divider"></div> }
-  }
+  @if (activePreset().bar.visible) { <div class="bar divider"></div> }
 
   <div class="date">
     <span class="weekday">{{ parts().weekday }}</span>

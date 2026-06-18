@@ -16,10 +16,7 @@
           @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
         </div>
 
-        @switch (editingPreset().bar.mode) {
-          @case ('progress') { <div class="bar"><i [style.width.%]="barFill() * 100"></i></div> }
-          @case ('divider') { <div class="bar divider"></div> }
-        }
+        @if (editingPreset().bar.visible) { <div class="bar divider"></div> }
 
         <div class="date">
           <span class="weekday">{{ parts().weekday }}</span>
@@ -60,62 +57,7 @@
             }
             <span class="preset-band">{{ bandLabel(preset.minRatio, preset.maxRatio) }}</span>
           </button>
-          @if (store.state().presets.length > 1) {
-            <button
-              type="button"
-              class="preset-delete"
-              (click)="deletePreset(preset.id)"
-              aria-label="Delete preset"
-              title="Delete preset"
-            >
-              <app-icon name="xmark" />
-            </button>
-          }
         </div>
-      }
-      <button
-        type="button"
-        class="add-preset-card"
-        aria-label="Add preset"
-        (click)="addPreset()"
-      >
-        <app-icon name="plus" />
-      </button>
-    </div>
-
-    <!-- ── Device search ──────────────────────────────────────────────── -->
-    <div class="fc-device-search">
-      @if (devicePickerOpen()) {
-        <div class="fc-device-picker">
-          <input
-            #deviceInput
-            class="fc-device-input"
-            type="text"
-            [value]="deviceQuery()"
-            (input)="onDeviceQuery($event)"
-            placeholder="Search device…"
-            aria-label="Search device"
-          />
-          <div class="fc-device-list">
-            @for (device of filteredDevices(); track device.name) {
-              <button
-                type="button"
-                class="fc-device-option"
-                (click)="pickDevice(device)"
-              >
-                <span class="fc-device-name">{{ device.name }}</span>
-                <span class="fc-device-ratio">{{ device.ratio.toFixed(2) }}:1</span>
-              </button>
-            } @empty {
-              <p class="fc-device-empty">No matching device</p>
-            }
-          </div>
-          <button type="button" class="fc-device-cancel" (click)="closeDevicePicker()">Cancel</button>
-        </div>
-      } @else {
-        <button type="button" class="fc-device-trigger" (click)="openDevicePicker()">
-          Find your device
-        </button>
       }
     </div>
 
@@ -126,16 +68,6 @@
       <div class="knobs-section">
         <div class="knobs-section-header">
           <span class="knobs-section-label">Time</span>
-          <button
-            type="button"
-            class="knobs-toggle"
-            [class.on]="editingPreset().sections.time.visible"
-            data-knob="time-visible"
-            (click)="toggleVisible('time')"
-            [attr.aria-label]="editingPreset().sections.time.visible ? 'Hide Time' : 'Show Time'"
-          >
-            <span class="knobs-toggle-thumb"></span>
-          </button>
         </div>
 
         <div class="knobs-row">
@@ -204,63 +136,19 @@
 
       <!-- Bar section -->
       <div class="knobs-section">
-        <div class="knobs-section-header">
+        <div class="knobs-toggle-row">
           <span class="knobs-section-label">Bar</span>
+          <button
+            type="button"
+            class="knobs-toggle"
+            [class.on]="editingPreset().bar.visible"
+            data-knob="bar-visible"
+            (click)="toggleBar()"
+            [attr.aria-label]="editingPreset().bar.visible ? 'Hide Bar' : 'Show Bar'"
+          >
+            <span class="knobs-toggle-thumb"></span>
+          </button>
         </div>
-
-        <!-- 3-way mode segmented control -->
-        <div class="knobs-row">
-          <span class="knobs-row-label">Mode</span>
-          <div class="knobs-segmented">
-            <button
-              type="button"
-              [class.active]="editingPreset().bar.mode === 'progress'"
-              data-knob="bar-mode-progress"
-              (click)="setBarMode('progress')"
-            >Progress</button>
-            <button
-              type="button"
-              [class.active]="editingPreset().bar.mode === 'divider'"
-              data-knob="bar-mode-divider"
-              (click)="setBarMode('divider')"
-            >Divider</button>
-            <button
-              type="button"
-              [class.active]="editingPreset().bar.mode === 'hidden'"
-              data-knob="bar-mode-hidden"
-              (click)="setBarMode('hidden')"
-            >Hidden</button>
-          </div>
-        </div>
-
-        <div class="knobs-row">
-          <span class="knobs-row-label">Size</span>
-          <input
-            type="range"
-            class="knobs-slider"
-            min="0.5" max="2.0" step="0.05"
-            [value]="editingPreset().bar.sizeScale"
-            [style.--fill]="fillPct(editingPreset().bar.sizeScale, 0.5, 2.0)"
-            data-knob="bar-size"
-            (input)="onBarSize($event)"
-          />
-          <span class="knobs-row-value">{{ editingPreset().bar.sizeScale | number:'1.2-2' }}</span>
-        </div>
-      </div>
-
-      <!-- Pin toggle -->
-      <div class="knobs-section knobs-pin-row">
-        <span class="knobs-section-label">Pin this layout</span>
-        <button
-          type="button"
-          class="knobs-toggle"
-          [class.on]="isPinned()"
-          data-knob="pin-toggle"
-          aria-label="Pin this layout"
-          (click)="togglePin()"
-        >
-          <span class="knobs-toggle-thumb"></span>
-        </button>
       </div>
 
     </div>

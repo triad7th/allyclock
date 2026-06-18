@@ -40,7 +40,7 @@ app-nav-header {
 
   // Reuse the same face styles (these mirror fullscreen-face.component.scss)
   .time {
-    display: var(--time-display, flex);
+    display: flex;
     align-items: flex-start;
     gap: 0.04em;
     font-variant-numeric: tabular-nums;
@@ -70,19 +70,6 @@ app-nav-header {
 
   .bar.divider {
     background: currentColor;
-  }
-
-  .bar:not(.divider) {
-    background: rgba(250, 250, 250, 0.16);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-
-  .bar > i {
-    display: block;
-    height: 100%;
-    background: #fafafa;
-    border-radius: 999px;
   }
 
   .date {
@@ -141,14 +128,18 @@ app-nav-header {
   flex: 0 0 auto;
 }
 
-.preset-card,
-.add-preset-card {
+.preset-card {
   background: #1a1a1a;
   border: 2px solid transparent;
   border-radius: 12px;
   color: #eee;
   cursor: pointer;
-  padding: 0;
+  width: 88px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0.5rem;
+  box-sizing: border-box;
   transition:
     transform 0.12s ease,
     border-color 0.2s ease;
@@ -156,19 +147,6 @@ app-nav-header {
   &:active {
     transform: scale(0.97);
   }
-}
-
-.add-preset-card {
-  flex: 0 0 auto;
-}
-
-.preset-card {
-  width: 88px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 0.5rem;
-  box-sizing: border-box;
 
   &.active {
     border-color: t.$tint;
@@ -195,44 +173,6 @@ app-nav-header {
   display: block;
 }
 
-.preset-delete {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 22px;
-  height: 22px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.6);
-  color: t.$label;
-  cursor: pointer;
-  backdrop-filter: blur(4px);
-
-  app-icon {
-    width: 13px;
-    height: 13px;
-  }
-
-  &:active {
-    transform: scale(0.9);
-  }
-}
-
-.add-preset-card {
-  width: 88px;
-  height: 62px;
-  border: 2px dashed #444;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  color: #888;
-}
-
 .rename-input {
   width: 100%;
   box-sizing: border-box;
@@ -250,10 +190,26 @@ app-nav-header {
 .knobs-panel {
   flex: 1 1 auto;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+  // Query container so the knobs reflow to columns based on the panel's own
+  // width, mirroring the Time Machine controls.
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 1rem;
   padding-top: 1rem;
+}
+
+@container (min-width: 600px) {
+  .knobs-panel {
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start;
+  }
+}
+
+@container (min-width: 900px) {
+  .knobs-panel {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .knobs-section {
@@ -314,45 +270,6 @@ app-nav-header {
   justify-content: space-between;
 }
 
-// ── iOS-style segmented control ──────────────────────────────────────────
-
-.knobs-segmented {
-  display: flex;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  flex: 1 1 auto;
-
-  button {
-    flex: 1;
-    background: none;
-    border: none;
-    color: t.$label;
-    font-size: 0.72rem;
-    font-weight: 500;
-    padding: 0.35rem 0.25rem;
-    cursor: pointer;
-    transition:
-      background 0.15s ease,
-      color 0.15s ease;
-    border-right: 1px solid rgba(255, 255, 255, 0.12);
-
-    &:last-child {
-      border-right: none;
-    }
-
-    &.active {
-      background: t.$tint;
-      color: #fff;
-      font-weight: 600;
-    }
-
-    &:not(.active):hover {
-      background: t.$secondary-surface;
-    }
-  }
-}
-
 // ── iOS-style toggle switch ───────────────────────────────────────────────
 
 .knobs-toggle {
@@ -389,132 +306,3 @@ app-nav-header {
   }
 }
 
-// ── Pin row special layout ────────────────────────────────────────────────
-
-.knobs-pin-row {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
-
-  .knobs-section-label {
-    font-size: 0.85rem;
-    text-transform: none;
-    letter-spacing: 0;
-    color: t.$label;
-  }
-}
-
-// ── Device search (mirrors time-machine tz picker) ───────────────────────
-
-.fc-device-search {
-  flex: 0 0 auto;
-  margin-bottom: 0.75rem;
-}
-
-.fc-device-trigger {
-  background: t.$secondary-surface;
-  border: none;
-  border-radius: 8px;
-  color: t.$tint;
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 0.45rem 0.75rem;
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: t.$secondary-surface-hover;
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-}
-
-.fc-device-picker {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.fc-device-input {
-  appearance: none;
-  width: 100%;
-  box-sizing: border-box;
-  background: t.$secondary-surface;
-  border: none;
-  border-radius: 8px;
-  color: t.$label;
-  font-size: 0.9rem;
-  padding: 0.5rem 0.75rem;
-
-  &::placeholder {
-    color: t.$secondary-label;
-  }
-}
-
-.fc-device-list {
-  display: flex;
-  flex-direction: column;
-  max-height: 35vh;
-  overflow-y: auto;
-  border-radius: 8px;
-}
-
-.fc-device-option {
-  background: none;
-  border: none;
-  color: t.$label;
-  font-size: 0.85rem;
-  text-align: left;
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  border-radius: 6px;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
-
-  &:hover {
-    background: rgba(118, 118, 128, 0.18);
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-}
-
-.fc-device-name {
-  flex: 1 1 auto;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.fc-device-ratio {
-  flex: 0 0 auto;
-  font-size: 0.72rem;
-  font-variant-numeric: tabular-nums;
-  color: t.$secondary-label;
-}
-
-.fc-device-empty {
-  color: t.$secondary-label;
-  font-size: 0.85rem;
-  text-align: center;
-  padding: 0.75rem 0;
-  margin: 0;
-}
-
-.fc-device-cancel {
-  align-self: center;
-  background: none;
-  border: none;
-  color: t.$tint;
-  font-size: 0.9rem;
-  padding: 0.35rem 0.75rem;
-  cursor: pointer;
-}

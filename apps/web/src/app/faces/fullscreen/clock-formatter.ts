@@ -47,10 +47,6 @@ export function gmtOffset(date: Date, timeZone: string): string {
   return normalized.replace('-', '−');
 }
 
-export function minuteFraction(date: Date): number {
-  return (date.getSeconds() + date.getMilliseconds() / 1000) / 60;
-}
-
 export interface DateParts { weekday: string; month: string; day: string; gmt: string; }
 
 export function dateParts(date: Date, locale: string, timeZone: string): DateParts {

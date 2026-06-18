@@ -7,18 +7,19 @@ export interface SectionStyle {
   opacity: number;   // 0.2–1.0
 }
 
-export type BarMode = 'progress' | 'divider' | 'hidden';
-
 export interface BarStyle {
-  mode: BarMode;
+  visible: boolean;
   sizeScale: number; // scales bar width base, default 1.0
   opacity: number;
 }
 
 // Responsive base for a section group, used as `min(cqw·1cqw, cqh·1cqh)`.
+// `minCqh` (optional) sets a floor in cqh units so the size stops shrinking
+// below a target ratio: `max(min(cqw, cqh), minCqh)`.
 export interface SectionBase {
   cqw: number;
   cqh: number;
+  minCqh?: number;
 }
 
 export interface FullscreenPreset {
@@ -50,7 +51,6 @@ export interface FullscreenPreset {
 export interface FullscreenConfigState {
   version: number;
   presets: FullscreenPreset[]; // contiguous, non-overlapping, sorted by minRatio asc
-  pinnedPresetId: string | null;
 }
 
 export type SectionKey = 'time' | 'weekday' | 'month' | 'day' | 'gmt';
@@ -58,7 +58,6 @@ export const DATE_SECTION_KEYS: SectionKey[] = ['weekday', 'month', 'day', 'gmt'
 
 export const STATE_VERSION = 1;
 export const PRESETS_KEY = 'allyclock.fullscreen.presets';
-export const PIN_KEY = 'allyclock.fullscreen.pin';
 
 // Base cq value for the inter-section gap (multiplied by each gap scale).
 export const GAP_BASE_CQ = 2;

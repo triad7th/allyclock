@@ -1,4 +1,4 @@
-import type { FullscreenPreset, SectionKey } from './fullscreen-preset';
+import type { FullscreenPreset, SectionBase, SectionKey } from './fullscreen-preset';
 
 // Inter-section gap bases (cq units), scaled per-preset by the gap multipliers.
 const GAP_BASE_CQW = 2;
@@ -6,8 +6,9 @@ const GAP_BASE_CQH = 3;
 // The date parts sit on one line, so their separation is an em of the date text.
 const DATE_PARTS_GAP_EM = 0.5;
 
-function base(b: { cqw: number; cqh: number }): string {
-  return `min(${b.cqw}cqw, ${b.cqh}cqh)`;
+function base(b: SectionBase): string {
+  const blend = `min(${b.cqw}cqw, ${b.cqh}cqh)`;
+  return b.minCqh != null ? `max(${blend}, ${b.minCqh}cqh)` : blend;
 }
 
 export function varsFor(p: FullscreenPreset): Record<string, string> {
@@ -18,7 +19,6 @@ export function varsFor(p: FullscreenPreset): Record<string, string> {
     '--gap-time-bar': `calc(${p.gaps.timeToBar} * min(${GAP_BASE_CQW}cqw, ${GAP_BASE_CQH}cqh))`,
     '--gap-bar-date': `calc(${p.gaps.barToDate} * min(${GAP_BASE_CQW}cqw, ${GAP_BASE_CQH}cqh))`,
     '--gap-date-parts': `${p.gaps.betweenDateParts * DATE_PARTS_GAP_EM}em`,
-    '--time-display': p.sections.time.visible ? 'flex' : 'none',
     '--time-scale': `${p.sections.time.sizeScale}`,
     '--time-weight': `${p.sections.time.weight}`,
     '--time-opacity': `${p.sections.time.opacity}`,

@@ -12,7 +12,7 @@ import { FaceConfigService } from '../../services/face-config.service';
 import { FullscreenConfigStore } from './fullscreen-config-store.service';
 import { FullscreenConfigComponent } from './fullscreen-config/fullscreen-config.component';
 import { IconComponent } from '../../ui/icon/icon.component';
-import { bigTime, dateParts, minuteFraction } from './clock-formatter';
+import { bigTime, dateParts } from './clock-formatter';
 import { varsFor } from './fullscreen-style';
 import { AUTO_HIDE_MS } from '../../config/animation-timing';
 
@@ -40,11 +40,10 @@ export class FullscreenFaceComponent implements OnDestroy {
     const h = this.size.height();
     return h > 0 ? this.size.width() / h : 1;
   });
-  readonly activePreset = computed(() => this.store.activeFor(this.ratio()));
+  readonly activePreset = computed(() => this.store.resolveForRatio(this.ratio()));
 
   readonly big = computed(() => bigTime(this.clock.now(), this.locale, this.clock.timeZone()));
   readonly parts = computed(() => dateParts(this.clock.now(), this.locale, this.clock.timeZone()));
-  readonly barFill = computed(() => minuteFraction(this.clock.now()));
 
   readonly styleVars = computed<Record<string, string>>(() => varsFor(this.activePreset()));
 

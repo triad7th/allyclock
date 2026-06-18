@@ -13,17 +13,15 @@ import { FullscreenConfigStore } from '../fullscreen-config-store.service';
 import { SheetComponent } from '../../../ui/sheet/sheet.component';
 import { NavHeaderComponent } from '../../../ui/nav-header/nav-header.component';
 import { IconButtonComponent } from '../../../ui/icon-button/icon-button.component';
-import { IconComponent } from '../../../ui/icon/icon.component';
 import { ClockService } from '../../../services/clock.service';
-import { bigTime, dateParts, minuteFraction } from '../clock-formatter';
+import { bigTime, dateParts } from '../clock-formatter';
 import { varsFor } from '../fullscreen-style';
-import { type SectionKey, type BarMode, DATE_SECTION_KEYS } from '../fullscreen-preset';
-import { searchDevices, type DeviceRatio } from '../device-ratios';
+import { type SectionKey, DATE_SECTION_KEYS } from '../fullscreen-preset';
 
 @Component({
   selector: 'app-fullscreen-config',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, IconComponent, DecimalPipe],
+  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, DecimalPipe],
   templateUrl: './fullscreen-config.component.html',
   styleUrl: './fullscreen-config.component.scss',
 })
@@ -35,12 +33,9 @@ export class FullscreenConfigComponent {
   private readonly sheet = viewChild(SheetComponent);
 
   private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
-  private readonly deviceInput = viewChild<ElementRef<HTMLInputElement>>('deviceInput');
 
   // Editing selection
-  readonly editingId = signal<string>(
-    this.store.state().pinnedPresetId ?? this.store.state().presets[0].id,
-  );
+  readonly editingId = signal<string>(this.store.state().presets[0].id);
 
   readonly editingPreset = computed(
     () =>
@@ -54,7 +49,6 @@ export class FullscreenConfigComponent {
   // Live preview computeds
   readonly big = computed(() => bigTime(this.clock.now(), this.locale, this.clock.timeZone()));
   readonly parts = computed(() => dateParts(this.clock.now(), this.locale, this.clock.timeZone()));
-  readonly barFill = computed(() => minuteFraction(this.clock.now()));
   readonly previewVars = computed(() => varsFor(this.editingPreset()));
 
   // Preview aspect ratio: clamp band midpoint to reasonable range
@@ -84,18 +78,6 @@ export class FullscreenConfigComponent {
     }
   }
 
-  addPreset(): void {
-    const id = this.store.splitPreset(this.editingId());
-    this.editingId.set(id);
-  }
-
-  deletePreset(id: string): void {
-    this.store.deletePreset(id);
-    if (this.editingId() === id) {
-      this.editingId.set(this.store.state().presets[0].id);
-    }
-  }
-
   startRename(): void {
     this.renaming.set(true);
     queueMicrotask(() => this.nameInput()?.nativeElement.focus());
@@ -114,11 +96,7 @@ export class FullscreenConfigComponent {
     this.commitRename((event.target as HTMLInputElement).value);
   }
 
-  onDeviceQuery(event: Event): void {
-    this.deviceQuery.set((event.target as HTMLInputElement).value);
-  }
-
-  /** Format ratio band label, e.g. "≥1.95" / "1.7–1.95" / "<0.62" */
+  /** Format ratio band label, e.g. "≥2" / "1.5–2" / "<0.62" */
   bandLabel(minRatio: number, maxRatio: number): string {
     if (!isFinite(maxRatio)) return `≥${minRatio}`;
     if (minRatio === 0) return `<${maxRatio}`;
@@ -150,46 +128,7 @@ export class FullscreenConfigComponent {
     }
   }
 
-  setBarMode(mode: BarMode): void {
-    this.store.updateBar(this.editingId(), { mode });
-  }
-
-  onBarSize(event: Event): void {
-    const value = Number((event.target as HTMLInputElement).value);
-    this.store.updateBar(this.editingId(), { sizeScale: value });
-  }
-
-  togglePin(): void {
-    const current = this.store.state().pinnedPresetId;
-    this.store.setPin(current === this.editingId() ? null : this.editingId());
-  }
-
-  // Reactive so the toggle reflects pin changes immediately under OnPush.
-  readonly isPinned = computed(
-    () => this.store.state().pinnedPresetId === this.editingId(),
-  );
-
-  // ── Device search ────────────────────────────────────────────────────────
-
-  readonly deviceQuery = signal('');
-  readonly devicePickerOpen = signal(false);
-
-  readonly filteredDevices = computed(() => searchDevices(this.deviceQuery()));
-
-  openDevicePicker(): void {
-    this.deviceQuery.set('');
-    this.devicePickerOpen.set(true);
-    queueMicrotask(() => this.deviceInput()?.nativeElement.focus());
-  }
-
-  closeDevicePicker(): void {
-    this.devicePickerOpen.set(false);
-    this.deviceQuery.set('');
-  }
-
-  pickDevice(device: DeviceRatio): void {
-    this.editingId.set(this.store.resolveForRatio(device.ratio).id);
-    this.deviceQuery.set('');
-    this.devicePickerOpen.set(false);
+  toggleBar(): void {
+    this.store.updateBar(this.editingId(), { visible: !this.editingPreset().bar.visible });
   }
 }
