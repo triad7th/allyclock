@@ -4,56 +4,86 @@
   height: 100%;
   align-items: center;
   justify-content: center;
-  background: #000;
-  color: #fff;
-  // Size the clock to the face's OWN box (works full-screen AND in the scaled
-  // preview), and lets the font react to both width and height.
+  background: #050505;
+  color: #fafafa;
   container-type: size;
 }
-
 .clock {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(0.25rem, 2cqh, 1.2rem);
 }
-
-.big-time {
+.time {
   display: flex;
   align-items: flex-start;
-  gap: 0.15em;
-  // Grow with the container: fill the width, but cap by height so it never
-  // overflows on short/wide boxes. The generous ceiling lets large screens get
-  // a genuinely big clock while staying proportionate.
-  font-size: clamp(3.5rem, min(26cqw, 56cqh), 40rem);
-  font-weight: 600;
-  line-height: 1;
-}
-
-.digits {
+  gap: 0.04em;
   font-variant-numeric: tabular-nums;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  font-size: calc(var(--time-base) * var(--time-scale, 1));
+  font-weight: var(--time-weight, 200);
+  opacity: var(--time-opacity, 1);
+  margin-bottom: var(--gap-time-bar, 0.5rem);
 }
-
 .ampm {
-  font-size: 0.22em;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  margin-top: 0.18em;
+  font-size: 0.15em;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  opacity: 0.85;
+  align-self: flex-start;
+  margin-top: 0.55em;
 }
-
-.info-line {
+.bar {
+  width: calc(var(--bar-base) * var(--bar-scale, 1));
+  height: 1.5px;
+  opacity: var(--bar-opacity, 0.34);
+  margin-bottom: var(--gap-bar-date, 0.5rem);
+}
+.bar.divider {
+  background: currentColor;
+}
+.bar:not(.divider) {
+  background: rgba(250, 250, 250, 0.16);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.bar > i {
+  display: block;
+  height: 100%;
+  background: #fafafa;
+  border-radius: 999px;
+}
+.date {
   display: flex;
   align-items: baseline;
-  gap: 0.6em;
-  font-size: clamp(0.85rem, min(3.2cqw, 6cqh), 2.2rem);
-  color: rgba(255, 255, 255, 0.55);
+  gap: var(--gap-date-parts, 0.5em);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
 }
-
-.precise {
-  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
-  font-variant-numeric: tabular-nums;
-}
-
-.dot {
+.date .sep {
   opacity: 0.4;
+}
+.weekday {
+  display: var(--weekday-display, inline);
+  font-size: calc(var(--date-base) * var(--weekday-scale, 1));
+  font-weight: var(--weekday-weight, 300);
+  opacity: var(--weekday-opacity, 0.6);
+}
+.month {
+  display: var(--month-display, inline);
+  font-size: calc(var(--date-base) * var(--month-scale, 1));
+  font-weight: var(--month-weight, 300);
+  opacity: var(--month-opacity, 0.6);
+}
+.day {
+  display: var(--day-display, inline);
+  font-size: calc(var(--date-base) * var(--day-scale, 1));
+  font-weight: var(--day-weight, 300);
+  opacity: var(--day-opacity, 0.6);
+}
+.gmt {
+  display: var(--gmt-display, inline);
+  font-size: calc(var(--date-base) * var(--gmt-scale, 1));
+  font-weight: var(--gmt-weight, 300);
+  opacity: var(--gmt-opacity, 0.6);
 }

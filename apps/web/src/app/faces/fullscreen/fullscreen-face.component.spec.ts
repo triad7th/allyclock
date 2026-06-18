@@ -9,12 +9,41 @@ describe('FullscreenFaceComponent', () => {
     }).compileComponents();
   });
 
-  it('renders the big time, precise line, and date line', () => {
+  it('renders the time digits', () => {
     const fixture = TestBed.createComponent(FullscreenFaceComponent);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('.digits')?.textContent).toMatch(/\d{1,2}:\d{2}/);
-    expect(el.querySelector('.precise')?.textContent).toMatch(/^\d{2}:\d{2}:\d{2}\.\d{2}$/);
-    expect(el.querySelector('.date-tz')?.textContent).toContain('GMT');
+  });
+
+  it('renders the date line with weekday, month, and day parts', () => {
+    const fixture = TestBed.createComponent(FullscreenFaceComponent);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    // weekday, month, day, gmt spans are all present in the .date section
+    expect(el.querySelector('.date .weekday')).toBeTruthy();
+    expect(el.querySelector('.date .month')).toBeTruthy();
+    expect(el.querySelector('.date .day')).toBeTruthy();
+    expect(el.querySelector('.date .gmt')?.textContent).toContain('GMT');
+  });
+
+  it('selects the ULTRAWIDE preset for a 2.1 ratio host', async () => {
+    const fixture = TestBed.createComponent(FullscreenFaceComponent);
+    const host = fixture.nativeElement as HTMLElement;
+    Object.defineProperty(host, 'clientWidth', { value: 840, configurable: true });
+    Object.defineProperty(host, 'clientHeight', { value: 400, configurable: true });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.componentInstance.activePreset().name).toBe('ULTRAWIDE');
+  });
+
+  it('selects the PHONE preset for a tall portrait host', async () => {
+    const fixture = TestBed.createComponent(FullscreenFaceComponent);
+    const host = fixture.nativeElement as HTMLElement;
+    Object.defineProperty(host, 'clientWidth', { value: 400, configurable: true });
+    Object.defineProperty(host, 'clientHeight', { value: 840, configurable: true });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.componentInstance.activePreset().name).toBe('PHONE');
   });
 });

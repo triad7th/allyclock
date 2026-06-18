@@ -1,13 +1,20 @@
-<div class="clock">
-  <div class="big-time">
+<div class="clock" [style]="styleVars()">
+  <div class="time">
     <span class="digits">{{ big().digits }}</span>
-    @if (big().ampm; as ampm) {
-      <span class="ampm">{{ ampm }}</span>
-    }
+    @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
   </div>
-  <div class="info-line">
-    <span class="precise">{{ preciseText() }}</span>
-    <span class="dot">·</span>
-    <span class="date-tz">{{ dateTZText() }}</span>
+
+  @switch (activePreset().bar.mode) {
+    @case ('progress') { <div class="bar"><i [style.width.%]="barFill() * 100"></i></div> }
+    @case ('divider') { <div class="bar divider"></div> }
+  }
+
+  <div class="date">
+    <span class="weekday">{{ parts().weekday }}</span>
+    <span class="sep">·</span>
+    <span class="month">{{ parts().month }}</span>
+    <span class="day">{{ parts().day }}</span>
+    <span class="sep">·</span>
+    <span class="gmt">{{ parts().gmt }}</span>
   </div>
 </div>
