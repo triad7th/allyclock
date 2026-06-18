@@ -40,7 +40,7 @@ app-nav-header {
 
   // Reuse the same face styles (these mirror fullscreen-face.component.scss)
   .time {
-    display: flex;
+    display: var(--time-display, flex);
     align-items: flex-start;
     gap: 0.04em;
     font-variant-numeric: tabular-nums;

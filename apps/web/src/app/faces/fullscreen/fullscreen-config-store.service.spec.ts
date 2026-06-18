@@ -74,4 +74,54 @@ describe('FullscreenConfigStore', () => {
     expect(store.resolveDevice('iPhone SE portrait')).toBeCloseTo(750 / 1334, 3);
     expect(store.resolveDevice('nope')).toBeNull();
   });
+
+  it('splitPreset splits a finite band into two contiguous non-overlapping halves', () => {
+    const before = store.state().presets.length;
+    // 'laptop' band: minRatio=1.45, maxRatio=1.7 → mid=1.575
+    const src = store.state().presets.find((p) => p.id === 'laptop')!;
+    const expectedMid = (src.minRatio + src.maxRatio) / 2;
+
+    const newId = store.splitPreset('laptop');
+
+    expect(store.state().presets.length).toBe(before + 1);
+
+    const lower = store.state().presets.find((p) => p.id === 'laptop')!;
+    const upper = store.state().presets.find((p) => p.id === newId)!;
+
+    // Lower band shrinks: original min, new max = mid
+    expect(lower.minRatio).toBe(src.minRatio);
+    expect(lower.maxRatio).toBeCloseTo(expectedMid);
+
+    // Upper band: min = mid, max = original max (contiguous, non-overlapping)
+    expect(upper.minRatio).toBeCloseTo(expectedMid);
+    expect(upper.maxRatio).toBe(src.maxRatio);
+
+    // Contiguous: lower.maxRatio === upper.minRatio
+    expect(lower.maxRatio).toBeCloseTo(upper.minRatio);
+
+    // New preset is not built-in
+    expect(upper.builtIn).toBe(false);
+  });
+
+  it('splitPreset on the ultrawide (Infinity) band keeps the new upper band maxRatio as Infinity', () => {
+    const before = store.state().presets.length;
+    const src = store.state().presets.find((p) => p.id === 'ultrawide')!;
+    expect(src.maxRatio).toBe(Infinity);
+
+    // finiteMax = minRatio + 1 = 1.95 + 1 = 2.95 → mid = (1.95 + 2.95)/2 = 2.45
+    const expectedMid = (src.minRatio + (src.minRatio + 1)) / 2;
+
+    const newId = store.splitPreset('ultrawide');
+
+    expect(store.state().presets.length).toBe(before + 1);
+
+    const lower = store.state().presets.find((p) => p.id === 'ultrawide')!;
+    const upper = store.state().presets.find((p) => p.id === newId)!;
+
+    expect(lower.maxRatio).toBeCloseTo(expectedMid);
+    expect(upper.minRatio).toBeCloseTo(expectedMid);
+    // Original Infinity preserved on upper band
+    expect(upper.maxRatio).toBe(Infinity);
+    expect(upper.builtIn).toBe(false);
+  });
 });

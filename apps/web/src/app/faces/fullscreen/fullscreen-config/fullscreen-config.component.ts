@@ -85,7 +85,7 @@ export class FullscreenConfigComponent {
   }
 
   addPreset(): void {
-    const id = this.store.duplicatePreset(this.editingId());
+    const id = this.store.splitPreset(this.editingId());
     this.editingId.set(id);
   }
 

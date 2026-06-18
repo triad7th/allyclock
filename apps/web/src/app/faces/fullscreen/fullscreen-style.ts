@@ -18,6 +18,7 @@ export function varsFor(p: FullscreenPreset): Record<string, string> {
     '--gap-time-bar': `calc(${p.gaps.timeToBar} * min(${GAP_BASE_CQW}cqw, ${GAP_BASE_CQH}cqh))`,
     '--gap-bar-date': `calc(${p.gaps.barToDate} * min(${GAP_BASE_CQW}cqw, ${GAP_BASE_CQH}cqh))`,
     '--gap-date-parts': `${p.gaps.betweenDateParts * DATE_PARTS_GAP_EM}em`,
+    '--time-display': p.sections.time.visible ? 'flex' : 'none',
     '--time-scale': `${p.sections.time.sizeScale}`,
     '--time-weight': `${p.sections.time.weight}`,
     '--time-opacity': `${p.sections.time.opacity}`,

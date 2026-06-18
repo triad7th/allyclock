@@ -11,10 +11,14 @@
 
   <div class="date">
     <span class="weekday">{{ parts().weekday }}</span>
-    <span class="sep">·</span>
+    @if (activePreset().sections.weekday.visible && (activePreset().sections.month.visible || activePreset().sections.day.visible)) {
+      <span class="sep">·</span>
+    }
     <span class="month">{{ parts().month }}</span>
     <span class="day">{{ parts().day }}</span>
-    <span class="sep">·</span>
+    @if ((activePreset().sections.month.visible || activePreset().sections.day.visible) && activePreset().sections.gmt.visible) {
+      <span class="sep">·</span>
+    }
     <span class="gmt">{{ parts().gmt }}</span>
   </div>
 </div>

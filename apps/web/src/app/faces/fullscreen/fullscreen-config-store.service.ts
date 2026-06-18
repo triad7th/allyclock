@@ -98,6 +98,31 @@ export class FullscreenConfigStore {
     return copyId;
   }
 
+  splitPreset(id: string): string {
+    const s = this._state();
+    const src = s.presets.find((p) => p.id === id);
+    if (!src) return id;
+    const upperMax = src.maxRatio;
+    const finiteMax = isFinite(upperMax) ? upperMax : src.minRatio + 1;
+    const mid = (src.minRatio + finiteMax) / 2;
+    const upperId = newId();
+    const lower: FullscreenPreset = { ...structuredClone(src), maxRatio: mid };
+    const upper: FullscreenPreset = {
+      ...structuredClone(src),
+      id: upperId,
+      name: `${src.name} 2`,
+      minRatio: mid,
+      maxRatio: upperMax,
+      builtIn: false,
+    };
+    const presets = s.presets
+      .map((p) => (p.id === id ? lower : p))
+      .concat(upper)
+      .sort((a, b) => a.minRatio - b.minRatio);
+    this.commit({ ...s, presets });
+    return upperId;
+  }
+
   updateSection(id: string, key: SectionKey, partial: Partial<SectionStyle>): void {
     this.patchPreset(id, (p) => ({
       ...p,
@@ -147,6 +172,8 @@ export class FullscreenConfigStore {
 
   private migrate(state: FullscreenConfigState): FullscreenConfigState {
     if (state.version >= STATE_VERSION) return state;
+    // TODO: future versions should additively merge in new built-in bands without
+    // clobbering user edits (currently only bumps the version; fine for STATE_VERSION=1).
     return { ...state, version: STATE_VERSION };
   }
 }
