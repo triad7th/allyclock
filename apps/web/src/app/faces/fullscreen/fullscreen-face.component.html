@@ -18,3 +18,15 @@
     <span class="gmt">{{ parts().gmt }}</span>
   </div>
 </div>
+<button
+  type="button"
+  class="gear"
+  [class.hidden]="!gearVisible() || configOpen()"
+  aria-label="Configure fullscreen"
+  (click)="openConfig()"
+>
+  <app-icon name="gearshape" />
+</button>
+@if (configOpen()) {
+  <app-fullscreen-config (closed)="onConfigClosed()" />
+}

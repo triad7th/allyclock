@@ -1,0 +1,8 @@
+<app-sheet [fullHeight]="true" sheetLabel="Fullscreen" (closed)="onSheetClosed()">
+  <div class="cfg">
+    <app-nav-header title="Fullscreen">
+      <app-icon-button navLeading icon="xmark" label="Close" (click)="close()" />
+    </app-nav-header>
+    <!-- preset row, preview, knobs added in later tasks -->
+  </div>
+</app-sheet>

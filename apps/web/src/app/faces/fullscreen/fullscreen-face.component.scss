@@ -87,3 +87,40 @@
   font-weight: var(--gmt-weight, 300);
   opacity: var(--gmt-opacity, 0.6);
 }
+
+.gear {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: rgba(30, 30, 30, 0.85);
+  color: #eee;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity 0.3s ease,
+    transform 0.12s ease,
+    background 0.2s ease;
+
+  app-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

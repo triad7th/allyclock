@@ -1,0 +1,18 @@
+@use 'tokens' as t;
+
+.cfg {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: t.$label;
+  padding: 0.5rem 1.5rem 2rem;
+}
+
+app-nav-header {
+  display: block;
+  flex: 0 0 auto;
+  margin-bottom: 1.5rem;
+}
