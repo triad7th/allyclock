@@ -7,16 +7,16 @@
   @if (activePreset().bar.visible) { <div class="bar divider"></div> }
 
   <div class="date">
-    <span class="weekday">{{ parts().weekday }}</span>
-    @if (activePreset().sections.weekday.visible && (activePreset().sections.month.visible || activePreset().sections.day.visible)) {
+    @if (store.state().showWeekday) {
+      <span class="weekday">{{ parts().weekday }}</span>
       <span class="sep">·</span>
     }
     <span class="month">{{ parts().month }}</span>
     <span class="day">{{ parts().day }}</span>
-    @if ((activePreset().sections.month.visible || activePreset().sections.day.visible) && activePreset().sections.gmt.visible) {
+    @if (store.state().showGmt) {
       <span class="sep">·</span>
+      <span class="gmt">{{ parts().gmt }}</span>
     }
-    <span class="gmt">{{ parts().gmt }}</span>
   </div>
 </div>
 <button

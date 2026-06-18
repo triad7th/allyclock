@@ -53,25 +53,21 @@
   opacity: 0.4;
 }
 .weekday {
-  display: var(--weekday-display, inline);
   font-size: calc(var(--date-base) * var(--weekday-scale, 1));
   font-weight: var(--weekday-weight, 300);
   opacity: var(--weekday-opacity, 0.6);
 }
 .month {
-  display: var(--month-display, inline);
   font-size: calc(var(--date-base) * var(--month-scale, 1));
   font-weight: var(--month-weight, 300);
   opacity: var(--month-opacity, 0.6);
 }
 .day {
-  display: var(--day-display, inline);
   font-size: calc(var(--date-base) * var(--day-scale, 1));
   font-weight: var(--day-weight, 300);
   opacity: var(--day-opacity, 0.6);
 }
 .gmt {
-  display: var(--gmt-display, inline);
   font-size: calc(var(--date-base) * var(--gmt-scale, 1));
   font-weight: var(--gmt-weight, 300);
   opacity: var(--gmt-opacity, 0.6);

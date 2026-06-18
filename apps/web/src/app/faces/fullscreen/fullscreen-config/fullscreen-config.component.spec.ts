@@ -148,13 +148,11 @@ describe('FullscreenConfigComponent', () => {
     expect(preset.sections.gmt.sizeScale).toBeCloseTo(1.3);
   });
 
-  it('toggling Weekday flips sections.weekday.visible in the store', () => {
+  it('toggling Weekday flips the global showWeekday flag in the store', () => {
     const fixture = TestBed.createComponent(FullscreenConfigComponent);
     fixture.detectChanges();
-    const component = fixture.componentInstance;
-    const id = component.editingId();
 
-    const before = store.state().presets.find((p) => p.id === id)!.sections.weekday.visible;
+    const before = store.state().showWeekday;
 
     const toggle = fixture.nativeElement.querySelector(
       '[data-knob="weekday-visible"]',
@@ -164,17 +162,14 @@ describe('FullscreenConfigComponent', () => {
     toggle.click();
     fixture.detectChanges();
 
-    const after = store.state().presets.find((p) => p.id === id)!.sections.weekday.visible;
-    expect(after).toBe(!before);
+    expect(store.state().showWeekday).toBe(!before);
   });
 
-  it('toggling GMT flips sections.gmt.visible in the store', () => {
+  it('toggling GMT flips the global showGmt flag in the store', () => {
     const fixture = TestBed.createComponent(FullscreenConfigComponent);
     fixture.detectChanges();
-    const component = fixture.componentInstance;
-    const id = component.editingId();
 
-    const before = store.state().presets.find((p) => p.id === id)!.sections.gmt.visible;
+    const before = store.state().showGmt;
 
     const toggle = fixture.nativeElement.querySelector(
       '[data-knob="gmt-visible"]',
@@ -184,8 +179,7 @@ describe('FullscreenConfigComponent', () => {
     toggle.click();
     fixture.detectChanges();
 
-    const after = store.state().presets.find((p) => p.id === id)!.sections.gmt.visible;
-    expect(after).toBe(!before);
+    expect(store.state().showGmt).toBe(!before);
   });
 
   it('toggling the Bar on/off flips bar.visible in the store', () => {

@@ -6,8 +6,8 @@ import {
   type SectionStyle,
 } from './fullscreen-preset';
 
-const timeStyle = (): SectionStyle => ({ visible: true, sizeScale: 1, weight: 200, opacity: 1 });
-const dateStyle = (): SectionStyle => ({ visible: true, sizeScale: 1, weight: 300, opacity: 0.6 });
+const timeStyle = (): SectionStyle => ({ sizeScale: 1, weight: 200, opacity: 1 });
+const dateStyle = (): SectionStyle => ({ sizeScale: 1, weight: 300, opacity: 0.6 });
 
 const LANDSCAPE = {
   time: { cqw: 120, cqh: 68 } as SectionBase,
@@ -57,14 +57,19 @@ function preset(
 export const BUILT_IN_PRESETS: FullscreenPreset[] = [
   preset('phone', 'PHONE', 0, 0.62, PHONE),
   preset('tall', 'TALL', 0.62, 1.05, NEAR_SQUARE),
-  preset('pad', 'PAD', 1.05, 1.5, NEAR_SQUARE),
-  preset('wide', 'WIDE', 1.5, 2.0, LANDSCAPE),
-  preset('ultra', 'ULTRA', 2.0, Infinity, LANDSCAPE),
+  preset('pad', 'PAD', 1.05, 1.45, NEAR_SQUARE),
+  preset('lap', 'LAP', 1.45, 1.7, LANDSCAPE),
+  preset('wide', 'WIDE', 1.7, 1.95, LANDSCAPE),
+  preset('mini', 'MINI', 1.95, 2.2, LANDSCAPE),
+  preset('ultra', 'ULTRA', 2.2, 2.8, LANDSCAPE),
+  preset('super', 'SUPER', 2.8, Infinity, LANDSCAPE),
 ];
 
 export function buildDefaultState(): FullscreenConfigState {
   return {
     version: STATE_VERSION,
     presets: BUILT_IN_PRESETS.map((p) => structuredClone(p)),
+    showWeekday: true,
+    showGmt: true,
   };
 }

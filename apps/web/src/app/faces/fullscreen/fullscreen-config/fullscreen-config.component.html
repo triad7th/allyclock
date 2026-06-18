@@ -19,16 +19,16 @@
         @if (editingPreset().bar.visible) { <div class="bar divider"></div> }
 
         <div class="date">
-          <span class="weekday">{{ parts().weekday }}</span>
-          @if (editingPreset().sections.weekday.visible && (editingPreset().sections.month.visible || editingPreset().sections.day.visible)) {
+          @if (store.state().showWeekday) {
+            <span class="weekday">{{ parts().weekday }}</span>
             <span class="sep">·</span>
           }
           <span class="month">{{ parts().month }}</span>
           <span class="day">{{ parts().day }}</span>
-          @if ((editingPreset().sections.month.visible || editingPreset().sections.day.visible) && editingPreset().sections.gmt.visible) {
+          @if (store.state().showGmt) {
             <span class="sep">·</span>
+            <span class="gmt">{{ parts().gmt }}</span>
           }
-          <span class="gmt">{{ parts().gmt }}</span>
         </div>
       </div>
     </div>
@@ -71,7 +71,6 @@
         </div>
 
         <div class="knobs-row">
-          <span class="knobs-row-label">Size</span>
           <input
             type="range"
             class="knobs-slider"
@@ -92,7 +91,6 @@
         </div>
 
         <div class="knobs-row">
-          <span class="knobs-row-label">Size</span>
           <input
             type="range"
             class="knobs-slider"
@@ -104,30 +102,36 @@
           />
           <span class="knobs-row-value">{{ editingPreset().sections.month.sizeScale | number:'1.2-2' }}</span>
         </div>
+      </div>
 
+      <!-- Weekday section (global) -->
+      <div class="knobs-section">
         <div class="knobs-toggle-row">
-          <span class="knobs-row-label">Weekday</span>
+          <span class="knobs-section-label">Weekday</span>
           <button
             type="button"
             class="knobs-toggle"
-            [class.on]="editingPreset().sections.weekday.visible"
+            [class.on]="store.state().showWeekday"
             data-knob="weekday-visible"
-            (click)="toggleVisible('weekday')"
-            [attr.aria-label]="editingPreset().sections.weekday.visible ? 'Hide Weekday' : 'Show Weekday'"
+            (click)="toggleWeekday()"
+            [attr.aria-label]="store.state().showWeekday ? 'Hide Weekday' : 'Show Weekday'"
           >
             <span class="knobs-toggle-thumb"></span>
           </button>
         </div>
+      </div>
 
+      <!-- GMT section (global) -->
+      <div class="knobs-section">
         <div class="knobs-toggle-row">
-          <span class="knobs-row-label">GMT</span>
+          <span class="knobs-section-label">GMT</span>
           <button
             type="button"
             class="knobs-toggle"
-            [class.on]="editingPreset().sections.gmt.visible"
+            [class.on]="store.state().showGmt"
             data-knob="gmt-visible"
-            (click)="toggleVisible('gmt')"
-            [attr.aria-label]="editingPreset().sections.gmt.visible ? 'Hide GMT' : 'Show GMT'"
+            (click)="toggleGmt()"
+            [attr.aria-label]="store.state().showGmt ? 'Hide GMT' : 'Show GMT'"
           >
             <span class="knobs-toggle-thumb"></span>
           </button>

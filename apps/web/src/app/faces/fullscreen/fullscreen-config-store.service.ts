@@ -44,6 +44,14 @@ export class FullscreenConfigStore {
     this.patchPreset(id, (p) => ({ ...p, bar: { ...p.bar, ...partial } }));
   }
 
+  setShowWeekday(v: boolean): void {
+    this.commit({ ...this._state(), showWeekday: v });
+  }
+
+  setShowGmt(v: boolean): void {
+    this.commit({ ...this._state(), showGmt: v });
+  }
+
   updateGap(id: string, key: keyof FullscreenPreset['gaps'], value: number): void {
     this.patchPreset(id, (p) => ({ ...p, gaps: { ...p.gaps, [key]: value } }));
   }
@@ -81,8 +89,10 @@ export class FullscreenConfigStore {
 
   private migrate(state: FullscreenConfigState): FullscreenConfigState {
     if (state.version >= STATE_VERSION) return state;
-    // TODO: future versions should additively merge in new built-in bands without
-    // clobbering user edits (currently only bumps the version; fine for STATE_VERSION=1).
-    return { ...state, version: STATE_VERSION };
+    // The band structure changed incompatibly across versions (band ids/shape,
+    // the global showWeekday/showGmt flags, removed per-section visibility), so
+    // older persisted state is reseeded to current defaults rather than carried
+    // forward partially. A future minor version can switch to additive merging.
+    return buildDefaultState();
   }
 }

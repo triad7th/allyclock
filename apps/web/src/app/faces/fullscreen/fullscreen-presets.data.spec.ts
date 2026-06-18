@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { BUILT_IN_PRESETS, buildDefaultState } from './fullscreen-presets.data';
 
 describe('built-in fullscreen presets', () => {
-  it('has five bands covering the full ratio range contiguously', () => {
+  it('has eight bands covering the full ratio range contiguously', () => {
     const sorted = [...BUILT_IN_PRESETS].sort((a, b) => a.minRatio - b.minRatio);
-    expect(sorted).toHaveLength(5);
+    expect(sorted).toHaveLength(8);
     expect(sorted[0].minRatio).toBe(0);
     expect(sorted[sorted.length - 1].maxRatio).toBe(Infinity);
     for (let i = 1; i < sorted.length; i++) {
@@ -12,18 +12,17 @@ describe('built-in fullscreen presets', () => {
     }
   });
 
-  it('has the five expected short band names', () => {
+  it('has the eight expected short band names', () => {
     const names = BUILT_IN_PRESETS.map((p) => p.name);
-    expect(names).toEqual(['PHONE', 'TALL', 'PAD', 'WIDE', 'ULTRA']);
+    expect(names).toEqual(['PHONE', 'TALL', 'PAD', 'LAP', 'WIDE', 'MINI', 'ULTRA', 'SUPER']);
     for (const name of names) {
       expect(name.length).toBeLessThanOrEqual(5);
     }
   });
 
-  it('every built-in is flagged builtIn with time and bar visible by default', () => {
+  it('every built-in is flagged builtIn with bar visible by default', () => {
     for (const p of BUILT_IN_PRESETS) {
       expect(p.builtIn).toBe(true);
-      expect(p.sections.time.visible).toBe(true);
       expect(p.bar.visible).toBe(true);
     }
   });
@@ -41,10 +40,12 @@ describe('built-in fullscreen presets', () => {
     }
   });
 
-  it('buildDefaultState seeds version and five presets', () => {
+  it('buildDefaultState seeds version, eight presets, and global weekday/gmt flags', () => {
     const s = buildDefaultState();
     expect(s.version).toBeGreaterThan(0);
-    expect(s.presets.length).toBe(5);
+    expect(s.presets.length).toBe(8);
+    expect(s.showWeekday).toBe(true);
+    expect(s.showGmt).toBe(true);
   });
 
   it('buildDefaultState returns independent deep clones', () => {

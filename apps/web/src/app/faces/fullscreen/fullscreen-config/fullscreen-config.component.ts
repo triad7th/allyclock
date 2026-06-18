@@ -111,9 +111,12 @@ export class FullscreenConfigComponent {
     return `${Math.max(0, Math.min(100, pct))}%`;
   }
 
-  toggleVisible(key: SectionKey): void {
-    const current = this.editingPreset().sections[key].visible;
-    this.store.updateSection(this.editingId(), key, { visible: !current });
+  toggleWeekday(): void {
+    this.store.setShowWeekday(!this.store.state().showWeekday);
+  }
+
+  toggleGmt(): void {
+    this.store.setShowGmt(!this.store.state().showGmt);
   }
 
   onSectionSize(key: SectionKey, event: Event): void {

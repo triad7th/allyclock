@@ -27,14 +27,14 @@ describe('FullscreenFaceComponent', () => {
     expect(el.querySelector('.date .gmt')?.textContent).toContain('GMT');
   });
 
-  it('selects the ULTRA preset for a 2.1 ratio host', async () => {
+  it('selects the MINI preset for a 2.1 ratio host', async () => {
     const fixture = TestBed.createComponent(FullscreenFaceComponent);
     const host = fixture.nativeElement as HTMLElement;
     Object.defineProperty(host, 'clientWidth', { value: 840, configurable: true });
     Object.defineProperty(host, 'clientHeight', { value: 400, configurable: true });
     fixture.detectChanges();
     await fixture.whenStable();
-    expect(fixture.componentInstance.activePreset().name).toBe('ULTRA');
+    expect(fixture.componentInstance.activePreset().name).toBe('MINI');
   });
 
   it('selects the PHONE preset for a tall portrait host', async () => {

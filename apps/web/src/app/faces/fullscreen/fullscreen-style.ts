@@ -29,7 +29,6 @@ export function varsFor(p: FullscreenPreset): Record<string, string> {
     v[`--${k}-scale`] = `${p.sections[k].sizeScale}`;
     v[`--${k}-weight`] = `${p.sections[k].weight}`;
     v[`--${k}-opacity`] = `${p.sections[k].opacity}`;
-    v[`--${k}-display`] = p.sections[k].visible ? 'inline' : 'none';
   });
   return v;
 }

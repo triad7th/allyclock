@@ -32,7 +32,7 @@ import { AUTO_HIDE_MS } from '../../config/animation-timing';
 export class FullscreenFaceComponent implements OnDestroy {
   private readonly clock = inject(ClockService);
   private readonly size = inject(ContainerSizeDirective);
-  private readonly store = inject(FullscreenConfigStore);
+  protected readonly store = inject(FullscreenConfigStore);
   private readonly faceConfig = inject(FaceConfigService);
   private readonly locale = navigator.language || 'en-US';
 
