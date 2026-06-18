@@ -3,6 +3,80 @@
     <app-nav-header title="Fullscreen">
       <app-icon-button navLeading icon="xmark" label="Close" (click)="close()" />
     </app-nav-header>
-    <!-- preset row, preview, knobs added in later tasks -->
+
+    <!-- Live preview -->
+    <div class="preview-wrap">
+      <div
+        class="preview-frame"
+        [style]="previewVars()"
+        [style.aspect-ratio]="previewAspect()"
+      >
+        <div class="time">
+          <span class="digits">{{ big().digits }}</span>
+          @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
+        </div>
+
+        @switch (editingPreset().bar.mode) {
+          @case ('progress') { <div class="bar"><i [style.width.%]="barFill() * 100"></i></div> }
+          @case ('divider') { <div class="bar divider"></div> }
+        }
+
+        <div class="date">
+          <span class="weekday">{{ parts().weekday }}</span>
+          <span class="sep">·</span>
+          <span class="month">{{ parts().month }}</span>
+          <span class="day">{{ parts().day }}</span>
+          <span class="sep">·</span>
+          <span class="gmt">{{ parts().gmt }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preset row -->
+    <div class="preset-row">
+      @for (preset of store.state().presets; track preset.id) {
+        <div class="preset-card-wrap">
+          <button
+            type="button"
+            class="preset-card"
+            [class.active]="preset.id === editingId()"
+            (click)="cardClick(preset.id)"
+          >
+            @if (preset.id === editingId() && renaming()) {
+              <input
+                #nameInput
+                class="rename-input"
+                type="text"
+                [value]="editingPreset().name"
+                (keydown.enter)="commitRename($any($event.target).value)"
+                (blur)="commitRename($any($event.target).value)"
+              />
+            } @else {
+              <span class="preset-title">{{ preset.name }}</span>
+            }
+            <span class="preset-band">{{ bandLabel(preset.minRatio, preset.maxRatio) }}</span>
+          </button>
+          @if (store.state().presets.length > 1) {
+            <button
+              type="button"
+              class="preset-delete"
+              (click)="deletePreset(preset.id)"
+              aria-label="Delete preset"
+              title="Delete preset"
+            >
+              <app-icon name="xmark" />
+            </button>
+          }
+        </div>
+      }
+      <button
+        type="button"
+        class="add-preset-card"
+        aria-label="Add preset"
+        (click)="addPreset()"
+      >
+        <app-icon name="plus" />
+      </button>
+    </div>
   </div>
 </app-sheet>

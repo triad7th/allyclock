@@ -16,3 +16,231 @@ app-nav-header {
   flex: 0 0 auto;
   margin-bottom: 1.5rem;
 }
+
+// ── Live preview ──────────────────────────────────────────────────────────────
+
+.preview-wrap {
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.preview-frame {
+  width: 100%;
+  max-width: 340px;
+  border-radius: 12px;
+  background: #050505;
+  color: #fafafa;
+  overflow: hidden;
+  container-type: size;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  // Reuse the same face styles (these mirror fullscreen-face.component.scss)
+  .time {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.04em;
+    font-variant-numeric: tabular-nums;
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    font-size: calc(var(--time-base) * var(--time-scale, 1));
+    font-weight: var(--time-weight, 200);
+    opacity: var(--time-opacity, 1);
+    margin-bottom: var(--gap-time-bar, 0.5rem);
+  }
+
+  .ampm {
+    font-size: 0.15em;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    opacity: 0.85;
+    align-self: flex-start;
+    margin-top: 0.55em;
+  }
+
+  .bar {
+    width: calc(var(--bar-base) * var(--bar-scale, 1));
+    height: 1.5px;
+    opacity: var(--bar-opacity, 0.34);
+    margin-bottom: var(--gap-bar-date, 0.5rem);
+  }
+
+  .bar.divider {
+    background: currentColor;
+  }
+
+  .bar:not(.divider) {
+    background: rgba(250, 250, 250, 0.16);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .bar > i {
+    display: block;
+    height: 100%;
+    background: #fafafa;
+    border-radius: 999px;
+  }
+
+  .date {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-date-parts, 0.5em);
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+  }
+
+  .date .sep {
+    opacity: 0.4;
+  }
+
+  .weekday {
+    display: var(--weekday-display, inline);
+    font-size: calc(var(--date-base) * var(--weekday-scale, 1));
+    font-weight: var(--weekday-weight, 300);
+    opacity: var(--weekday-opacity, 0.6);
+  }
+
+  .month {
+    display: var(--month-display, inline);
+    font-size: calc(var(--date-base) * var(--month-scale, 1));
+    font-weight: var(--month-weight, 300);
+    opacity: var(--month-opacity, 0.6);
+  }
+
+  .day {
+    display: var(--day-display, inline);
+    font-size: calc(var(--date-base) * var(--day-scale, 1));
+    font-weight: var(--day-weight, 300);
+    opacity: var(--day-opacity, 0.6);
+  }
+
+  .gmt {
+    display: var(--gmt-display, inline);
+    font-size: calc(var(--date-base) * var(--gmt-scale, 1));
+    font-weight: var(--gmt-weight, 300);
+    opacity: var(--gmt-opacity, 0.6);
+  }
+}
+
+// ── Preset row ────────────────────────────────────────────────────────────────
+
+.preset-row {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  flex: 0 0 auto;
+}
+
+.preset-card-wrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.preset-card,
+.add-preset-card {
+  background: #1a1a1a;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  color: #eee;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    transform 0.12s ease,
+    border-color 0.2s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.add-preset-card {
+  flex: 0 0 auto;
+}
+
+.preset-card {
+  width: 88px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0.5rem;
+  box-sizing: border-box;
+
+  &.active {
+    border-color: t.$tint;
+  }
+}
+
+.preset-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  margin-bottom: 0.2rem;
+  cursor: pointer;
+}
+
+.preset-band {
+  font-size: 0.6rem;
+  opacity: 0.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.preset-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: t.$label;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+
+  app-icon {
+    width: 13px;
+    height: 13px;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.add-preset-card {
+  width: 88px;
+  height: 62px;
+  border: 2px dashed #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: #888;
+}
+
+.rename-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #111;
+  border: 1px solid t.$tint;
+  border-radius: 4px;
+  color: #eee;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.3rem;
+  margin-bottom: 0.2rem;
+}

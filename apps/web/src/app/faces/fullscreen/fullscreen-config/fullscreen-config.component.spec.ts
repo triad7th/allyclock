@@ -1,13 +1,27 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { FullscreenConfigComponent } from './fullscreen-config.component';
+import { FullscreenConfigStore } from '../fullscreen-config-store.service';
 import { SHEET_ANIMATION_MS } from '../../../config/animation-timing';
 
+const mem: Record<string, string> = {};
+const storageMock = {
+  getItem: (k: string) => mem[k] ?? null,
+  setItem: (k: string, v: string) => { mem[k] = v; },
+  removeItem: (k: string) => { delete mem[k]; },
+  clear: () => { for (const k of Object.keys(mem)) delete mem[k]; },
+};
+
 describe('FullscreenConfigComponent', () => {
+  let store: FullscreenConfigStore;
+
   beforeEach(async () => {
+    storageMock.clear();
+    vi.stubGlobal('localStorage', storageMock);
     await TestBed.configureTestingModule({
       imports: [FullscreenConfigComponent],
     }).compileComponents();
+    store = TestBed.inject(FullscreenConfigStore);
   });
 
   it('clicking the header X button emits closed after the exit animation', () => {
@@ -25,5 +39,146 @@ describe('FullscreenConfigComponent', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it('clicking the second preset card sets editingId to that preset\'s id', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    const presets = store.state().presets;
+    expect(presets.length).toBeGreaterThanOrEqual(2);
+
+    const secondPreset = presets[1];
+    // Initially editingId is the first preset or pinnedPresetId
+    const initialId = component.editingId();
+    expect(initialId).toBe(presets[0].id);
+
+    // Click the second preset card
+    const cards = fixture.nativeElement.querySelectorAll('.preset-card');
+    expect(cards.length).toBeGreaterThanOrEqual(2);
+    (cards[1] as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(component.editingId()).toBe(secondPreset.id);
+  });
+
+  it('second preset card gets active class after clicking it', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    const presets = store.state().presets;
+    const secondPreset = presets[1];
+
+    const cards = fixture.nativeElement.querySelectorAll('.preset-card');
+    (cards[1] as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(component.editingId()).toBe(secondPreset.id);
+    const activeCard = fixture.nativeElement.querySelector('.preset-card.active');
+    expect(activeCard).not.toBeNull();
+  });
+
+  it('clicking the + card increases store presets length by 1 and selects the new preset', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    const before = store.state().presets.length;
+    const addCard = fixture.nativeElement.querySelector('.add-preset-card') as HTMLButtonElement;
+    expect(addCard).not.toBeNull();
+    addCard.click();
+    fixture.detectChanges();
+
+    expect(store.state().presets.length).toBe(before + 1);
+    // The new preset's id should be the last one (duplicate adds to sorted list)
+    const newPresets = store.state().presets;
+    // editingId should be one of the new preset ids
+    const editingId = component.editingId();
+    expect(newPresets.find((p) => p.id === editingId)).toBeDefined();
+    // The new preset should be different from what was selected before
+    expect(newPresets.length).toBe(before + 1);
+  });
+
+  it('the × delete button on a card deletes that preset and the count drops', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+
+    const before = store.state().presets.length;
+    expect(before).toBeGreaterThan(1);
+
+    // Should see delete buttons (more than one preset)
+    const deleteButtons = fixture.nativeElement.querySelectorAll('.preset-delete');
+    expect(deleteButtons.length).toBeGreaterThan(0);
+
+    const firstPresetId = store.state().presets[0].id;
+    (deleteButtons[0] as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(store.state().presets.length).toBe(before - 1);
+    expect(store.state().presets.find((p) => p.id === firstPresetId)).toBeUndefined();
+  });
+
+  it('no × delete button is shown when there is only one preset', () => {
+    // Delete presets until only one remains
+    const presets = store.state().presets;
+    for (let i = presets.length - 1; i > 0; i--) {
+      store.deletePreset(presets[i].id);
+    }
+    expect(store.state().presets.length).toBe(1);
+
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+
+    const deleteButtons = fixture.nativeElement.querySelectorAll('.preset-delete');
+    expect(deleteButtons.length).toBe(0);
+  });
+
+  it('committing a rename updates the preset name in the store', async () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    const presetId = component.editingId();
+    const originalName = store.state().presets.find((p) => p.id === presetId)!.name;
+
+    // Trigger rename by clicking the card title
+    const title = fixture.nativeElement.querySelector('.preset-title') as HTMLElement;
+    expect(title).not.toBeNull();
+    title.click();
+    fixture.detectChanges();
+
+    // Input should appear
+    const input = fixture.nativeElement.querySelector('.rename-input') as HTMLInputElement;
+    expect(input).not.toBeNull();
+
+    // Simulate typing and committing
+    input.value = 'MY RENAMED PRESET';
+    input.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+
+    const updated = store.state().presets.find((p) => p.id === presetId)!;
+    expect(updated.name).toBe('MY RENAMED PRESET');
+    expect(updated.name).not.toBe(originalName);
+  });
+
+  it('deleting the currently-editing preset resets editingId to the first remaining preset', () => {
+    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    // Select the first preset (default)
+    const firstPresetId = store.state().presets[0].id;
+    expect(component.editingId()).toBe(firstPresetId);
+
+    // Delete the first preset
+    const deleteButtons = fixture.nativeElement.querySelectorAll('.preset-delete');
+    (deleteButtons[0] as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    // editingId should now be the new first preset
+    expect(component.editingId()).toBe(store.state().presets[0].id);
+    expect(component.editingId()).not.toBe(firstPresetId);
   });
 });
