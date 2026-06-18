@@ -15,7 +15,6 @@ export function varsFor(p: FullscreenPreset): Record<string, string> {
   const v: Record<string, string> = {
     '--time-base': base(p.bases.time),
     '--date-base': base(p.bases.date),
-    '--bar-base': base(p.bases.bar),
     '--gap-time-bar': `calc(${p.gaps.timeToBar} * min(${GAP_BASE_CQW}cqw, ${GAP_BASE_CQH}cqh))`,
     '--gap-bar-date': `calc(${p.gaps.barToDate} * min(${GAP_BASE_CQW}cqw, ${GAP_BASE_CQH}cqh))`,
     '--gap-date-parts': `${p.gaps.betweenDateParts * DATE_PARTS_GAP_EM}em`,
@@ -23,7 +22,6 @@ export function varsFor(p: FullscreenPreset): Record<string, string> {
     '--time-weight': `${p.sections.time.weight}`,
     '--time-opacity': `${p.sections.time.opacity}`,
     '--bar-opacity': `${p.bar.opacity}`,
-    '--bar-scale': `${p.bar.sizeScale}`,
   };
   (['weekday', 'month', 'day', 'gmt'] as SectionKey[]).forEach((k) => {
     v[`--${k}-scale`] = `${p.sections[k].sizeScale}`;

@@ -62,7 +62,8 @@ app-nav-header {
   }
 
   .bar {
-    width: calc(var(--bar-base) * var(--bar-scale, 1));
+    // Proportional to the time font size (LAP time:bar ratio 68:56).
+    width: calc(var(--time-base) * var(--time-scale, 1) * 56 / 68);
     height: 1.5px;
     opacity: var(--bar-opacity, 0.34);
     margin-bottom: var(--gap-bar-date, 0.5rem);

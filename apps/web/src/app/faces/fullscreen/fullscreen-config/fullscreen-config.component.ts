@@ -57,7 +57,9 @@ export class FullscreenConfigComponent {
     const max = isFinite(p.maxRatio) ? p.maxRatio : p.minRatio + 1;
     const min = p.minRatio;
     const mid = (min + max) / 2;
-    return Math.max(0.3, Math.min(3, mid));
+    // Floor at 0.78 so the very-narrow PHONE band (mid 0.31) doesn't render a
+    // huge preview; it lands just a little taller than TALL (mid 0.835).
+    return Math.max(0.78, Math.min(3, mid));
   });
 
   close(): void { this.sheet()?.close(); }
