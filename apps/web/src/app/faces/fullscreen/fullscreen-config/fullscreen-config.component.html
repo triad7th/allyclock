@@ -122,66 +122,85 @@
     <!-- ── Knobs panel ─────────────────────────────────────────────────── -->
     <div class="knobs-panel">
 
-      <!-- Text section rows: Time, Weekday, Month, Day, GMT -->
-      @for (row of sectionRows; track row.key) {
-        <div class="knobs-section">
-          <div class="knobs-section-header">
-            <span class="knobs-section-label">{{ row.label }}</span>
-            <button
-              type="button"
-              class="knobs-toggle"
-              [class.on]="editingPreset().sections[row.key].visible"
-              [attr.data-knob]="row.key + '-visible'"
-              (click)="toggleVisible(row.key)"
-              [attr.aria-label]="(editingPreset().sections[row.key].visible ? 'Hide ' : 'Show ') + row.label"
-            >
-              <span class="knobs-toggle-thumb"></span>
-            </button>
-          </div>
-
-          <div class="knobs-row">
-            <span class="knobs-row-label">Size</span>
-            <input
-              type="range"
-              class="knobs-slider"
-              min="0.5" max="2.0" step="0.05"
-              [value]="editingPreset().sections[row.key].sizeScale"
-              [style.--fill]="fillPct(editingPreset().sections[row.key].sizeScale, 0.5, 2.0)"
-              [attr.data-knob]="row.key + '-size'"
-              (input)="onSectionSize(row.key, $event)"
-            />
-            <span class="knobs-row-value">{{ editingPreset().sections[row.key].sizeScale | number:'1.2-2' }}</span>
-          </div>
-
-          <div class="knobs-row">
-            <span class="knobs-row-label">Weight</span>
-            <input
-              type="range"
-              class="knobs-slider"
-              min="100" max="700" step="100"
-              [value]="editingPreset().sections[row.key].weight"
-              [style.--fill]="fillPct(editingPreset().sections[row.key].weight, 100, 700)"
-              [attr.data-knob]="row.key + '-weight'"
-              (input)="onSectionWeight(row.key, $event)"
-            />
-            <span class="knobs-row-value">{{ editingPreset().sections[row.key].weight }}</span>
-          </div>
-
-          <div class="knobs-row">
-            <span class="knobs-row-label">Opacity</span>
-            <input
-              type="range"
-              class="knobs-slider"
-              min="0.2" max="1.0" step="0.05"
-              [value]="editingPreset().sections[row.key].opacity"
-              [style.--fill]="fillPct(editingPreset().sections[row.key].opacity, 0.2, 1.0)"
-              [attr.data-knob]="row.key + '-opacity'"
-              (input)="onSectionOpacity(row.key, $event)"
-            />
-            <span class="knobs-row-value">{{ editingPreset().sections[row.key].opacity | number:'1.2-2' }}</span>
-          </div>
+      <!-- Time section -->
+      <div class="knobs-section">
+        <div class="knobs-section-header">
+          <span class="knobs-section-label">Time</span>
+          <button
+            type="button"
+            class="knobs-toggle"
+            [class.on]="editingPreset().sections.time.visible"
+            data-knob="time-visible"
+            (click)="toggleVisible('time')"
+            [attr.aria-label]="editingPreset().sections.time.visible ? 'Hide Time' : 'Show Time'"
+          >
+            <span class="knobs-toggle-thumb"></span>
+          </button>
         </div>
-      }
+
+        <div class="knobs-row">
+          <span class="knobs-row-label">Size</span>
+          <input
+            type="range"
+            class="knobs-slider"
+            min="0.5" max="2.0" step="0.05"
+            [value]="editingPreset().sections.time.sizeScale"
+            [style.--fill]="fillPct(editingPreset().sections.time.sizeScale, 0.5, 2.0)"
+            data-knob="time-size"
+            (input)="onSectionSize('time', $event)"
+          />
+          <span class="knobs-row-value">{{ editingPreset().sections.time.sizeScale | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Date section -->
+      <div class="knobs-section">
+        <div class="knobs-section-header">
+          <span class="knobs-section-label">Date</span>
+        </div>
+
+        <div class="knobs-row">
+          <span class="knobs-row-label">Size</span>
+          <input
+            type="range"
+            class="knobs-slider"
+            min="0.5" max="2.0" step="0.05"
+            [value]="editingPreset().sections.month.sizeScale"
+            [style.--fill]="fillPct(editingPreset().sections.month.sizeScale, 0.5, 2.0)"
+            data-knob="date-size"
+            (input)="onDateSize($event)"
+          />
+          <span class="knobs-row-value">{{ editingPreset().sections.month.sizeScale | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="knobs-toggle-row">
+          <span class="knobs-row-label">Weekday</span>
+          <button
+            type="button"
+            class="knobs-toggle"
+            [class.on]="editingPreset().sections.weekday.visible"
+            data-knob="weekday-visible"
+            (click)="toggleVisible('weekday')"
+            [attr.aria-label]="editingPreset().sections.weekday.visible ? 'Hide Weekday' : 'Show Weekday'"
+          >
+            <span class="knobs-toggle-thumb"></span>
+          </button>
+        </div>
+
+        <div class="knobs-toggle-row">
+          <span class="knobs-row-label">GMT</span>
+          <button
+            type="button"
+            class="knobs-toggle"
+            [class.on]="editingPreset().sections.gmt.visible"
+            data-knob="gmt-visible"
+            (click)="toggleVisible('gmt')"
+            [attr.aria-label]="editingPreset().sections.gmt.visible ? 'Hide GMT' : 'Show GMT'"
+          >
+            <span class="knobs-toggle-thumb"></span>
+          </button>
+        </div>
+      </div>
 
       <!-- Bar section -->
       <div class="knobs-section">
@@ -226,69 +245,6 @@
             (input)="onBarSize($event)"
           />
           <span class="knobs-row-value">{{ editingPreset().bar.sizeScale | number:'1.2-2' }}</span>
-        </div>
-
-        <div class="knobs-row">
-          <span class="knobs-row-label">Opacity</span>
-          <input
-            type="range"
-            class="knobs-slider"
-            min="0.2" max="1.0" step="0.05"
-            [value]="editingPreset().bar.opacity"
-            [style.--fill]="fillPct(editingPreset().bar.opacity, 0.2, 1.0)"
-            data-knob="bar-opacity"
-            (input)="onBarOpacity($event)"
-          />
-          <span class="knobs-row-value">{{ editingPreset().bar.opacity | number:'1.2-2' }}</span>
-        </div>
-      </div>
-
-      <!-- Gap sliders -->
-      <div class="knobs-section">
-        <div class="knobs-section-header">
-          <span class="knobs-section-label">Gaps</span>
-        </div>
-
-        <div class="knobs-row">
-          <span class="knobs-row-label">Time → Bar</span>
-          <input
-            type="range"
-            class="knobs-slider"
-            min="0" max="2" step="0.1"
-            [value]="editingPreset().gaps.timeToBar"
-            [style.--fill]="fillPct(editingPreset().gaps.timeToBar, 0, 2)"
-            data-knob="gap-timeToBar"
-            (input)="onGap('timeToBar', $event)"
-          />
-          <span class="knobs-row-value">{{ editingPreset().gaps.timeToBar | number:'1.1-1' }}</span>
-        </div>
-
-        <div class="knobs-row">
-          <span class="knobs-row-label">Bar → Date</span>
-          <input
-            type="range"
-            class="knobs-slider"
-            min="0" max="2" step="0.1"
-            [value]="editingPreset().gaps.barToDate"
-            [style.--fill]="fillPct(editingPreset().gaps.barToDate, 0, 2)"
-            data-knob="gap-barToDate"
-            (input)="onGap('barToDate', $event)"
-          />
-          <span class="knobs-row-value">{{ editingPreset().gaps.barToDate | number:'1.1-1' }}</span>
-        </div>
-
-        <div class="knobs-row">
-          <span class="knobs-row-label">Between date parts</span>
-          <input
-            type="range"
-            class="knobs-slider"
-            min="0" max="2" step="0.1"
-            [value]="editingPreset().gaps.betweenDateParts"
-            [style.--fill]="fillPct(editingPreset().gaps.betweenDateParts, 0, 2)"
-            data-knob="gap-betweenDateParts"
-            (input)="onGap('betweenDateParts', $event)"
-          />
-          <span class="knobs-row-value">{{ editingPreset().gaps.betweenDateParts | number:'1.1-1' }}</span>
         </div>
       </div>
 

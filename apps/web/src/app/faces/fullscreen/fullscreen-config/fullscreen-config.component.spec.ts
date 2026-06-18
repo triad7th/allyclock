@@ -331,23 +331,26 @@ describe('FullscreenConfigComponent', () => {
     expect(preset.bar.mode).toBe('progress');
   });
 
-  it('moving a gap slider updates gaps.timeToBar in the store', () => {
+  it('moving the Date size slider sets sizeScale to the same value on all four date parts', () => {
     const fixture = TestBed.createComponent(FullscreenConfigComponent);
     fixture.detectChanges();
     const component = fixture.componentInstance;
     const id = component.editingId();
 
     const slider = fixture.nativeElement.querySelector(
-      '[data-knob="gap-timeToBar"]',
+      '[data-knob="date-size"]',
     ) as HTMLInputElement;
     expect(slider).not.toBeNull();
 
-    slider.value = '0.8';
+    slider.value = '1.3';
     slider.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
     const preset = store.state().presets.find((p) => p.id === id)!;
-    expect(preset.gaps.timeToBar).toBeCloseTo(0.8);
+    expect(preset.sections.weekday.sizeScale).toBeCloseTo(1.3);
+    expect(preset.sections.month.sizeScale).toBeCloseTo(1.3);
+    expect(preset.sections.day.sizeScale).toBeCloseTo(1.3);
+    expect(preset.sections.gmt.sizeScale).toBeCloseTo(1.3);
   });
 
   it('toggling pin on sets pinnedPresetId to editingId, toggling off sets it back to null', () => {

@@ -17,7 +17,7 @@ import { IconComponent } from '../../../ui/icon/icon.component';
 import { ClockService } from '../../../services/clock.service';
 import { bigTime, dateParts, minuteFraction } from '../clock-formatter';
 import { varsFor } from '../fullscreen-style';
-import { type SectionKey, type BarMode, type FullscreenPreset } from '../fullscreen-preset';
+import { type SectionKey, type BarMode, DATE_SECTION_KEYS } from '../fullscreen-preset';
 import { searchDevices, type DeviceRatio } from '../device-ratios';
 
 @Component({
@@ -127,15 +127,6 @@ export class FullscreenConfigComponent {
 
   // ── Section knobs ────────────────────────────────────────────────────────
 
-  /** The ordered list of section rows rendered in the knobs panel. */
-  readonly sectionRows: { key: SectionKey; label: string }[] = [
-    { key: 'time', label: 'Time' },
-    { key: 'weekday', label: 'Weekday' },
-    { key: 'month', label: 'Month' },
-    { key: 'day', label: 'Day' },
-    { key: 'gmt', label: 'GMT' },
-  ];
-
   /** Compute --fill % for a slider given its current value and range. */
   fillPct(value: number, min: number, max: number): string {
     const pct = Math.round(((value - min) / (max - min)) * 100);
@@ -152,14 +143,11 @@ export class FullscreenConfigComponent {
     this.store.updateSection(this.editingId(), key, { sizeScale: value });
   }
 
-  onSectionWeight(key: SectionKey, event: Event): void {
+  onDateSize(event: Event): void {
     const value = Number((event.target as HTMLInputElement).value);
-    this.store.updateSection(this.editingId(), key, { weight: value });
-  }
-
-  onSectionOpacity(key: SectionKey, event: Event): void {
-    const value = Number((event.target as HTMLInputElement).value);
-    this.store.updateSection(this.editingId(), key, { opacity: value });
+    for (const key of DATE_SECTION_KEYS) {
+      this.store.updateSection(this.editingId(), key, { sizeScale: value });
+    }
   }
 
   setBarMode(mode: BarMode): void {
@@ -169,16 +157,6 @@ export class FullscreenConfigComponent {
   onBarSize(event: Event): void {
     const value = Number((event.target as HTMLInputElement).value);
     this.store.updateBar(this.editingId(), { sizeScale: value });
-  }
-
-  onBarOpacity(event: Event): void {
-    const value = Number((event.target as HTMLInputElement).value);
-    this.store.updateBar(this.editingId(), { opacity: value });
-  }
-
-  onGap(key: keyof FullscreenPreset['gaps'], event: Event): void {
-    const value = Number((event.target as HTMLInputElement).value);
-    this.store.updateGap(this.editingId(), key, value);
   }
 
   togglePin(): void {

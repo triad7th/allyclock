@@ -306,6 +306,14 @@ app-nav-header {
   min-width: 0;
 }
 
+// ── Toggle row (label left / toggle right, consistent with section-header) ─
+
+.knobs-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 // ── iOS-style segmented control ──────────────────────────────────────────
 
 .knobs-segmented {
