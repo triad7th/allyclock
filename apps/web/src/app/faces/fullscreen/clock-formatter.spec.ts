@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { bigTime, dateTZ, gmtOffset, precise } from './clock-formatter';
+import { bigTime, dateTZ, dateParts, gmtOffset, minuteFraction, precise } from './clock-formatter';
 
 // 2026-06-11T03:09:05.270Z = 8:09:05 PM June 10 in Los Angeles (PDT), 12:09 PM in Seoul.
 const date = new Date('2026-06-11T03:09:05.270Z');
@@ -51,5 +51,22 @@ describe('gmtOffset', () => {
 describe('dateTZ', () => {
   it('joins the long date and offset with a middle dot', () => {
     expect(dateTZ(date, 'en-US', 'America/Los_Angeles')).toBe('June 10, 2026 · GMT−07:00');
+  });
+});
+
+describe('minuteFraction', () => {
+  it('is seconds(+ms)/60 of the current minute', () => {
+    expect(minuteFraction(new Date('2026-06-17T09:41:30.000Z'))).toBeCloseTo(0.5, 3);
+    expect(minuteFraction(new Date('2026-06-17T09:41:00.000Z'))).toBeCloseTo(0, 3);
+  });
+});
+
+describe('dateParts', () => {
+  it('returns weekday, month, day, gmt for a zone', () => {
+    const p = dateParts(new Date('2026-06-17T16:41:00Z'), 'en-US', 'America/Los_Angeles');
+    expect(p.weekday).toBe('Wed');
+    expect(p.month).toBe('Jun');
+    expect(p.day).toBe('17');
+    expect(p.gmt).toBe('GMT−07:00');
   });
 });
