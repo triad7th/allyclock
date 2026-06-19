@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } fro
 import { AUTO_HIDE_MS } from '../../config/animation-timing';
 import { ClockService } from '../../services/clock.service';
 import { IconButtonComponent } from '../../ui/icon-button/icon-button.component';
+import { IconComponent } from '../../ui/icon/icon.component';
 import { NavHeaderComponent } from '../../ui/nav-header/nav-header.component';
 import { SheetComponent } from '../../ui/sheet/sheet.component';
 
@@ -94,7 +95,7 @@ function dayOfYear(date: Date): number {
 
 @Component({
   selector: 'app-time-machine',
-  imports: [IconButtonComponent, NavHeaderComponent, SheetComponent],
+  imports: [IconButtonComponent, IconComponent, NavHeaderComponent, SheetComponent],
   templateUrl: './time-machine.component.html',
   styleUrl: './time-machine.component.scss',
   host: {

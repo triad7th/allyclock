@@ -4,6 +4,8 @@
   class="configure"
   [class.hidden]="!visible() && !pinned()"
   (click)="open.emit()"
+  aria-label="Choose clock face"
+  title="Choose clock face"
 >
-  Face
+  <app-icon name="square.grid.2x2" />
 </button>

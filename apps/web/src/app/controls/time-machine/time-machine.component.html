@@ -4,8 +4,10 @@
   [class.active]="isMocked()"
   [class.hidden]="!visible() && !panelOpen() && !isMocked()"
   (click)="togglePanel()"
+  aria-label="Time machine"
+  title="Time machine"
 >
-  Time
+  <app-icon name="clock" />
 </button>
 @if (panelOpen()) {
   <app-sheet sheetLabel="Time Machine" (closed)="panelOpen.set(false)">
