@@ -107,57 +107,11 @@ describe('FullscreenConfigComponent', () => {
     expect(preset.sections.gmt.sizeScale).toBeCloseTo(1.3);
   });
 
-  it('toggling Weekday flips the global showWeekday flag in the store', () => {
+  it('does not render the visibility toggles (they moved to the Display panel)', () => {
     const fixture = TestBed.createComponent(FullscreenConfigComponent);
     fixture.detectChanges();
-
-    const before = store.state().showWeekday;
-
-    const toggle = fixture.nativeElement.querySelector(
-      '[data-knob="weekday-visible"]',
-    ) as HTMLButtonElement;
-    expect(toggle).not.toBeNull();
-
-    toggle.click();
-    fixture.detectChanges();
-
-    expect(store.state().showWeekday).toBe(!before);
-  });
-
-  it('toggling GMT flips the global showGmt flag in the store', () => {
-    const fixture = TestBed.createComponent(FullscreenConfigComponent);
-    fixture.detectChanges();
-
-    const before = store.state().showGmt;
-
-    const toggle = fixture.nativeElement.querySelector(
-      '[data-knob="gmt-visible"]',
-    ) as HTMLButtonElement;
-    expect(toggle).not.toBeNull();
-
-    toggle.click();
-    fixture.detectChanges();
-
-    expect(store.state().showGmt).toBe(!before);
-  });
-
-  it('toggling the Bar on/off flips bar.visible in the store', () => {
-    const fixture = TestBed.createComponent(FullscreenConfigComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-    const id = component.editingId();
-
-    const before = store.state().presets.find((p) => p.id === id)!.bar.visible;
-
-    const toggle = fixture.nativeElement.querySelector(
-      '[data-knob="bar-visible"]',
-    ) as HTMLButtonElement;
-    expect(toggle).not.toBeNull();
-
-    toggle.click();
-    fixture.detectChanges();
-
-    const after = store.state().presets.find((p) => p.id === id)!.bar.visible;
-    expect(after).toBe(!before);
+    expect(fixture.nativeElement.querySelector('[data-knob="weekday-visible"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-knob="gmt-visible"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-knob="bar-visible"]')).toBeNull();
   });
 });

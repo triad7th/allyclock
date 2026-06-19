@@ -6,8 +6,8 @@ import {
   type SectionStyle,
 } from './fullscreen-preset';
 
-const timeStyle = (): SectionStyle => ({ sizeScale: 1, weight: 200, opacity: 1 });
-const dateStyle = (): SectionStyle => ({ sizeScale: 1, weight: 300, opacity: 0.6 });
+const timeStyle = (): SectionStyle => ({ visible: true, sizeScale: 1, weight: 200, opacity: 1 });
+const dateStyle = (): SectionStyle => ({ visible: true, sizeScale: 1, weight: 300, opacity: 0.6 });
 
 const LANDSCAPE = {
   time: { cqw: 120, cqh: 68 } as SectionBase,
@@ -69,7 +69,5 @@ export function buildDefaultState(): FullscreenConfigState {
   return {
     version: STATE_VERSION,
     presets: BUILT_IN_PRESETS.map((p) => structuredClone(p)),
-    showWeekday: true,
-    showGmt: true,
   };
 }

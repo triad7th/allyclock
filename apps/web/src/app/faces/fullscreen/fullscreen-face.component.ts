@@ -11,6 +11,8 @@ import { ContainerSizeDirective } from '../../ui/container-size/container-size.d
 import { FaceConfigService } from '../../services/face-config.service';
 import { FullscreenConfigStore } from './fullscreen-config-store.service';
 import { FullscreenConfigComponent } from './fullscreen-config/fullscreen-config.component';
+import { FullscreenTogglesComponent } from './fullscreen-toggles/fullscreen-toggles.component';
+import { IconComponent } from '../../ui/icon/icon.component';
 import { bigTime, dateParts } from './clock-formatter';
 import { varsFor } from './fullscreen-style';
 import { AUTO_HIDE_MS } from '../../config/animation-timing';
@@ -18,7 +20,7 @@ import { AUTO_HIDE_MS } from '../../config/animation-timing';
 @Component({
   selector: 'app-fullscreen-face',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FullscreenConfigComponent],
+  imports: [FullscreenConfigComponent, FullscreenTogglesComponent, IconComponent],
   hostDirectives: [ContainerSizeDirective],
   templateUrl: './fullscreen-face.component.html',
   styleUrl: './fullscreen-face.component.scss',
@@ -51,6 +53,10 @@ export class FullscreenFaceComponent implements OnDestroy {
 
   readonly controlsVisible = signal(true);
 
+  // The Display (toggles) panel is owned locally by the face's gear, unlike the
+  // Adjust (size) panel which is triggered from the app controls bar.
+  readonly togglesOpen = signal(false);
+
   private controlsTimer: ReturnType<typeof setTimeout> | undefined;
 
   constructor() {
@@ -60,6 +66,7 @@ export class FullscreenFaceComponent implements OnDestroy {
   ngOnDestroy(): void {
     clearTimeout(this.controlsTimer);
     this.faceConfig.open.set(false);
+    this.faceConfig.adjustOpen.set(false);
   }
 
   reveal(): void {
@@ -68,7 +75,19 @@ export class FullscreenFaceComponent implements OnDestroy {
     this.armControlsTimer();
   }
 
-  onConfigClosed(): void {
+  openToggles(): void {
+    this.togglesOpen.set(true);
+    // Hide the app controls bar while a face panel is open (same as Adjust).
+    this.faceConfig.open.set(true);
+  }
+
+  closeToggles(): void {
+    this.togglesOpen.set(false);
+    this.faceConfig.open.set(false);
+  }
+
+  closeAdjust(): void {
+    this.faceConfig.adjustOpen.set(false);
     this.faceConfig.open.set(false);
   }
 

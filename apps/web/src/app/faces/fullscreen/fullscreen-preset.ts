@@ -1,6 +1,10 @@
 // Section style knobs (time + each date part). `sizeScale` multiplies the
 // preset's responsive base for that section group.
 export interface SectionStyle {
+  // Per-preset visibility. The Weekday/GMT toggles currently write this to every
+  // preset (dimension-agnostic), but the per-preset field is kept so per-preset
+  // visibility control can be revived later. (time/month/day stay true.)
+  visible: boolean;
   sizeScale: number; // 0.5–2.0, default 1.0
   weight: number;    // 100–700
   opacity: number;   // 0.2–1.0
@@ -50,14 +54,12 @@ export interface FullscreenPreset {
 export interface FullscreenConfigState {
   version: number;
   presets: FullscreenPreset[]; // contiguous, non-overlapping, sorted by minRatio asc
-  showWeekday: boolean; // global: applies across all presets
-  showGmt: boolean;     // global: applies across all presets
 }
 
 export type SectionKey = 'time' | 'weekday' | 'month' | 'day' | 'gmt';
 export const DATE_SECTION_KEYS: SectionKey[] = ['weekday', 'month', 'day', 'gmt'];
 
-export const STATE_VERSION = 2;
+export const STATE_VERSION = 3;
 export const PRESETS_KEY = 'allyclock.fullscreen.presets';
 
 // Base cq value for the inter-section gap (multiplied by each gap scale).

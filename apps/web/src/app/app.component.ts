@@ -57,6 +57,12 @@ export class AppComponent {
     this.sheetOpen.set(true);
   }
 
+  // The Fullscreen "Adjust" (size) panel: mark it open and hide the controls bar.
+  openAdjust(): void {
+    this.faceConfig.adjustOpen.set(true);
+    this.faceConfig.open.set(true);
+  }
+
   closeSheet(): void {
     this.sheetOpen.set(false);
     this.configureButton().focusButton();

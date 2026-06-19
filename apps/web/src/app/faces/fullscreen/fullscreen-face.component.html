@@ -7,13 +7,13 @@
   @if (activePreset().bar.visible) { <div class="bar divider"></div> }
 
   <div class="date">
-    @if (store.state().showWeekday) {
+    @if (activePreset().sections.weekday.visible) {
       <span class="weekday">{{ parts().weekday }}</span>
       <span class="sep">·</span>
     }
     <span class="month">{{ parts().month }}</span>
     <span class="day">{{ parts().day }}</span>
-    @if (store.state().showGmt) {
+    @if (activePreset().sections.gmt.visible) {
       <span class="sep">·</span>
       <span class="gmt">{{ parts().gmt }}</span>
     }
@@ -22,6 +22,19 @@
 <p class="viewport-label" [class.hidden]="!controlsVisible()">
   {{ width() }} × {{ height() }} · {{ activePreset().name }}
 </p>
-@if (faceConfig.open()) {
-  <app-fullscreen-config (closed)="onConfigClosed()" />
+<button
+  type="button"
+  class="gear"
+  [class.hidden]="!controlsVisible()"
+  (click)="openToggles()"
+  aria-label="Display options"
+  title="Display options"
+>
+  <app-icon name="gearshape" />
+</button>
+@if (faceConfig.adjustOpen()) {
+  <app-fullscreen-config (closed)="closeAdjust()" />
+}
+@if (togglesOpen()) {
+  <app-fullscreen-toggles (closed)="closeToggles()" />
 }

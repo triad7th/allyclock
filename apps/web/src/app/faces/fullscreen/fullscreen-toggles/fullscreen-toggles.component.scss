@@ -1,0 +1,106 @@
+@use 'tokens' as t;
+
+.cfg {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: t.$label;
+  padding: 0.5rem 1.5rem 2rem;
+}
+
+app-nav-header {
+  display: block;
+  flex: 0 0 auto;
+  margin-bottom: 1.5rem;
+}
+
+// ── Toggles panel ──────────────────────────────────────────────────────────
+
+.knobs-panel {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  // Query container so the toggles reflow to columns based on the panel's own
+  // width, mirroring the Adjust panel.
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding-top: 1.5rem;
+}
+
+@container (min-width: 600px) {
+  .knobs-panel {
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start;
+  }
+}
+
+@container (min-width: 900px) {
+  .knobs-panel {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.knobs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+}
+
+.knobs-section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: t.$secondary-label;
+}
+
+// ── Toggle row (label left / toggle right) ─────────────────────────────────
+
+.knobs-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// ── iOS-style toggle switch ────────────────────────────────────────────────
+
+.knobs-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+  border: none;
+  background: t.$secondary-surface;
+  cursor: pointer;
+  padding: 0;
+  flex: 0 0 auto;
+  transition: background 0.2s ease;
+
+  &.on {
+    background: t.$tint;
+  }
+}
+
+.knobs-toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+
+  .knobs-toggle.on & {
+    transform: translateX(18px);
+  }
+}

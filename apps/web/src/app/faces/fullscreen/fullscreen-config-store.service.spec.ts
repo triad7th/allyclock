@@ -35,8 +35,8 @@ describe('FullscreenConfigStore', () => {
     TestBed.configureTestingModule({});
     const fresh = TestBed.inject(FullscreenConfigStore);
     expect(fresh.state().presets).toHaveLength(8);
-    expect(fresh.state().showWeekday).toBe(true);
-    expect(fresh.state().showGmt).toBe(true);
+    expect(fresh.state().presets[0].sections.weekday.visible).toBe(true);
+    expect(fresh.state().presets[0].sections.gmt.visible).toBe(true);
   });
 
   it('revives Infinity maxRatio lost to JSON on reload (SUPER stays reachable)', () => {
@@ -82,18 +82,22 @@ describe('FullscreenConfigStore', () => {
     expect(store.state().presets.find((p) => p.id === 'ultra')!.gaps.timeToBar).toBe(1.4);
   });
 
-  it('setShowWeekday commits the global flag and persists it', () => {
-    expect(store.state().showWeekday).toBe(true);
-    store.setShowWeekday(false);
-    expect(store.state().showWeekday).toBe(false);
-    expect(JSON.parse(mem[PRESETS_KEY]).showWeekday).toBe(false);
+  it('setSectionVisibleAll writes the value to every preset and persists it', () => {
+    store.setSectionVisibleAll('weekday', false);
+    for (const p of store.state().presets) {
+      expect(p.sections.weekday.visible).toBe(false);
+    }
+    const persisted = JSON.parse(mem[PRESETS_KEY]);
+    expect(persisted.presets.every((p: any) => p.sections.weekday.visible === false)).toBe(true);
   });
 
-  it('setShowGmt commits the global flag and persists it', () => {
-    expect(store.state().showGmt).toBe(true);
-    store.setShowGmt(false);
-    expect(store.state().showGmt).toBe(false);
-    expect(JSON.parse(mem[PRESETS_KEY]).showGmt).toBe(false);
+  it('setBarVisibleAll writes bar visibility to every preset and persists it', () => {
+    store.setBarVisibleAll(false);
+    for (const p of store.state().presets) {
+      expect(p.bar.visible).toBe(false);
+    }
+    const persisted = JSON.parse(mem[PRESETS_KEY]);
+    expect(persisted.presets.every((p: any) => p.bar.visible === false)).toBe(true);
   });
 
   it('renamePreset renames the target preset', () => {

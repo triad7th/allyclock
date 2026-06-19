@@ -70,14 +70,6 @@ export class FullscreenConfigComponent {
     return `${Math.max(0, Math.min(100, pct))}%`;
   }
 
-  toggleWeekday(): void {
-    this.store.setShowWeekday(!this.store.state().showWeekday);
-  }
-
-  toggleGmt(): void {
-    this.store.setShowGmt(!this.store.state().showGmt);
-  }
-
   onSectionSize(key: SectionKey, event: Event): void {
     const value = Number((event.target as HTMLInputElement).value);
     this.store.updateSection(this.editingId(), key, { sizeScale: value });
@@ -88,9 +80,5 @@ export class FullscreenConfigComponent {
     for (const key of DATE_SECTION_KEYS) {
       this.store.updateSection(this.editingId(), key, { sizeScale: value });
     }
-  }
-
-  toggleBar(): void {
-    this.store.updateBar(this.editingId(), { visible: !this.editingPreset().bar.visible });
   }
 }

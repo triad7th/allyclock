@@ -1,0 +1,63 @@
+<app-sheet sheetLabel="Display" (closed)="onSheetClosed()">
+  <div class="cfg">
+    <app-nav-header title="Display" [flush]="true">
+      <app-icon-button navLeading icon="xmark" label="Close" (click)="close()" />
+    </app-nav-header>
+
+    <!-- ── Toggles panel ───────────────────────────────────────────────── -->
+    <div class="knobs-panel">
+
+      <!-- Weekday -->
+      <div class="knobs-section">
+        <div class="knobs-toggle-row">
+          <span class="knobs-section-label">Weekday</span>
+          <button
+            type="button"
+            class="knobs-toggle"
+            [class.on]="showWeekday()"
+            data-knob="weekday-visible"
+            (click)="toggleWeekday()"
+            [attr.aria-label]="showWeekday() ? 'Hide Weekday' : 'Show Weekday'"
+          >
+            <span class="knobs-toggle-thumb"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- GMT -->
+      <div class="knobs-section">
+        <div class="knobs-toggle-row">
+          <span class="knobs-section-label">GMT</span>
+          <button
+            type="button"
+            class="knobs-toggle"
+            [class.on]="showGmt()"
+            data-knob="gmt-visible"
+            (click)="toggleGmt()"
+            [attr.aria-label]="showGmt() ? 'Hide GMT' : 'Show GMT'"
+          >
+            <span class="knobs-toggle-thumb"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bar -->
+      <div class="knobs-section">
+        <div class="knobs-toggle-row">
+          <span class="knobs-section-label">Bar</span>
+          <button
+            type="button"
+            class="knobs-toggle"
+            [class.on]="showBar()"
+            data-knob="bar-visible"
+            (click)="toggleBar()"
+            [attr.aria-label]="showBar() ? 'Hide Bar' : 'Show Bar'"
+          >
+            <span class="knobs-toggle-thumb"></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</app-sheet>

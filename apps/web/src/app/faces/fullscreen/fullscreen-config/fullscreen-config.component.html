@@ -47,57 +47,6 @@
         </div>
       </div>
 
-      <!-- Weekday section (global) -->
-      <div class="knobs-section">
-        <div class="knobs-toggle-row">
-          <span class="knobs-section-label">Weekday</span>
-          <button
-            type="button"
-            class="knobs-toggle"
-            [class.on]="store.state().showWeekday"
-            data-knob="weekday-visible"
-            (click)="toggleWeekday()"
-            [attr.aria-label]="store.state().showWeekday ? 'Hide Weekday' : 'Show Weekday'"
-          >
-            <span class="knobs-toggle-thumb"></span>
-          </button>
-        </div>
-      </div>
-
-      <!-- GMT section (global) -->
-      <div class="knobs-section">
-        <div class="knobs-toggle-row">
-          <span class="knobs-section-label">GMT</span>
-          <button
-            type="button"
-            class="knobs-toggle"
-            [class.on]="store.state().showGmt"
-            data-knob="gmt-visible"
-            (click)="toggleGmt()"
-            [attr.aria-label]="store.state().showGmt ? 'Hide GMT' : 'Show GMT'"
-          >
-            <span class="knobs-toggle-thumb"></span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Bar section -->
-      <div class="knobs-section">
-        <div class="knobs-toggle-row">
-          <span class="knobs-section-label">Bar</span>
-          <button
-            type="button"
-            class="knobs-toggle"
-            [class.on]="editingPreset().bar.visible"
-            data-knob="bar-visible"
-            (click)="toggleBar()"
-            [attr.aria-label]="editingPreset().bar.visible ? 'Hide Bar' : 'Show Bar'"
-          >
-            <span class="knobs-toggle-thumb"></span>
-          </button>
-        </div>
-      </div>
-
     </div>
   </div>
 </app-sheet>

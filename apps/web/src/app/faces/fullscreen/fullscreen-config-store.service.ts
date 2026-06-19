@@ -44,12 +44,19 @@ export class FullscreenConfigStore {
     this.patchPreset(id, (p) => ({ ...p, bar: { ...p.bar, ...partial } }));
   }
 
-  setShowWeekday(v: boolean): void {
-    this.commit({ ...this._state(), showWeekday: v });
+  // Dimension-agnostic visibility toggles: write the value to EVERY preset. The
+  // per-preset field is preserved so per-preset control can be revived later.
+  setSectionVisibleAll(key: SectionKey, visible: boolean): void {
+    const presets = this._state().presets.map((p) => ({
+      ...p,
+      sections: { ...p.sections, [key]: { ...p.sections[key], visible } },
+    }));
+    this.commit({ ...this._state(), presets });
   }
 
-  setShowGmt(v: boolean): void {
-    this.commit({ ...this._state(), showGmt: v });
+  setBarVisibleAll(visible: boolean): void {
+    const presets = this._state().presets.map((p) => ({ ...p, bar: { ...p.bar, visible } }));
+    this.commit({ ...this._state(), presets });
   }
 
   updateGap(id: string, key: keyof FullscreenPreset['gaps'], value: number): void {

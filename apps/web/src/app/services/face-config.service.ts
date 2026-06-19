@@ -5,5 +5,11 @@ import { Injectable, signal } from '@angular/core';
 // switch face or scrub time from inside a face's own configuration.
 @Injectable({ providedIn: 'root' })
 export class FaceConfigService {
+  // True while any face config panel is open (hides the app Face/Time/Adjust
+  // controls).
   readonly open = signal(false);
+  // True while the Fullscreen "Adjust" (size) panel should be shown — set by the
+  // controls-bar Adjust button, read by the Fullscreen face. (The face's gear
+  // owns the separate "toggles" panel locally.)
+  readonly adjustOpen = signal(false);
 }

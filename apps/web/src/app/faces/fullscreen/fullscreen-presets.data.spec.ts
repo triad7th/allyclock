@@ -40,12 +40,14 @@ describe('built-in fullscreen presets', () => {
     }
   });
 
-  it('buildDefaultState seeds version, eight presets, and global weekday/gmt flags', () => {
+  it('buildDefaultState seeds version, eight presets, and visible weekday/gmt per preset', () => {
     const s = buildDefaultState();
     expect(s.version).toBeGreaterThan(0);
     expect(s.presets.length).toBe(8);
-    expect(s.showWeekday).toBe(true);
-    expect(s.showGmt).toBe(true);
+    for (const p of s.presets) {
+      expect(p.sections.weekday.visible).toBe(true);
+      expect(p.sections.gmt.visible).toBe(true);
+    }
   });
 
   it('buildDefaultState returns independent deep clones', () => {
