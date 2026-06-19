@@ -83,9 +83,11 @@ export class FullscreenConfigComponent {
     const max = isFinite(p.maxRatio) ? p.maxRatio : p.minRatio + 1;
     const min = p.minRatio;
     const mid = (min + max) / 2;
-    // Floor at 0.78 so the very-narrow PHONE band (mid 0.31) doesn't render a
-    // huge preview; it lands just a little taller than TALL (mid 0.835).
-    return Math.max(0.78, Math.min(3, mid));
+    // Clamp to [0.78, 1.6]: the floor keeps the very-narrow PHONE band from a
+    // huge preview; the ceiling keeps wide bands (MINI/ULTRA/SUPER) from a tiny,
+    // short frame. The clock is height-bound in landscape, so every wide band
+    // looks the same anyway — render them at ~LAP's height, not ever-shorter.
+    return Math.max(0.78, Math.min(1.6, mid));
   });
 
   close(): void { this.sheet()?.close(); }

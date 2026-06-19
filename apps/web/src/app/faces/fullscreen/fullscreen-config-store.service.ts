@@ -75,7 +75,7 @@ export class FullscreenConfigStore {
       const raw = localStorage.getItem(PRESETS_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as FullscreenConfigState;
-        if (parsed?.presets?.length) return this.migrate(parsed);
+        if (parsed?.presets?.length) return this.migrate(this.reviveRatios(parsed));
       }
     } catch {
       // fall through to seed
@@ -85,6 +85,16 @@ export class FullscreenConfigStore {
       localStorage.setItem(PRESETS_KEY, JSON.stringify(seeded));
     } catch { /* ignore */ }
     return seeded;
+  }
+
+  // JSON serializes Infinity as null, which would break the open-ended top
+  // band's upper bound (e.g. SUPER's maxRatio) on reload — a ratio like 8.56
+  // would then fail `ratio < maxRatio` and resolve to the wrong band. Restore it.
+  private reviveRatios(state: FullscreenConfigState): FullscreenConfigState {
+    for (const p of state.presets) {
+      if (typeof p.maxRatio !== 'number') p.maxRatio = Infinity;
+    }
+    return state;
   }
 
   private migrate(state: FullscreenConfigState): FullscreenConfigState {

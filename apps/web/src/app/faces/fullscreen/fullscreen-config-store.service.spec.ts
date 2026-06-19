@@ -39,6 +39,18 @@ describe('FullscreenConfigStore', () => {
     expect(fresh.state().showGmt).toBe(true);
   });
 
+  it('revives Infinity maxRatio lost to JSON on reload (SUPER stays reachable)', () => {
+    // JSON.stringify(Infinity) === "null"; simulate reloading such persisted state.
+    const persisted = JSON.parse(JSON.stringify(store.state()));
+    expect(persisted.presets.find((p: { id: string }) => p.id === 'super').maxRatio).toBeNull();
+    mem[PRESETS_KEY] = JSON.stringify(persisted);
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({});
+    const fresh = TestBed.inject(FullscreenConfigStore);
+    expect(fresh.state().presets.find((p) => p.id === 'super')!.maxRatio).toBe(Infinity);
+    expect(fresh.resolveForRatio(8.56).id).toBe('super');
+  });
+
   it('resolveForRatio picks the band containing the ratio', () => {
     expect(store.resolveForRatio(2.1).id).toBe('mini');
     expect(store.resolveForRatio(1.78).id).toBe('wide');
