@@ -24,6 +24,7 @@ import { type SectionKey, DATE_SECTION_KEYS } from '../fullscreen-preset';
   imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, DecimalPipe],
   templateUrl: './fullscreen-config.component.html',
   styleUrl: './fullscreen-config.component.scss',
+  host: { '(window:resize)': 'onViewportResize()' },
 })
 export class FullscreenConfigComponent {
   protected readonly store = inject(FullscreenConfigStore);
@@ -42,6 +43,31 @@ export class FullscreenConfigComponent {
       this.store.state().presets.find((p) => p.id === this.editingId()) ??
       this.store.state().presets[0],
   );
+
+  // Live screen dimensions. The full-screen face renders into the viewport, so
+  // the config auto-selects the preset whose band contains the current ratio and
+  // re-selects when the window is resized.
+  private readonly viewW = signal(typeof window !== 'undefined' ? window.innerWidth : 0);
+  private readonly viewH = signal(typeof window !== 'undefined' ? window.innerHeight : 0);
+  readonly currentRatio = computed(() => (this.viewH() > 0 ? this.viewW() / this.viewH() : 1));
+  readonly currentDims = computed(() => `${this.viewW()} × ${this.viewH()}`);
+  readonly currentBand = computed(() => this.store.resolveForRatio(this.currentRatio()).name);
+
+  constructor() {
+    // Auto-select the preset that fits the current screen on open.
+    this.syncToViewport();
+  }
+
+  onViewportResize(): void {
+    this.viewW.set(window.innerWidth);
+    this.viewH.set(window.innerHeight);
+    this.syncToViewport();
+  }
+
+  /** Point the editor at the preset whose band contains the current screen ratio. */
+  private syncToViewport(): void {
+    this.editingId.set(this.store.resolveForRatio(this.currentRatio()).id);
+  }
 
   // Rename state
   readonly renaming = signal(false);

@@ -4,6 +4,8 @@
       <app-icon-button navLeading icon="xmark" label="Close" (click)="close()" />
     </app-nav-header>
 
+    <p class="cfg-dims" data-test="current-dims">{{ currentDims() }} · {{ currentBand() }}</p>
+
     <!-- Live preview -->
     <div class="preview-wrap">
       <div

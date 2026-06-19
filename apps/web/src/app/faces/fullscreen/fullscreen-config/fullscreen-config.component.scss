@@ -19,6 +19,15 @@ app-nav-header {
 
 // ── Live preview ──────────────────────────────────────────────────────────────
 
+.cfg-dims {
+  margin: 0 0 0.75rem;
+  text-align: center;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: t.$secondary-label;
+}
+
 .preview-wrap {
   margin-bottom: 1.25rem;
   display: flex;
