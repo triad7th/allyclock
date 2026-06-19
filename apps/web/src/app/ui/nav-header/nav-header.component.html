@@ -1,4 +1,4 @@
-<header class="nav-header">
+<header class="nav-header" [class.flush]="flush()">
   <span class="nav-lead"><ng-content select="[navLeading]" /></span>
   <span class="nav-title">{{ title() }}</span>
   <span class="nav-trail"><ng-content select="[navTrailing]" /></span>

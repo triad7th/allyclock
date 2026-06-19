@@ -46,9 +46,6 @@ describe('FullscreenConfigComponent', () => {
     fixture.detectChanges();
     const component = fixture.componentInstance;
     expect(component.editingId()).toBe(store.resolveForRatio(component.currentRatio()).id);
-    expect(
-      fixture.nativeElement.querySelector('[data-test="current-dims"]').textContent,
-    ).toContain('×');
   });
 
   it('follows the viewport on resize, re-selecting the matching band', () => {
@@ -63,72 +60,10 @@ describe('FullscreenConfigComponent', () => {
       component.onViewportResize();
       fixture.detectChanges();
       expect(component.editingId()).toBe('mini'); // 2000/1000 = 2.0 → mini band
-      expect(
-        fixture.nativeElement.querySelector('[data-test="current-dims"]').textContent,
-      ).toContain('2000 × 1000');
     } finally {
       Object.defineProperty(window, 'innerWidth', { value: ow, configurable: true });
       Object.defineProperty(window, 'innerHeight', { value: oh, configurable: true });
     }
-  });
-
-  it('clicking the second preset card sets editingId to that preset\'s id', () => {
-    const fixture = TestBed.createComponent(FullscreenConfigComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-
-    const presets = store.state().presets;
-    expect(presets.length).toBeGreaterThanOrEqual(2);
-
-    const secondPreset = presets[1];
-
-    const cards = fixture.nativeElement.querySelectorAll('.preset-card');
-    expect(cards.length).toBeGreaterThanOrEqual(2);
-    (cards[1] as HTMLButtonElement).click();
-    fixture.detectChanges();
-
-    expect(component.editingId()).toBe(secondPreset.id);
-  });
-
-  it('second preset card gets active class after clicking it', () => {
-    const fixture = TestBed.createComponent(FullscreenConfigComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-
-    const secondPreset = store.state().presets[1];
-
-    const cards = fixture.nativeElement.querySelectorAll('.preset-card');
-    (cards[1] as HTMLButtonElement).click();
-    fixture.detectChanges();
-
-    expect(component.editingId()).toBe(secondPreset.id);
-    const activeCard = fixture.nativeElement.querySelector('.preset-card.active');
-    expect(activeCard).not.toBeNull();
-  });
-
-  it('committing a rename updates the preset name in the store', () => {
-    const fixture = TestBed.createComponent(FullscreenConfigComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-
-    const presetId = component.editingId();
-    const originalName = store.state().presets.find((p) => p.id === presetId)!.name;
-
-    const title = fixture.nativeElement.querySelector('.preset-card.active .preset-title') as HTMLElement;
-    expect(title).not.toBeNull();
-    title.click();
-    fixture.detectChanges();
-
-    const input = fixture.nativeElement.querySelector('.rename-input') as HTMLInputElement;
-    expect(input).not.toBeNull();
-
-    input.value = 'MY RENAMED PRESET';
-    input.dispatchEvent(new Event('blur'));
-    fixture.detectChanges();
-
-    const updated = store.state().presets.find((p) => p.id === presetId)!;
-    expect(updated.name).toBe('MY RENAMED PRESET');
-    expect(updated.name).not.toBe(originalName);
   });
 
   it('moving the Time size slider updates sections.time.sizeScale in the store', () => {

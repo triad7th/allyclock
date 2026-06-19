@@ -7,6 +7,9 @@
 </main>
 <div class="controls-bar" [class.hidden]="faceConfig.open()">
   <app-configure-button [pinned]="sheetOpen()" (open)="openSheet()" />
+  @if (activeFaceId() === 'fullscreen') {
+    <app-adjust-button (open)="faceConfig.open.set(true)" />
+  }
   <app-time-machine />
 </div>
 @if (sheetOpen()) {

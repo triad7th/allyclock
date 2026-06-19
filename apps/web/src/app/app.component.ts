@@ -3,6 +3,7 @@ import { NgComponentOutlet } from '@angular/common';
 import { FACES, FaceDescriptor } from './faces/face-registry';
 import { FacePreferenceService } from './services/face-preference.service';
 import { ConfigureButtonComponent } from './controls/configure-button/configure-button.component';
+import { AdjustButtonComponent } from './controls/adjust-button/adjust-button.component';
 import { FacePickerSheetComponent } from './controls/face-picker-sheet/face-picker-sheet.component';
 import { TimeMachineComponent } from './controls/time-machine/time-machine.component';
 import { FaceConfigService } from './services/face-config.service';
@@ -21,6 +22,7 @@ interface FaceLayer {
   imports: [
     NgComponentOutlet,
     ConfigureButtonComponent,
+    AdjustButtonComponent,
     FacePickerSheetComponent,
     TimeMachineComponent,
   ],

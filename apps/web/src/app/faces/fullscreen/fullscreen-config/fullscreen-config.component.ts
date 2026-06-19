@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   computed,
   inject,
   output,
@@ -13,9 +12,6 @@ import { FullscreenConfigStore } from '../fullscreen-config-store.service';
 import { SheetComponent } from '../../../ui/sheet/sheet.component';
 import { NavHeaderComponent } from '../../../ui/nav-header/nav-header.component';
 import { IconButtonComponent } from '../../../ui/icon-button/icon-button.component';
-import { ClockService } from '../../../services/clock.service';
-import { bigTime, dateParts } from '../clock-formatter';
-import { varsFor } from '../fullscreen-style';
 import { type SectionKey, DATE_SECTION_KEYS } from '../fullscreen-preset';
 
 @Component({
@@ -28,12 +24,8 @@ import { type SectionKey, DATE_SECTION_KEYS } from '../fullscreen-preset';
 })
 export class FullscreenConfigComponent {
   protected readonly store = inject(FullscreenConfigStore);
-  private readonly clock = inject(ClockService);
-  private readonly locale = navigator.language || 'en-US';
   readonly closed = output<void>();
   private readonly sheet = viewChild(SheetComponent);
-
-  private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
 
   // Editing selection
   readonly editingId = signal<string>(this.store.state().presets[0].id);
@@ -50,8 +42,6 @@ export class FullscreenConfigComponent {
   private readonly viewW = signal(typeof window !== 'undefined' ? window.innerWidth : 0);
   private readonly viewH = signal(typeof window !== 'undefined' ? window.innerHeight : 0);
   readonly currentRatio = computed(() => (this.viewH() > 0 ? this.viewW() / this.viewH() : 1));
-  readonly currentDims = computed(() => `${this.viewW()} × ${this.viewH()}`);
-  readonly currentBand = computed(() => this.store.resolveForRatio(this.currentRatio()).name);
 
   constructor() {
     // Auto-select the preset that fits the current screen on open.
@@ -69,69 +59,8 @@ export class FullscreenConfigComponent {
     this.editingId.set(this.store.resolveForRatio(this.currentRatio()).id);
   }
 
-  // Rename state
-  readonly renaming = signal(false);
-
-  // Live preview computeds
-  readonly big = computed(() => bigTime(this.clock.now(), this.locale, this.clock.timeZone()));
-  readonly parts = computed(() => dateParts(this.clock.now(), this.locale, this.clock.timeZone()));
-  readonly previewVars = computed(() => varsFor(this.editingPreset()));
-
-  // Preview aspect ratio: clamp band midpoint to reasonable range
-  readonly previewAspect = computed(() => {
-    const p = this.editingPreset();
-    const max = isFinite(p.maxRatio) ? p.maxRatio : p.minRatio + 1;
-    const min = p.minRatio;
-    const mid = (min + max) / 2;
-    // Clamp to [0.78, 1.6]: the floor keeps the very-narrow PHONE band from a
-    // huge preview; the ceiling keeps wide bands (MINI/ULTRA/SUPER) from a tiny,
-    // short frame. The clock is height-bound in landscape, so every wide band
-    // looks the same anyway — render them at ~LAP's height, not ever-shorter.
-    return Math.max(0.78, Math.min(1.6, mid));
-  });
-
   close(): void { this.sheet()?.close(); }
   onSheetClosed(): void { this.closed.emit(); }
-
-  private selectPreset(id: string): void {
-    if (id !== this.editingId()) {
-      this.editingId.set(id);
-      this.renaming.set(false);
-    }
-  }
-
-  cardClick(id: string): void {
-    if (id === this.editingId()) {
-      this.startRename();
-    } else {
-      this.selectPreset(id);
-    }
-  }
-
-  startRename(): void {
-    this.renaming.set(true);
-    queueMicrotask(() => this.nameInput()?.nativeElement.focus());
-  }
-
-  commitRename(value: string): void {
-    if (!this.renaming()) return;
-    const trimmed = value.trim();
-    if (trimmed) {
-      this.store.renamePreset(this.editingId(), trimmed);
-    }
-    this.renaming.set(false);
-  }
-
-  onCommitRenameEvent(event: Event): void {
-    this.commitRename((event.target as HTMLInputElement).value);
-  }
-
-  /** Format ratio band label, e.g. "≥2" / "1.5–2" / "<0.62" */
-  bandLabel(minRatio: number, maxRatio: number): string {
-    if (!isFinite(maxRatio)) return `≥${minRatio}`;
-    if (minRatio === 0) return `<${maxRatio}`;
-    return `${minRatio}–${maxRatio}`;
-  }
 
   // ── Section knobs ────────────────────────────────────────────────────────
 

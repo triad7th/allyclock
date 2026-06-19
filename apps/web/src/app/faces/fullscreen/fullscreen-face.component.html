@@ -19,15 +19,9 @@
     }
   </div>
 </div>
-<button
-  type="button"
-  class="gear"
-  [class.hidden]="!gearVisible() || configOpen()"
-  aria-label="Configure fullscreen"
-  (click)="openConfig()"
->
-  <app-icon name="gearshape" />
-</button>
-@if (configOpen()) {
+<p class="viewport-label" [class.hidden]="!controlsVisible()">
+  {{ width() }} × {{ height() }} · {{ activePreset().name }}
+</p>
+@if (faceConfig.open()) {
   <app-fullscreen-config (closed)="onConfigClosed()" />
 }

@@ -1,67 +1,8 @@
-<app-sheet [fullHeight]="true" sheetLabel="Fullscreen" (closed)="onSheetClosed()">
+<app-sheet sheetLabel="Fullscreen" (closed)="onSheetClosed()">
   <div class="cfg">
-    <app-nav-header title="Fullscreen">
+    <app-nav-header title="Fullscreen" [flush]="true">
       <app-icon-button navLeading icon="xmark" label="Close" (click)="close()" />
     </app-nav-header>
-
-    <p class="cfg-dims" data-test="current-dims">{{ currentDims() }} · {{ currentBand() }}</p>
-
-    <!-- Live preview -->
-    <div class="preview-wrap">
-      <div
-        class="preview-frame"
-        [style]="previewVars()"
-        [style.aspect-ratio]="previewAspect()"
-      >
-        <div class="time">
-          <span class="digits">{{ big().digits }}</span>
-          @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
-        </div>
-
-        @if (editingPreset().bar.visible) { <div class="bar divider"></div> }
-
-        <div class="date">
-          @if (store.state().showWeekday) {
-            <span class="weekday">{{ parts().weekday }}</span>
-            <span class="sep">·</span>
-          }
-          <span class="month">{{ parts().month }}</span>
-          <span class="day">{{ parts().day }}</span>
-          @if (store.state().showGmt) {
-            <span class="sep">·</span>
-            <span class="gmt">{{ parts().gmt }}</span>
-          }
-        </div>
-      </div>
-    </div>
-
-    <!-- Preset row -->
-    <div class="preset-row">
-      @for (preset of store.state().presets; track preset.id) {
-        <div class="preset-card-wrap">
-          <button
-            type="button"
-            class="preset-card"
-            [class.active]="preset.id === editingId()"
-            (click)="cardClick(preset.id)"
-          >
-            @if (preset.id === editingId() && renaming()) {
-              <input
-                #nameInput
-                class="rename-input"
-                type="text"
-                [value]="editingPreset().name"
-                (keydown.enter)="onCommitRenameEvent($event)"
-                (blur)="onCommitRenameEvent($event)"
-              />
-            } @else {
-              <span class="preset-title">{{ preset.name }}</span>
-            }
-            <span class="preset-band">{{ bandLabel(preset.minRatio, preset.maxRatio) }}</span>
-          </button>
-        </div>
-      }
-    </div>
 
     <!-- ── Knobs panel ─────────────────────────────────────────────────── -->
     <div class="knobs-panel">

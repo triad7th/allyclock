@@ -1,0 +1,10 @@
+<button
+  type="button"
+  class="adjust"
+  [class.hidden]="!visible()"
+  (click)="open.emit()"
+  aria-label="Adjust layout"
+  title="Adjust layout"
+>
+  <app-icon name="slider.horizontal.3" />
+</button>

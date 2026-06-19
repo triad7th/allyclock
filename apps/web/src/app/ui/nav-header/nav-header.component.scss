@@ -6,6 +6,12 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0 1.25rem;
+
+  // Flush variant: no horizontal padding, so the leading action lines up with
+  // the host container's own content edge (config panels). Default keeps padding.
+  &.flush {
+    padding: 0;
+  }
 }
 
 .nav-lead {

@@ -11,7 +11,6 @@ import { ContainerSizeDirective } from '../../ui/container-size/container-size.d
 import { FaceConfigService } from '../../services/face-config.service';
 import { FullscreenConfigStore } from './fullscreen-config-store.service';
 import { FullscreenConfigComponent } from './fullscreen-config/fullscreen-config.component';
-import { IconComponent } from '../../ui/icon/icon.component';
 import { bigTime, dateParts } from './clock-formatter';
 import { varsFor } from './fullscreen-style';
 import { AUTO_HIDE_MS } from '../../config/animation-timing';
@@ -19,22 +18,25 @@ import { AUTO_HIDE_MS } from '../../config/animation-timing';
 @Component({
   selector: 'app-fullscreen-face',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FullscreenConfigComponent, IconComponent],
+  imports: [FullscreenConfigComponent],
   hostDirectives: [ContainerSizeDirective],
   templateUrl: './fullscreen-face.component.html',
   styleUrl: './fullscreen-face.component.scss',
   host: {
-    '(document:pointermove)': 'revealGear()',
-    '(document:pointerdown)': 'revealGear()',
-    '(document:keydown)': 'revealGear()',
+    '(document:pointermove)': 'reveal()',
+    '(document:pointerdown)': 'reveal()',
+    '(document:keydown)': 'reveal()',
   },
 })
 export class FullscreenFaceComponent implements OnDestroy {
   private readonly clock = inject(ClockService);
   private readonly size = inject(ContainerSizeDirective);
   protected readonly store = inject(FullscreenConfigStore);
-  private readonly faceConfig = inject(FaceConfigService);
+  protected readonly faceConfig = inject(FaceConfigService);
   private readonly locale = navigator.language || 'en-US';
+
+  readonly width = this.size.width;
+  readonly height = this.size.height;
 
   readonly ratio = computed(() => {
     const h = this.size.height();
@@ -47,38 +49,31 @@ export class FullscreenFaceComponent implements OnDestroy {
 
   readonly styleVars = computed<Record<string, string>>(() => varsFor(this.activePreset()));
 
-  readonly gearVisible = signal(true);
-  readonly configOpen = signal(false);
+  readonly controlsVisible = signal(true);
 
-  private gearTimer: ReturnType<typeof setTimeout> | undefined;
+  private controlsTimer: ReturnType<typeof setTimeout> | undefined;
 
   constructor() {
-    this.armGearTimer();
+    this.armControlsTimer();
   }
 
   ngOnDestroy(): void {
-    clearTimeout(this.gearTimer);
+    clearTimeout(this.controlsTimer);
     this.faceConfig.open.set(false);
   }
 
-  revealGear(): void {
-    if (this.configOpen()) return;
-    this.gearVisible.set(true);
-    this.armGearTimer();
-  }
-
-  openConfig(): void {
-    this.configOpen.set(true);
-    this.faceConfig.open.set(true);
+  reveal(): void {
+    if (this.faceConfig.open()) return;
+    this.controlsVisible.set(true);
+    this.armControlsTimer();
   }
 
   onConfigClosed(): void {
     this.faceConfig.open.set(false);
-    this.configOpen.set(false);
   }
 
-  private armGearTimer(): void {
-    clearTimeout(this.gearTimer);
-    this.gearTimer = setTimeout(() => this.gearVisible.set(false), AUTO_HIDE_MS);
+  private armControlsTimer(): void {
+    clearTimeout(this.controlsTimer);
+    this.controlsTimer = setTimeout(() => this.controlsVisible.set(false), AUTO_HIDE_MS);
   }
 }

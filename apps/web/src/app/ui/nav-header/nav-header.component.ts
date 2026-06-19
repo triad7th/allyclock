@@ -16,4 +16,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 export class NavHeaderComponent {
   /** Centered title text. */
   readonly title = input<string>('');
+  /** Drop the horizontal padding so the leading action aligns with the host's
+   * own content edge (used by the config panels; Time Machine keeps padding). */
+  readonly flush = input(false);
 }
