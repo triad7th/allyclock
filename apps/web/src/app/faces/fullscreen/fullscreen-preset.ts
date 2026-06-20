@@ -50,6 +50,3 @@ export interface FullscreenFields {
 
 export type SectionKey = 'time' | 'weekday' | 'month' | 'day' | 'gmt';
 export const DATE_SECTION_KEYS: SectionKey[] = ['weekday', 'month', 'day', 'gmt'];
-
-// Base cq value for the inter-section gap (multiplied by each gap scale).
-export const GAP_BASE_CQ = 2;

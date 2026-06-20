@@ -1,11 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import { buildDefaultFields } from './fullscreen-presets.data';
+import { BUILT_IN_BANDS } from '../dimension-band';
 
 describe('buildDefaultFields', () => {
   it('returns one FullscreenFields per band id (the eight bands)', () => {
     const f = buildDefaultFields();
     expect(Object.keys(f).sort()).toEqual(
       ['lap', 'mini', 'pad', 'phone', 'super', 'tall', 'ultra', 'wide'],
+    );
+  });
+
+  it('has exactly one entry per registry band id (guards against drift)', () => {
+    expect(Object.keys(buildDefaultFields()).sort()).toEqual(
+      BUILT_IN_BANDS.map((b) => b.id).sort(),
     );
   });
 

@@ -6,8 +6,8 @@ import { IconButtonComponent } from '../../../ui/icon-button/icon-button.compone
 
 /**
  * Dimension-agnostic visibility toggles for the Fullscreen face (Weekday / GMT /
- * Bar), opened from the face's gear. Each toggle writes the value to EVERY preset
- * (so it "applies to all"); the per-preset fields are kept for future per-preset
+ * Bar), opened from the face's gear. Each toggle writes the value to EVERY band
+ * (so it "applies to all"); the per-band fields are kept for future per-band
  * control. Rendered in a partial bottom sheet (close = apply).
  */
 @Component({

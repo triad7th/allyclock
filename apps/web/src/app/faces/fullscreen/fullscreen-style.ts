@@ -1,6 +1,6 @@
 import type { FullscreenFields, SectionBase, SectionKey } from './fullscreen-preset';
 
-// Inter-section gap bases (cq units), scaled per-preset by the gap multipliers.
+// Inter-section gap bases (cq units), scaled per-band by the gap multipliers.
 const GAP_BASE_CQW = 2;
 const GAP_BASE_CQH = 3;
 // The date parts sit on one line, so their separation is an em of the date text.
