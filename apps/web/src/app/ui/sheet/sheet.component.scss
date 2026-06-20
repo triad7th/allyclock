@@ -27,7 +27,7 @@
   flex-direction: column;
   // Translucent panel: the face shows through, frosted by a backdrop blur.
   background: rgba(28, 28, 30, 0.55);
-  backdrop-filter: blur(10px) saturate(380%);
+  backdrop-filter: blur(10px) saturate(80%);
   color: t.$label;
   border-radius: 16px 16px 0 0;
   outline: none;
