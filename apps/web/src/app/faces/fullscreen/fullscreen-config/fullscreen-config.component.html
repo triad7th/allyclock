@@ -18,12 +18,12 @@
             type="range"
             class="knobs-slider"
             min="0.5" max="2.0" step="0.05"
-            [value]="editingPreset().sections.time.sizeScale"
-            [style.--fill]="fillPct(editingPreset().sections.time.sizeScale, 0.5, 2.0)"
+            [value]="editingFields().sections.time.sizeScale"
+            [style.--fill]="fillPct(editingFields().sections.time.sizeScale, 0.5, 2.0)"
             data-knob="time-size"
             (input)="onSectionSize('time', $event)"
           />
-          <span class="knobs-row-value">{{ editingPreset().sections.time.sizeScale | number:'1.2-2' }}</span>
+          <span class="knobs-row-value">{{ editingFields().sections.time.sizeScale | number:'1.2-2' }}</span>
         </div>
       </div>
 
@@ -38,12 +38,12 @@
             type="range"
             class="knobs-slider"
             min="0.5" max="2.0" step="0.05"
-            [value]="editingPreset().sections.month.sizeScale"
-            [style.--fill]="fillPct(editingPreset().sections.month.sizeScale, 0.5, 2.0)"
+            [value]="editingFields().sections.month.sizeScale"
+            [style.--fill]="fillPct(editingFields().sections.month.sizeScale, 0.5, 2.0)"
             data-knob="date-size"
             (input)="onDateSize($event)"
           />
-          <span class="knobs-row-value">{{ editingPreset().sections.month.sizeScale | number:'1.2-2' }}</span>
+          <span class="knobs-row-value">{{ editingFields().sections.month.sizeScale | number:'1.2-2' }}</span>
         </div>
       </div>
 

@@ -12,28 +12,30 @@ const storageMock = {
   clear: () => { for (const k of Object.keys(mem)) delete mem[k]; },
 };
 
+function make(ratio: number) {
+  const fixture = TestBed.createComponent(FullscreenConfigComponent);
+  fixture.componentRef.setInput('ratio', ratio);
+  fixture.detectChanges();
+  return fixture;
+}
+
 describe('FullscreenConfigComponent', () => {
   let store: FullscreenConfigStore;
 
   beforeEach(async () => {
     storageMock.clear();
     vi.stubGlobal('localStorage', storageMock);
-    await TestBed.configureTestingModule({
-      imports: [FullscreenConfigComponent],
-    }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [FullscreenConfigComponent] }).compileComponents();
     store = TestBed.inject(FullscreenConfigStore);
   });
 
   it('clicking the header X button emits closed after the exit animation', () => {
     vi.useFakeTimers();
     try {
-      const fixture = TestBed.createComponent(FullscreenConfigComponent);
-      fixture.detectChanges();
+      const fixture = make(2.1);
       let closed = false;
       fixture.componentInstance.closed.subscribe(() => (closed = true));
-      (
-        fixture.nativeElement.querySelector('button[aria-label="Close"]') as HTMLButtonElement
-      ).click();
+      (fixture.nativeElement.querySelector('button[aria-label="Close"]') as HTMLButtonElement).click();
       vi.advanceTimersByTime(SHEET_ANIMATION_MS);
       expect(closed).toBe(true);
     } finally {
@@ -41,75 +43,42 @@ describe('FullscreenConfigComponent', () => {
     }
   });
 
-  it('auto-selects the preset matching the current screen dimensions', () => {
-    const fixture = TestBed.createComponent(FullscreenConfigComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-    expect(component.editingId()).toBe(store.resolveForRatio(component.currentRatio()).id);
+  it('edits the band that contains the input ratio', () => {
+    const fixture = make(2.1); // mini
+    expect(fixture.componentInstance.editingBand().id).toBe('mini');
   });
 
-  it('follows the viewport on resize, re-selecting the matching band', () => {
-    const fixture = TestBed.createComponent(FullscreenConfigComponent);
+  it('re-selects the band when the ratio input changes', () => {
+    const fixture = make(2.1);
+    fixture.componentRef.setInput('ratio', 0.46); // phone
     fixture.detectChanges();
-    const component = fixture.componentInstance;
-    const ow = window.innerWidth;
-    const oh = window.innerHeight;
-    try {
-      Object.defineProperty(window, 'innerWidth', { value: 2000, configurable: true });
-      Object.defineProperty(window, 'innerHeight', { value: 1000, configurable: true });
-      component.onViewportResize();
-      fixture.detectChanges();
-      expect(component.editingId()).toBe('mini'); // 2000/1000 = 2.0 → mini band
-    } finally {
-      Object.defineProperty(window, 'innerWidth', { value: ow, configurable: true });
-      Object.defineProperty(window, 'innerHeight', { value: oh, configurable: true });
-    }
+    expect(fixture.componentInstance.editingBand().id).toBe('phone');
   });
 
-  it('moving the Time size slider updates sections.time.sizeScale in the store', () => {
-    const fixture = TestBed.createComponent(FullscreenConfigComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-    const id = component.editingId();
-
-    const slider = fixture.nativeElement.querySelector(
-      '[data-knob="time-size"]',
-    ) as HTMLInputElement;
-    expect(slider).not.toBeNull();
-
+  it('moving the Time size slider updates that band sections.time.sizeScale', () => {
+    const fixture = make(2.1);
+    const slider = fixture.nativeElement.querySelector('[data-knob="time-size"]') as HTMLInputElement;
     slider.value = '1.5';
     slider.dispatchEvent(new Event('input'));
     fixture.detectChanges();
-
-    const preset = store.state().presets.find((p) => p.id === id)!;
-    expect(preset.sections.time.sizeScale).toBeCloseTo(1.5);
+    expect(store.config('mini').sections.time.sizeScale).toBeCloseTo(1.5);
   });
 
-  it('moving the Date size slider sets sizeScale to the same value on all four date parts', () => {
-    const fixture = TestBed.createComponent(FullscreenConfigComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-    const id = component.editingId();
-
-    const slider = fixture.nativeElement.querySelector(
-      '[data-knob="date-size"]',
-    ) as HTMLInputElement;
-    expect(slider).not.toBeNull();
-
+  it('moving the Date size slider sets sizeScale on all four date parts of the band', () => {
+    const fixture = make(2.1);
+    const slider = fixture.nativeElement.querySelector('[data-knob="date-size"]') as HTMLInputElement;
     slider.value = '1.3';
     slider.dispatchEvent(new Event('input'));
     fixture.detectChanges();
-
-    const preset = store.state().presets.find((p) => p.id === id)!;
-    expect(preset.sections.weekday.sizeScale).toBeCloseTo(1.3);
-    expect(preset.sections.month.sizeScale).toBeCloseTo(1.3);
-    expect(preset.sections.day.sizeScale).toBeCloseTo(1.3);
-    expect(preset.sections.gmt.sizeScale).toBeCloseTo(1.3);
+    const f = store.config('mini');
+    expect(f.sections.weekday.sizeScale).toBeCloseTo(1.3);
+    expect(f.sections.month.sizeScale).toBeCloseTo(1.3);
+    expect(f.sections.day.sizeScale).toBeCloseTo(1.3);
+    expect(f.sections.gmt.sizeScale).toBeCloseTo(1.3);
   });
 
   it('does not render the visibility toggles (they moved to the Display panel)', () => {
-    const fixture = TestBed.createComponent(FullscreenConfigComponent);
-    fixture.detectChanges();
+    const fixture = make(2.1);
     expect(fixture.nativeElement.querySelector('[data-knob="weekday-visible"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('[data-knob="gmt-visible"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('[data-knob="bar-visible"]')).toBeNull();
