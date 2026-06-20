@@ -41,48 +41,36 @@ describe('FullscreenTogglesComponent', () => {
     }
   });
 
-  it('toggling Weekday writes visible to every preset', () => {
+  it('toggling Weekday writes visible to every band', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();
-
-    const before = store.state().presets[0].sections.weekday.visible;
-    (
-      fixture.nativeElement.querySelector('[data-knob="weekday-visible"]') as HTMLButtonElement
-    ).click();
+    const before = store.sample().sections.weekday.visible;
+    (fixture.nativeElement.querySelector('[data-knob="weekday-visible"]') as HTMLButtonElement).click();
     fixture.detectChanges();
-
-    for (const p of store.state().presets) {
-      expect(p.sections.weekday.visible).toBe(!before);
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.sections.weekday.visible).toBe(!before);
     }
   });
 
-  it('toggling GMT writes visible to every preset', () => {
+  it('toggling GMT writes visible to every band', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();
-
-    const before = store.state().presets[0].sections.gmt.visible;
-    (
-      fixture.nativeElement.querySelector('[data-knob="gmt-visible"]') as HTMLButtonElement
-    ).click();
+    const before = store.sample().sections.gmt.visible;
+    (fixture.nativeElement.querySelector('[data-knob="gmt-visible"]') as HTMLButtonElement).click();
     fixture.detectChanges();
-
-    for (const p of store.state().presets) {
-      expect(p.sections.gmt.visible).toBe(!before);
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.sections.gmt.visible).toBe(!before);
     }
   });
 
-  it('toggling Bar writes visible to every preset', () => {
+  it('toggling Bar writes visible to every band', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();
-
-    const before = store.state().presets[0].bar.visible;
-    (
-      fixture.nativeElement.querySelector('[data-knob="bar-visible"]') as HTMLButtonElement
-    ).click();
+    const before = store.sample().bar.visible;
+    (fixture.nativeElement.querySelector('[data-knob="bar-visible"]') as HTMLButtonElement).click();
     fixture.detectChanges();
-
-    for (const p of store.state().presets) {
-      expect(p.bar.visible).toBe(!before);
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.bar.visible).toBe(!before);
     }
   });
 });

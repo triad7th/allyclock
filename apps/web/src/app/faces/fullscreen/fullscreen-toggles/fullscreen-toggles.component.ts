@@ -22,10 +22,10 @@ export class FullscreenTogglesComponent {
   readonly closed = output<void>();
   private readonly sheet = viewChild(SheetComponent);
 
-  // Every preset shares these values (toggles write all), so read the first.
-  readonly showWeekday = computed(() => this.store.state().presets[0].sections.weekday.visible);
-  readonly showGmt = computed(() => this.store.state().presets[0].sections.gmt.visible);
-  readonly showBar = computed(() => this.store.state().presets[0].bar.visible);
+  // Every band shares these values (toggles write all), so read a sample band.
+  readonly showWeekday = computed(() => this.store.sample().sections.weekday.visible);
+  readonly showGmt = computed(() => this.store.sample().sections.gmt.visible);
+  readonly showBar = computed(() => this.store.sample().bar.visible);
 
   toggleWeekday(): void {
     this.store.setSectionVisibleAll('weekday', !this.showWeekday());
