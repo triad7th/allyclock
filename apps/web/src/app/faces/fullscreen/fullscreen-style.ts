@@ -1,4 +1,4 @@
-import type { FullscreenPreset, SectionBase, SectionKey } from './fullscreen-preset';
+import type { FullscreenFields, SectionBase, SectionKey } from './fullscreen-preset';
 
 // Inter-section gap bases (cq units), scaled per-preset by the gap multipliers.
 const GAP_BASE_CQW = 2;
@@ -11,7 +11,7 @@ function base(b: SectionBase): string {
   return b.minCqh != null ? `max(${blend}, ${b.minCqh}cqh)` : blend;
 }
 
-export function varsFor(p: FullscreenPreset): Record<string, string> {
+export function varsFor(p: FullscreenFields): Record<string, string> {
   const v: Record<string, string> = {
     '--time-base': base(p.bases.time),
     '--date-base': base(p.bases.date),
