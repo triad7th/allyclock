@@ -75,25 +75,6 @@
   opacity: var(--gmt-opacity, 0.6);
 }
 
-.viewport-label {
-  position: fixed;
-  top: 0.9rem;
-  left: 1rem;
-  margin: 0;
-  z-index: 10;
-  font-size: 0.78rem;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.45);
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-
-  &.hidden {
-    opacity: 0;
-  }
-}
-
 // Bottom-right gear: opens the Display (toggles) panel. Auto-hides with the
 // other on-face controls.
 .gear {

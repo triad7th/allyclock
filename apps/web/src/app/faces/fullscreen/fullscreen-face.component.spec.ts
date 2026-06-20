@@ -27,23 +27,23 @@ describe('FullscreenFaceComponent', () => {
     expect(el.querySelector('.date .gmt')?.textContent).toContain('GMT');
   });
 
-  it('selects the MINI preset for a 2.1 ratio host', async () => {
+  it('resolves landscape fields for a 2.1-ratio host (no time minCqh floor)', async () => {
     const fixture = TestBed.createComponent(FullscreenFaceComponent);
     const host = fixture.nativeElement as HTMLElement;
     Object.defineProperty(host, 'clientWidth', { value: 840, configurable: true });
     Object.defineProperty(host, 'clientHeight', { value: 400, configurable: true });
     fixture.detectChanges();
     await fixture.whenStable();
-    expect(fixture.componentInstance.activePreset().name).toBe('MINI');
+    expect(fixture.componentInstance.activeFields().bases.time.minCqh).toBeUndefined();
   });
 
-  it('selects the PHONE preset for a tall portrait host', async () => {
+  it('resolves phone fields for a tall portrait host (time minCqh floor present)', async () => {
     const fixture = TestBed.createComponent(FullscreenFaceComponent);
     const host = fixture.nativeElement as HTMLElement;
     Object.defineProperty(host, 'clientWidth', { value: 400, configurable: true });
     Object.defineProperty(host, 'clientHeight', { value: 840, configurable: true });
     fixture.detectChanges();
     await fixture.whenStable();
-    expect(fixture.componentInstance.activePreset().name).toBe('PHONE');
+    expect(fixture.componentInstance.activeFields().bases.time.minCqh).toBeGreaterThan(0);
   });
 });

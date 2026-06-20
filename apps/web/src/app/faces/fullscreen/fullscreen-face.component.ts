@@ -37,19 +37,16 @@ export class FullscreenFaceComponent implements OnDestroy {
   protected readonly faceConfig = inject(FaceConfigService);
   private readonly locale = navigator.language || 'en-US';
 
-  readonly width = this.size.width;
-  readonly height = this.size.height;
-
   readonly ratio = computed(() => {
     const h = this.size.height();
     return h > 0 ? this.size.width() / h : 1;
   });
-  readonly activePreset = computed(() => this.store.resolveForRatio(this.ratio()));
+  readonly activeFields = computed(() => this.store.fieldsFor(this.ratio()));
 
   readonly big = computed(() => bigTime(this.clock.now(), this.locale, this.clock.timeZone()));
   readonly parts = computed(() => dateParts(this.clock.now(), this.locale, this.clock.timeZone()));
 
-  readonly styleVars = computed<Record<string, string>>(() => varsFor(this.activePreset()));
+  readonly styleVars = computed<Record<string, string>>(() => varsFor(this.activeFields()));
 
   readonly controlsVisible = signal(true);
 
