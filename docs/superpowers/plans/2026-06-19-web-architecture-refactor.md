@@ -51,16 +51,15 @@
 
 - [ ] **Step 1: Add `baseUrl` + `paths` to the base tsconfig**
 
-In `apps/web/tsconfig.json`, add `baseUrl` and `paths` to `compilerOptions` (after the `"importHelpers": true,` line):
+In `apps/web/tsconfig.json`, add a `paths` block to `compilerOptions` (after the `"importHelpers": true,` line). **Do not add `baseUrl`** (deprecated, removed in TS 7.0); use `./`-prefixed path targets so they resolve relative to the tsconfig directory without it:
 
 ```jsonc
     "importHelpers": true,
-    "baseUrl": ".",
     "paths": {
-      "@core/*": ["src/app/core/*"],
-      "@shared/*": ["src/app/shared/*"],
-      "@features/*": ["src/app/features/*"],
-      "@layout/*": ["src/app/layout/*"]
+      "@core/*": ["./src/app/core/*"],
+      "@shared/*": ["./src/app/shared/*"],
+      "@features/*": ["./src/app/features/*"],
+      "@layout/*": ["./src/app/layout/*"]
     },
     "target": "ES2022",
 ```
