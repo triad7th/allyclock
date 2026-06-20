@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { FullscreenConfigStore } from './fullscreen-config-store.service';
-import { PRESETS_KEY } from './fullscreen-preset';
 
 const mem: Record<string, string> = {};
 const storageMock = {
@@ -20,88 +19,48 @@ describe('FullscreenConfigStore', () => {
     store = TestBed.inject(FullscreenConfigStore);
   });
 
-  it('seeds the 8 built-ins on first load and persists them', () => {
-    expect(store.state().presets).toHaveLength(8);
-    expect(JSON.parse(mem[PRESETS_KEY]).presets).toHaveLength(8);
+  it('seeds fields for all eight band ids and persists them', () => {
+    expect(Object.keys(store.state().byBand).sort()).toEqual(
+      ['lap', 'mini', 'pad', 'phone', 'super', 'tall', 'ultra', 'wide'],
+    );
+    expect(JSON.parse(mem['allyclock.fullscreen.config']).byBand.mini).toBeDefined();
   });
 
-  it('reseeds stale older-version persisted state to current defaults', () => {
-    // Pre-change state: version 1, no global flags, incompatible band shape.
-    mem[PRESETS_KEY] = JSON.stringify({
-      version: 1,
-      presets: [{ id: 'old', name: 'OLD', minRatio: 0, maxRatio: 99 }],
-    });
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({});
-    const fresh = TestBed.inject(FullscreenConfigStore);
-    expect(fresh.state().presets).toHaveLength(8);
-    expect(fresh.state().presets[0].sections.weekday.visible).toBe(true);
-    expect(fresh.state().presets[0].sections.gmt.visible).toBe(true);
+  it('fieldsFor(ratio) returns the fields for the band containing the ratio', () => {
+    // 2.1 → mini, 0.46 → phone (phone is the only band with a time minCqh floor).
+    expect(store.fieldsFor(2.1).bases.time.minCqh).toBeUndefined();
+    expect(store.fieldsFor(0.46).bases.time.minCqh).toBeGreaterThan(0);
   });
 
-  it('revives Infinity maxRatio lost to JSON on reload (SUPER stays reachable)', () => {
-    // JSON.stringify(Infinity) === "null"; simulate reloading such persisted state.
-    const persisted = JSON.parse(JSON.stringify(store.state()));
-    expect(persisted.presets.find((p: { id: string }) => p.id === 'super').maxRatio).toBeNull();
-    mem[PRESETS_KEY] = JSON.stringify(persisted);
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({});
-    const fresh = TestBed.inject(FullscreenConfigStore);
-    expect(fresh.state().presets.find((p) => p.id === 'super')!.maxRatio).toBe(Infinity);
-    expect(fresh.resolveForRatio(8.56).id).toBe('super');
-  });
-
-  it('resolveForRatio picks the band containing the ratio', () => {
-    expect(store.resolveForRatio(2.1).id).toBe('mini');
-    expect(store.resolveForRatio(1.78).id).toBe('wide');
-    expect(store.resolveForRatio(2.33).id).toBe('ultra');
-    expect(store.resolveForRatio(1.6).id).toBe('lap');
-    expect(store.resolveForRatio(1.33).id).toBe('pad');
-    expect(store.resolveForRatio(0.75).id).toBe('tall');
-    expect(store.resolveForRatio(0.46).id).toBe('phone');
-    expect(store.resolveForRatio(3.5).id).toBe('super');
-    expect(store.resolveForRatio(0.62).id).toBe('tall');
-  });
-
-  it('resolveForRatio maps both very tall and moderately tall phones to the phone band', () => {
-    expect(store.resolveForRatio(0.2).id).toBe('phone');
-    expect(store.resolveForRatio(0.5).id).toBe('phone');
-  });
-
-  it('updateSection merges a partial and persists', () => {
+  it('updateSection merges a partial into one band and persists', () => {
     store.updateSection('phone', 'time', { sizeScale: 1.5 });
-    const t = store.state().presets.find((p) => p.id === 'phone')!.sections.time;
-    expect(t.sizeScale).toBe(1.5);
-    expect(JSON.parse(mem[PRESETS_KEY]).presets.find((p: any) => p.id === 'phone').sections.time.sizeScale).toBe(1.5);
+    expect(store.config('phone').sections.time.sizeScale).toBe(1.5);
+    expect(store.config('mini').sections.time.sizeScale).toBe(1); // other bands untouched
+    expect(JSON.parse(mem['allyclock.fullscreen.config']).byBand.phone.sections.time.sizeScale).toBe(1.5);
   });
 
-  it('updateBar and updateGap mutate the right preset', () => {
-    store.updateBar('ultra', { visible: false });
-    expect(store.state().presets.find((p) => p.id === 'ultra')!.bar.visible).toBe(false);
+  it('updateBar and updateGap mutate the right band', () => {
+    store.updateBar('ultra', { opacity: 0.5 });
+    expect(store.config('ultra').bar.opacity).toBe(0.5);
     store.updateGap('ultra', 'timeToBar', 1.4);
-    expect(store.state().presets.find((p) => p.id === 'ultra')!.gaps.timeToBar).toBe(1.4);
+    expect(store.config('ultra').gaps.timeToBar).toBe(1.4);
   });
 
-  it('setSectionVisibleAll writes the value to every preset and persists it', () => {
+  it('setSectionVisibleAll writes visibility to every band', () => {
     store.setSectionVisibleAll('weekday', false);
-    for (const p of store.state().presets) {
-      expect(p.sections.weekday.visible).toBe(false);
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.sections.weekday.visible).toBe(false);
     }
-    const persisted = JSON.parse(mem[PRESETS_KEY]);
-    expect(persisted.presets.every((p: any) => p.sections.weekday.visible === false)).toBe(true);
   });
 
-  it('setBarVisibleAll writes bar visibility to every preset and persists it', () => {
+  it('setBarVisibleAll writes bar visibility to every band', () => {
     store.setBarVisibleAll(false);
-    for (const p of store.state().presets) {
-      expect(p.bar.visible).toBe(false);
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.bar.visible).toBe(false);
     }
-    const persisted = JSON.parse(mem[PRESETS_KEY]);
-    expect(persisted.presets.every((p: any) => p.bar.visible === false)).toBe(true);
   });
 
-  it('renamePreset renames the target preset', () => {
-    store.renamePreset('phone', 'POCKET');
-    expect(store.state().presets.find((p) => p.id === 'phone')!.name).toBe('POCKET');
+  it('sample() returns a representative band fields object', () => {
+    expect(store.sample().sections.weekday.visible).toBe(true);
   });
 });
