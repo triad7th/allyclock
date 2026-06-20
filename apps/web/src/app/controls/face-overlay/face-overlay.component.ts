@@ -3,7 +3,7 @@ import { ContainerSizeDirective } from '../../ui/container-size/container-size.d
 import { DimensionRegistry } from '../../services/dimension-registry.service';
 import { ClockService } from '../../services/clock.service';
 import { FaceConfigService } from '../../services/face-config.service';
-import { AUTO_HIDE_MS } from '../../config/animation-timing';
+import { AUTO_HIDE_MS } from '@core/animation-timing';
 
 // App-shell overlay shown above every face (outside the crossfade layers): a
 // top-left "W × H · BAND" label and a top-right LIVE/MOCK chip. Measures the

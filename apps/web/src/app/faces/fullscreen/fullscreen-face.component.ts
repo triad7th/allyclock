@@ -15,7 +15,7 @@ import { FullscreenTogglesComponent } from './fullscreen-toggles/fullscreen-togg
 import { IconComponent } from '../../ui/icon/icon.component';
 import { bigTime, dateParts } from './clock-formatter';
 import { varsFor } from './fullscreen-style';
-import { AUTO_HIDE_MS } from '../../config/animation-timing';
+import { AUTO_HIDE_MS } from '@core/animation-timing';
 
 @Component({
   selector: 'app-fullscreen-face',

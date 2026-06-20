@@ -1,5 +1,5 @@
 import { Component, OnDestroy, input, output, signal } from '@angular/core';
-import { SHEET_ANIMATION_MS } from '../../config/animation-timing';
+import { SHEET_ANIMATION_MS } from '@core/animation-timing';
 
 /**
  * iOS bottom-sheet chrome + lifecycle.

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { FullscreenConfigComponent } from './fullscreen-config.component';
 import { FullscreenConfigStore } from '../fullscreen-config-store.service';
-import { SHEET_ANIMATION_MS } from '../../../config/animation-timing';
+import { SHEET_ANIMATION_MS } from '@core/animation-timing';
 
 const mem: Record<string, string> = {};
 const storageMock = {

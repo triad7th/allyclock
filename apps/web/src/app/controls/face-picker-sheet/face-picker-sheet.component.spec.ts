@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { FacePickerSheetComponent } from './face-picker-sheet.component';
-import { SHEET_ANIMATION_MS } from '../../config/animation-timing';
+import { SHEET_ANIMATION_MS } from '@core/animation-timing';
 
 describe('FacePickerSheetComponent', () => {
   beforeEach(async () => {

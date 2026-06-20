@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { FaceConfigService } from './services/face-config.service';
-import { FACE_TRANSITION_MS } from './config/animation-timing';
+import { FACE_TRANSITION_MS } from '@core/animation-timing';
 
 const mockStorage: Record<string, string> = {};
 

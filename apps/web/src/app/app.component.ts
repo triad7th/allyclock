@@ -8,7 +8,7 @@ import { FacePickerSheetComponent } from './controls/face-picker-sheet/face-pick
 import { TimeMachineComponent } from './controls/time-machine/time-machine.component';
 import { FaceConfigService } from './services/face-config.service';
 import { FaceOverlayComponent } from './controls/face-overlay/face-overlay.component';
-import { FACE_TRANSITION_MS } from './config/animation-timing';
+import { FACE_TRANSITION_MS } from '@core/animation-timing';
 
 // One stacked face during a crossfade. The leaving face fades out while the
 // incoming face fades in; NgComponentOutlet renders one component per layer.

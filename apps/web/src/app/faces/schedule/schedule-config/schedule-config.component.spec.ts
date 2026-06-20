@@ -4,7 +4,7 @@ import { ScheduleConfigComponent } from './schedule-config.component';
 import { ScheduleStoreService } from '../schedule-store.service';
 import { DEFAULT_SEGMENTS } from '../default-schedule';
 import { DEFAULT_PRESET_ID } from '../schedule-preset';
-import { SHEET_ANIMATION_MS } from '../../../config/animation-timing';
+import { SHEET_ANIMATION_MS } from '@core/animation-timing';
 
 function makeState() {
   return {
