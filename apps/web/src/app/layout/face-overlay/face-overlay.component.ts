@@ -33,16 +33,10 @@ export class FaceOverlayComponent {
   );
   readonly isMocked = this.clock.isMocked;
 
-  private readonly _ah = viewChild(AutoHideDirective);
+  readonly _ah = viewChild.required(AutoHideDirective);
 
-  /** Delegated to the directive; kept for spec compatibility. */
-  readonly visible = computed(() => this._ah()?.visible() ?? true);
-
-  /** Delegated to the directive; kept for spec compatibility. */
-  readonly hidden = computed(() => !this.visible() || this.faceConfig.open() || this.sheetOpen());
-
-  /** Delegated to the directive; kept for spec compatibility. */
-  reveal(): void {
-    this._ah()?.reveal();
-  }
+  /** True when both <p> elements should carry .hidden. */
+  readonly hidden = computed(
+    () => !this._ah().visible() || this.faceConfig.open() || this.sheetOpen(),
+  );
 }

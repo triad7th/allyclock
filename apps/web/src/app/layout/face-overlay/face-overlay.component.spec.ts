@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { FaceOverlayComponent } from './face-overlay.component';
 import { ClockService } from '@core/clock.service';
-import { AUTO_HIDE_MS } from '@core/animation-timing';
 
 const mem: Record<string, string> = {};
 const storageMock = {
@@ -69,20 +68,5 @@ describe('FaceOverlayComponent', () => {
     fixture.componentRef.setInput('sheetOpen', true);
     fixture.detectChanges();
     expect(fixture.componentInstance.hidden()).toBe(true);
-  });
-
-  it('auto-hides after AUTO_HIDE_MS and reveal() restores it', () => {
-    vi.useFakeTimers();
-    try {
-      const fixture = sizedFixture(840, 400);
-      fixture.detectChanges();
-      expect(fixture.componentInstance.visible()).toBe(true);
-      vi.advanceTimersByTime(AUTO_HIDE_MS);
-      expect(fixture.componentInstance.visible()).toBe(false);
-      fixture.componentInstance.reveal();
-      expect(fixture.componentInstance.visible()).toBe(true);
-    } finally {
-      vi.useRealTimers();
-    }
   });
 });

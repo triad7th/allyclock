@@ -1,4 +1,4 @@
-import { Component, computed, output, viewChild } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 
@@ -10,14 +10,4 @@ import { IconComponent } from '@shared/ui/icon/icon.component';
 })
 export class AdjustButtonComponent {
   readonly open = output<void>();
-
-  private readonly _ah = viewChild(AutoHideDirective);
-
-  /** Delegated to the directive; kept for spec compatibility. */
-  readonly visible = computed(() => this._ah()?.visible() ?? true);
-
-  /** Delegated to the directive; kept for spec compatibility. */
-  reveal(): void {
-    this._ah()?.reveal();
-  }
 }

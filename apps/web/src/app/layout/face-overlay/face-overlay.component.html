@@ -3,11 +3,11 @@
   appAutoHide
   #ah="autoHide"
   [revealBlocked]="faceConfig.open()"
-  [class.hidden]="!ah.visible() || faceConfig.open() || sheetOpen()"
+  [class.hidden]="hidden()"
 >{{ width() }} × {{ height() }} · {{ band().name }}</p>
 <p
   class="chip"
-  [class.hidden]="!ah.visible() || faceConfig.open() || sheetOpen()"
+  [class.hidden]="hidden()"
   [class.is-live]="!isMocked()"
   [class.is-mock]="isMocked()"
 >

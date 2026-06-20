@@ -14,26 +14,14 @@ describe('AdjustButtonComponent', () => {
     vi.useRealTimers();
   });
 
-  it('starts visible and auto-hides after the delay', () => {
+  it('starts visible (no .hidden class) and auto-hides after the delay', () => {
     const fixture = TestBed.createComponent(AdjustButtonComponent);
     fixture.detectChanges();
-    expect(fixture.componentInstance.visible()).toBe(true);
+    const btn = fixture.nativeElement.querySelector('button.adjust') as HTMLButtonElement;
+    expect(btn.classList.contains('hidden')).toBe(false);
     vi.advanceTimersByTime(4000);
-    expect(fixture.componentInstance.visible()).toBe(false);
-  });
-
-  it('reveal() re-shows and re-arms the hide timer', () => {
-    const fixture = TestBed.createComponent(AdjustButtonComponent);
     fixture.detectChanges();
-    vi.advanceTimersByTime(4000);
-    expect(fixture.componentInstance.visible()).toBe(false);
-
-    fixture.componentInstance.reveal();
-    expect(fixture.componentInstance.visible()).toBe(true);
-    vi.advanceTimersByTime(3999);
-    expect(fixture.componentInstance.visible()).toBe(true);
-    vi.advanceTimersByTime(1);
-    expect(fixture.componentInstance.visible()).toBe(false);
+    expect(btn.classList.contains('hidden')).toBe(true);
   });
 
   it('emits open when the button is clicked', () => {
@@ -43,5 +31,13 @@ describe('AdjustButtonComponent', () => {
     fixture.componentInstance.open.subscribe(() => (opened = true));
     (fixture.nativeElement.querySelector('button.adjust') as HTMLButtonElement).click();
     expect(opened).toBe(true);
+  });
+
+  it('renders the slider icon inside the button', () => {
+    const fixture = TestBed.createComponent(AdjustButtonComponent);
+    fixture.detectChanges();
+    const icon = fixture.nativeElement.querySelector('app-icon');
+    expect(icon).not.toBeNull();
+    expect(icon.getAttribute('ng-reflect-name') ?? icon.getAttribute('name')).toContain('slider');
   });
 });
