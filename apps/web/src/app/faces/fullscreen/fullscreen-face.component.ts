@@ -7,12 +7,12 @@ import {
   signal,
 } from '@angular/core';
 import { ClockService } from '@core/clock.service';
-import { ContainerSizeDirective } from '../../ui/container-size/container-size.directive';
+import { ContainerSizeDirective } from '@shared/ui/container-size/container-size.directive';
 import { FaceConfigService } from '@core/face-config.service';
 import { FullscreenConfigStore } from './fullscreen-config-store.service';
 import { FullscreenConfigComponent } from './fullscreen-config/fullscreen-config.component';
 import { FullscreenTogglesComponent } from './fullscreen-toggles/fullscreen-toggles.component';
-import { IconComponent } from '../../ui/icon/icon.component';
+import { IconComponent } from '@shared/ui/icon/icon.component';
 import { bigTime, dateParts } from './clock-formatter';
 import { varsFor } from './fullscreen-style';
 import { AUTO_HIDE_MS } from '@core/animation-timing';

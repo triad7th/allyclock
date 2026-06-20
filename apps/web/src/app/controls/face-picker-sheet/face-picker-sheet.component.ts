@@ -1,7 +1,7 @@
 import { NgComponentOutlet } from '@angular/common';
 import { Component, input, output, viewChild } from '@angular/core';
 import { FACES } from '../../faces/face-registry';
-import { SheetComponent } from '../../ui/sheet/sheet.component';
+import { SheetComponent } from '@shared/ui/sheet/sheet.component';
 
 @Component({
   selector: 'app-face-picker-sheet',

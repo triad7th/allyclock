@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular
 import { ClockService } from '@core/clock.service';
 import { ScheduleStoreService } from './schedule-store.service';
 import { ScheduleConfigComponent } from './schedule-config/schedule-config.component';
-import { IconComponent } from '../../ui/icon/icon.component';
-import { ContainerSizeDirective } from '../../ui/container-size/container-size.directive';
+import { IconComponent } from '@shared/ui/icon/icon.component';
+import { ContainerSizeDirective } from '@shared/ui/container-size/container-size.directive';
 import { FaceConfigService } from '@core/face-config.service';
 import { activeSegment, framedWindow } from './schedule-formatter';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';

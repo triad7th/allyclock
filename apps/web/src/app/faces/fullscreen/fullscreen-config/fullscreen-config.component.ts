@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output, vi
 import { DecimalPipe } from '@angular/common';
 import { FullscreenConfigStore } from '../fullscreen-config-store.service';
 import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
-import { SheetComponent } from '../../../ui/sheet/sheet.component';
-import { NavHeaderComponent } from '../../../ui/nav-header/nav-header.component';
-import { IconButtonComponent } from '../../../ui/icon-button/icon-button.component';
+import { SheetComponent } from '@shared/ui/sheet/sheet.component';
+import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
+import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 import { type SectionKey, DATE_SECTION_KEYS } from '../fullscreen-preset';
 
 @Component({

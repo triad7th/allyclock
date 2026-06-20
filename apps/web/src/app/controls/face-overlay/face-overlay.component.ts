@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, input, signal } from '@angular/core';
-import { ContainerSizeDirective } from '../../ui/container-size/container-size.directive';
+import { ContainerSizeDirective } from '@shared/ui/container-size/container-size.directive';
 import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
 import { ClockService } from '@core/clock.service';
 import { FaceConfigService } from '@core/face-config.service';

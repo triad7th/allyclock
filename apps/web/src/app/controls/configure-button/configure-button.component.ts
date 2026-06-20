@@ -8,7 +8,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { IconComponent } from '../../ui/icon/icon.component';
+import { IconComponent } from '@shared/ui/icon/icon.component';
 
 const HIDE_DELAY_MS = 4000;
 
