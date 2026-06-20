@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { ClockService } from '@core/clock.service';
+import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 import { ContainerSizeDirective } from '@shared/ui/container-size/container-size.directive';
 import { FaceConfigService } from '@core/face-config.service';
 import { FullscreenConfigStore } from './fullscreen-config-store.service';
@@ -15,20 +16,14 @@ import { FullscreenTogglesComponent } from './fullscreen-toggles/fullscreen-togg
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { bigTime, dateParts } from './clock-formatter';
 import { varsFor } from './fullscreen-style';
-import { AUTO_HIDE_MS } from '@core/animation-timing';
 
 @Component({
   selector: 'app-fullscreen-face',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FullscreenConfigComponent, FullscreenTogglesComponent, IconComponent],
+  imports: [AutoHideDirective, FullscreenConfigComponent, FullscreenTogglesComponent, IconComponent],
   hostDirectives: [ContainerSizeDirective],
   templateUrl: './fullscreen-face.component.html',
   styleUrl: './fullscreen-face.component.scss',
-  host: {
-    '(document:pointermove)': 'reveal()',
-    '(document:pointerdown)': 'reveal()',
-    '(document:keydown)': 'reveal()',
-  },
 })
 export class FullscreenFaceComponent implements OnDestroy {
   private readonly clock = inject(ClockService);
@@ -48,28 +43,13 @@ export class FullscreenFaceComponent implements OnDestroy {
 
   readonly styleVars = computed<Record<string, string>>(() => varsFor(this.activeFields()));
 
-  readonly controlsVisible = signal(true);
-
   // The Display (toggles) panel is owned locally by the face's gear, unlike the
   // Adjust (size) panel which is triggered from the app controls bar.
   readonly togglesOpen = signal(false);
 
-  private controlsTimer: ReturnType<typeof setTimeout> | undefined;
-
-  constructor() {
-    this.armControlsTimer();
-  }
-
   ngOnDestroy(): void {
-    clearTimeout(this.controlsTimer);
     this.faceConfig.open.set(false);
     this.faceConfig.adjustOpen.set(false);
-  }
-
-  reveal(): void {
-    if (this.faceConfig.open()) return;
-    this.controlsVisible.set(true);
-    this.armControlsTimer();
   }
 
   openToggles(): void {
@@ -86,10 +66,5 @@ export class FullscreenFaceComponent implements OnDestroy {
   closeAdjust(): void {
     this.faceConfig.adjustOpen.set(false);
     this.faceConfig.open.set(false);
-  }
-
-  private armControlsTimer(): void {
-    clearTimeout(this.controlsTimer);
-    this.controlsTimer = setTimeout(() => this.controlsVisible.set(false), AUTO_HIDE_MS);
   }
 }

@@ -1,7 +1,13 @@
-<p class="label" [class.hidden]="hidden()">{{ width() }} × {{ height() }} · {{ band().name }}</p>
+<p
+  class="label"
+  appAutoHide
+  #ah="autoHide"
+  [revealBlocked]="faceConfig.open()"
+  [class.hidden]="!ah.visible() || faceConfig.open() || sheetOpen()"
+>{{ width() }} × {{ height() }} · {{ band().name }}</p>
 <p
   class="chip"
-  [class.hidden]="hidden()"
+  [class.hidden]="!ah.visible() || faceConfig.open() || sheetOpen()"
   [class.is-live]="!isMocked()"
   [class.is-mock]="isMocked()"
 >

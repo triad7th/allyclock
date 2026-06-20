@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
-import { AUTO_HIDE_MS } from '@core/animation-timing';
+import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { ClockService } from '@core/clock.service';
+import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
@@ -95,21 +95,15 @@ function dayOfYear(date: Date): number {
 
 @Component({
   selector: 'app-time-machine',
-  imports: [IconButtonComponent, IconComponent, NavHeaderComponent, SheetComponent],
+  imports: [AutoHideDirective, IconButtonComponent, IconComponent, NavHeaderComponent, SheetComponent],
   templateUrl: './time-machine.component.html',
   styleUrl: './time-machine.component.scss',
-  host: {
-    '(document:pointermove)': 'reveal()',
-    '(document:pointerdown)': 'reveal()',
-    '(document:keydown)': 'reveal()',
-  },
 })
-export class TimeMachineComponent implements OnInit, OnDestroy {
+export class TimeMachineComponent {
   private readonly clock = inject(ClockService);
 
   readonly isMocked = this.clock.isMocked;
   readonly panelOpen = signal(false);
-  readonly visible = signal(true);
 
   private readonly sheet = viewChild(SheetComponent);
 
@@ -156,21 +150,6 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     return max > 1 ? ((this.dayOfYear() - 1) / (max - 1)) * 100 : 0;
   });
   readonly timeFillPercent = computed(() => (this.minuteOfDay() / 1439) * 100);
-
-  private hideTimer: ReturnType<typeof setTimeout> | undefined;
-
-  ngOnInit(): void {
-    this.armHideTimer();
-  }
-
-  ngOnDestroy(): void {
-    clearTimeout(this.hideTimer);
-  }
-
-  reveal(): void {
-    this.visible.set(true);
-    this.armHideTimer();
-  }
 
   togglePanel(): void {
     if (this.panelOpen()) {
@@ -261,11 +240,4 @@ export class TimeMachineComponent implements OnInit, OnDestroy {
     this.clock.setMock(date);
   }
 
-  private armHideTimer(): void {
-    clearTimeout(this.hideTimer);
-    this.hideTimer = setTimeout(() => {
-      // Keep the button on screen while the picker is open.
-      if (!this.panelOpen()) this.visible.set(false);
-    }, AUTO_HIDE_MS);
-  }
 }

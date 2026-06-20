@@ -9,9 +9,12 @@
   <div class="red-box" [style.top.px]="redBoxTop()" [style.height.px]="redBoxHeight()"></div>
 </div>
 <button
+  appAutoHide
+  #ah="autoHide"
+  [revealBlocked]="configOpen()"
   type="button"
   class="gear"
-  [class.hidden]="!gearVisible() || configOpen()"
+  [class.hidden]="!ah.visible() || configOpen()"
   aria-label="Configure schedule"
   (click)="onGearClick()"
 >

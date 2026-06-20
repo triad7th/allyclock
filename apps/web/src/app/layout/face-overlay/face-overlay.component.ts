@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, viewChild } from '@angular/core';
+import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 import { ContainerSizeDirective } from '@shared/ui/container-size/container-size.directive';
 import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
 import { ClockService } from '@core/clock.service';
 import { FaceConfigService } from '@core/face-config.service';
-import { AUTO_HIDE_MS } from '@core/animation-timing';
 
 // App-shell overlay shown above every face (outside the crossfade layers): a
 // top-left "W × H · BAND" label and a top-right LIVE/MOCK chip. Measures the
@@ -12,16 +12,12 @@ import { AUTO_HIDE_MS } from '@core/animation-timing';
 @Component({
   selector: 'app-face-overlay',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AutoHideDirective],
   hostDirectives: [ContainerSizeDirective],
   templateUrl: './face-overlay.component.html',
   styleUrl: './face-overlay.component.scss',
-  host: {
-    '(document:pointermove)': 'reveal()',
-    '(document:pointerdown)': 'reveal()',
-    '(document:keydown)': 'reveal()',
-  },
 })
-export class FaceOverlayComponent implements OnDestroy {
+export class FaceOverlayComponent {
   private readonly size = inject(ContainerSizeDirective);
   private readonly registry = inject(DimensionRegistry);
   private readonly clock = inject(ClockService);
@@ -37,27 +33,16 @@ export class FaceOverlayComponent implements OnDestroy {
   );
   readonly isMocked = this.clock.isMocked;
 
-  readonly visible = signal(true);
+  private readonly _ah = viewChild(AutoHideDirective);
+
+  /** Delegated to the directive; kept for spec compatibility. */
+  readonly visible = computed(() => this._ah()?.visible() ?? true);
+
+  /** Delegated to the directive; kept for spec compatibility. */
   readonly hidden = computed(() => !this.visible() || this.faceConfig.open() || this.sheetOpen());
 
-  private timer: ReturnType<typeof setTimeout> | undefined;
-
-  constructor() {
-    this.armTimer();
-  }
-
-  ngOnDestroy(): void {
-    clearTimeout(this.timer);
-  }
-
+  /** Delegated to the directive; kept for spec compatibility. */
   reveal(): void {
-    if (this.faceConfig.open()) return; // no-op while a config panel is open
-    this.visible.set(true);
-    this.armTimer();
-  }
-
-  private armTimer(): void {
-    clearTimeout(this.timer);
-    this.timer = setTimeout(() => this.visible.set(false), AUTO_HIDE_MS);
+    this._ah()?.reveal();
   }
 }

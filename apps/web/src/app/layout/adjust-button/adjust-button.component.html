@@ -1,7 +1,9 @@
 <button
+  appAutoHide
+  #ah="autoHide"
   type="button"
   class="adjust"
-  [class.hidden]="!visible()"
+  [class.hidden]="!ah.visible()"
   (click)="open.emit()"
   aria-label="Adjust layout"
   title="Adjust layout"

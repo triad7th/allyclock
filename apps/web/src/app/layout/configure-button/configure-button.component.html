@@ -1,8 +1,10 @@
 <button
   #button
+  appAutoHide
+  #ah="autoHide"
   type="button"
   class="configure"
-  [class.hidden]="!visible() && !pinned()"
+  [class.hidden]="!ah.visible() && !pinned()"
   (click)="open.emit()"
   aria-label="Choose clock face"
   title="Choose clock face"

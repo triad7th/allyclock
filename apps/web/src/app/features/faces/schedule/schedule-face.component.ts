@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ClockService } from '@core/clock.service';
+import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 import { ScheduleStoreService } from './schedule-store.service';
 import { ScheduleConfigComponent } from './schedule-config/schedule-config.component';
 import { IconComponent } from '@shared/ui/icon/icon.component';
@@ -8,21 +9,14 @@ import { FaceConfigService } from '@core/face-config.service';
 import { activeSegment, framedWindow } from './schedule-formatter';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 
-const HIDE_DELAY_MS = 4000;
-
 @Component({
   selector: 'app-schedule-face',
-  imports: [ScheduleConfigComponent, IconComponent],
+  imports: [AutoHideDirective, ScheduleConfigComponent, IconComponent],
   hostDirectives: [ContainerSizeDirective],
   templateUrl: './schedule-face.component.html',
   styleUrl: './schedule-face.component.scss',
-  host: {
-    '(document:pointermove)': 'revealGear()',
-    '(document:pointerdown)': 'revealGear()',
-    '(document:keydown)': 'revealGear()',
-  },
 })
-export class ScheduleFaceComponent implements OnInit, OnDestroy {
+export class ScheduleFaceComponent implements OnInit {
   private readonly clock = inject(ClockService);
   private readonly store = inject(ScheduleStoreService);
   private readonly size = inject(ContainerSizeDirective);
@@ -37,10 +31,7 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   // (the layout box is unaffected by any ancestor CSS transform).
   readonly containerWidth = this.size.width;
   readonly containerHeight = this.size.height;
-  readonly gearVisible = signal(true);
   readonly configOpen = signal(false);
-
-  private gearTimer: ReturnType<typeof setTimeout> | undefined;
 
   readonly scaleFactor = computed(() => {
     const nw = this.naturalWidth();
@@ -69,24 +60,12 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    this.armGearTimer();
     this.loadActivePreset();
-  }
-
-  ngOnDestroy(): void {
-    clearTimeout(this.gearTimer);
-    this.faceConfig.open.set(false);
   }
 
   onImageLoad(event: Event): void {
     const img = event.target as HTMLImageElement;
     this.naturalWidth.set(img.naturalWidth);
-  }
-
-  revealGear(): void {
-    if (this.configOpen()) return;
-    this.gearVisible.set(true);
-    this.armGearTimer();
   }
 
   onGearClick(): void {
@@ -120,10 +99,5 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
     } else {
       this.store.loadPresetImage(active.id).then((url) => this.imageUrl.set(url ?? DEFAULT_IMAGE_SRC));
     }
-  }
-
-  private armGearTimer(): void {
-    clearTimeout(this.gearTimer);
-    this.gearTimer = setTimeout(() => this.gearVisible.set(false), HIDE_DELAY_MS);
   }
 }

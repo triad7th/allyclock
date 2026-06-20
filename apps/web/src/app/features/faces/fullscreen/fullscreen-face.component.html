@@ -20,9 +20,12 @@
   </div>
 </div>
 <button
+  appAutoHide
+  #ah="autoHide"
+  [revealBlocked]="faceConfig.open()"
   type="button"
   class="gear"
-  [class.hidden]="!controlsVisible()"
+  [class.hidden]="!ah.visible()"
   (click)="openToggles()"
   aria-label="Display options"
   title="Display options"

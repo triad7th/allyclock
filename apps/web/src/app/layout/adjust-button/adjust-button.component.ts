@@ -1,40 +1,23 @@
-import { Component, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { Component, computed, output, viewChild } from '@angular/core';
+import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 import { IconComponent } from '@shared/ui/icon/icon.component';
-
-const HIDE_DELAY_MS = 4000;
 
 @Component({
   selector: 'app-adjust-button',
-  imports: [IconComponent],
+  imports: [AutoHideDirective, IconComponent],
   templateUrl: './adjust-button.component.html',
   styleUrl: './adjust-button.component.scss',
-  host: {
-    '(document:pointermove)': 'reveal()',
-    '(document:pointerdown)': 'reveal()',
-    '(document:keydown)': 'reveal()',
-  },
 })
-export class AdjustButtonComponent implements OnInit, OnDestroy {
+export class AdjustButtonComponent {
   readonly open = output<void>();
-  readonly visible = signal(true);
 
-  private hideTimer: ReturnType<typeof setTimeout> | undefined;
+  private readonly _ah = viewChild(AutoHideDirective);
 
-  ngOnInit(): void {
-    this.armHideTimer();
-  }
+  /** Delegated to the directive; kept for spec compatibility. */
+  readonly visible = computed(() => this._ah()?.visible() ?? true);
 
-  ngOnDestroy(): void {
-    clearTimeout(this.hideTimer);
-  }
-
+  /** Delegated to the directive; kept for spec compatibility. */
   reveal(): void {
-    this.visible.set(true);
-    this.armHideTimer();
-  }
-
-  private armHideTimer(): void {
-    clearTimeout(this.hideTimer);
-    this.hideTimer = setTimeout(() => this.visible.set(false), HIDE_DELAY_MS);
+    this._ah()?.reveal();
   }
 }

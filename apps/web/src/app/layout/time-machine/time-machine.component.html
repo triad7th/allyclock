@@ -1,8 +1,11 @@
 <button
+  appAutoHide
+  #ah="autoHide"
+  [holdVisible]="panelOpen()"
   type="button"
   class="tm-button"
   [class.active]="isMocked()"
-  [class.hidden]="!visible() && !panelOpen() && !isMocked()"
+  [class.hidden]="!ah.visible() && !panelOpen() && !isMocked()"
   (click)="togglePanel()"
   aria-label="Time machine"
   title="Time machine"
