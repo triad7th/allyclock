@@ -1,9 +1,9 @@
 // Section style knobs (time + each date part). `sizeScale` multiplies the
 // preset's responsive base for that section group.
 export interface SectionStyle {
-  // Per-preset visibility. The Weekday/GMT toggles currently write this to every
-  // preset (dimension-agnostic), but the per-preset field is kept so per-preset
-  // visibility control can be revived later. (time/month/day stay true.)
+  // Per-band visibility. The Weekday/GMT/Bar toggles write this to every band
+  // (dimension-agnostic), but the per-band field is kept so per-band visibility
+  // control can be revived later. (time/month/day stay true.)
   visible: boolean;
   sizeScale: number; // 0.5–2.0, default 1.0
   weight: number;    // 100–700
@@ -25,11 +25,9 @@ export interface SectionBase {
   minCqh?: number;
 }
 
-export interface FullscreenPreset {
-  id: string;
-  name: string;
-  minRatio: number;          // inclusive (ratio = width / height)
-  maxRatio: number;          // exclusive; top band uses Infinity
+// Per-band style fields for the Fullscreen face. Keyed by DimensionBand.id in
+// the store; the band boundaries themselves live in DimensionRegistry.
+export interface FullscreenFields {
   bar: BarStyle;
   sections: {
     time: SectionStyle;
@@ -48,19 +46,10 @@ export interface FullscreenPreset {
     barToDate: number;
     betweenDateParts: number;
   };
-  builtIn: boolean;
-}
-
-export interface FullscreenConfigState {
-  version: number;
-  presets: FullscreenPreset[]; // contiguous, non-overlapping, sorted by minRatio asc
 }
 
 export type SectionKey = 'time' | 'weekday' | 'month' | 'day' | 'gmt';
 export const DATE_SECTION_KEYS: SectionKey[] = ['weekday', 'month', 'day', 'gmt'];
-
-export const STATE_VERSION = 3;
-export const PRESETS_KEY = 'allyclock.fullscreen.presets';
 
 // Base cq value for the inter-section gap (multiplied by each gap scale).
 export const GAP_BASE_CQ = 2;

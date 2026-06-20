@@ -1,10 +1,4 @@
-import {
-  STATE_VERSION,
-  type FullscreenConfigState,
-  type FullscreenPreset,
-  type SectionBase,
-  type SectionStyle,
-} from './fullscreen-preset';
+import { type FullscreenFields, type SectionBase, type SectionStyle } from './fullscreen-preset';
 
 const timeStyle = (): SectionStyle => ({ visible: true, sizeScale: 1, weight: 200, opacity: 1 });
 const dateStyle = (): SectionStyle => ({ visible: true, sizeScale: 1, weight: 300, opacity: 0.6 });
@@ -28,18 +22,8 @@ const PHONE = {
   bar: { cqw: 60, cqh: 200, minCqh: 18.6 } as SectionBase,
 };
 
-function preset(
-  id: string,
-  name: string,
-  minRatio: number,
-  maxRatio: number,
-  bases: FullscreenPreset['bases'],
-): FullscreenPreset {
+function fields(bases: FullscreenFields['bases']): FullscreenFields {
   return {
-    id,
-    name,
-    minRatio,
-    maxRatio,
     bar: { visible: true, sizeScale: 1, opacity: 0.34 },
     sections: {
       time: timeStyle(),
@@ -50,24 +34,19 @@ function preset(
     },
     bases,
     gaps: { timeToBar: 1, barToDate: 1, betweenDateParts: 1 },
-    builtIn: true,
   };
 }
 
-export const BUILT_IN_PRESETS: FullscreenPreset[] = [
-  preset('phone', 'PHONE', 0, 0.62, PHONE),
-  preset('tall', 'TALL', 0.62, 1.05, NEAR_SQUARE),
-  preset('pad', 'PAD', 1.05, 1.45, NEAR_SQUARE),
-  preset('lap', 'LAP', 1.45, 1.7, LANDSCAPE),
-  preset('wide', 'WIDE', 1.7, 1.95, LANDSCAPE),
-  preset('mini', 'MINI', 1.95, 2.2, LANDSCAPE),
-  preset('ultra', 'ULTRA', 2.2, 2.8, LANDSCAPE),
-  preset('super', 'SUPER', 2.8, Infinity, LANDSCAPE),
-];
-
-export function buildDefaultState(): FullscreenConfigState {
+// Default fields per band id. Band ids MUST match DimensionRegistry's bands.
+export function buildDefaultFields(): Record<string, FullscreenFields> {
   return {
-    version: STATE_VERSION,
-    presets: BUILT_IN_PRESETS.map((p) => structuredClone(p)),
+    phone: fields(PHONE),
+    tall: fields(NEAR_SQUARE),
+    pad: fields(NEAR_SQUARE),
+    lap: fields(LANDSCAPE),
+    wide: fields(LANDSCAPE),
+    mini: fields(LANDSCAPE),
+    ultra: fields(LANDSCAPE),
+    super: fields(LANDSCAPE),
   };
 }
