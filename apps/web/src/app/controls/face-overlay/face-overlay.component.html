@@ -1,0 +1,9 @@
+<p class="label" [class.hidden]="hidden()">{{ width() }} × {{ height() }} · {{ band().name }}</p>
+<p
+  class="chip"
+  [class.hidden]="hidden()"
+  [class.is-live]="!isMocked()"
+  [class.is-mock]="isMocked()"
+>
+  <span class="dot"></span>{{ isMocked() ? 'MOCK' : 'LIVE' }}
+</p>
