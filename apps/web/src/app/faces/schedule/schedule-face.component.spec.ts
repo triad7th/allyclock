@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ScheduleFaceComponent } from './schedule-face.component';
 import { ScheduleStoreService } from './schedule-store.service';
-import { FaceConfigService } from '../../services/face-config.service';
+import { FaceConfigService } from '@core/face-config.service';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 import { DEFAULT_PRESET_ID } from './schedule-preset';
 

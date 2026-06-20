@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { TimeMachineComponent } from './time-machine.component';
-import { ClockService } from '../../services/clock.service';
+import { ClockService } from '@core/clock.service';
 import { SHEET_ANIMATION_MS } from '@core/animation-timing';
 
 describe('TimeMachineComponent', () => {

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, input, signal } from '@angular/core';
 import { ContainerSizeDirective } from '../../ui/container-size/container-size.directive';
-import { DimensionRegistry } from '../../services/dimension-registry.service';
-import { ClockService } from '../../services/clock.service';
-import { FaceConfigService } from '../../services/face-config.service';
+import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
+import { ClockService } from '@core/clock.service';
+import { FaceConfigService } from '@core/face-config.service';
 import { AUTO_HIDE_MS } from '@core/animation-timing';
 
 // App-shell overlay shown above every face (outside the crossfade layers): a

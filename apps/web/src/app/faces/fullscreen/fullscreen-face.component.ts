@@ -6,9 +6,9 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { ClockService } from '../../services/clock.service';
+import { ClockService } from '@core/clock.service';
 import { ContainerSizeDirective } from '../../ui/container-size/container-size.directive';
-import { FaceConfigService } from '../../services/face-config.service';
+import { FaceConfigService } from '@core/face-config.service';
 import { FullscreenConfigStore } from './fullscreen-config-store.service';
 import { FullscreenConfigComponent } from './fullscreen-config/fullscreen-config.component';
 import { FullscreenTogglesComponent } from './fullscreen-toggles/fullscreen-toggles.component';

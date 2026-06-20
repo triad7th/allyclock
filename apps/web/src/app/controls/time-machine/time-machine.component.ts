@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { AUTO_HIDE_MS } from '@core/animation-timing';
-import { ClockService } from '../../services/clock.service';
+import { ClockService } from '@core/clock.service';
 import { IconButtonComponent } from '../../ui/icon-button/icon-button.component';
 import { IconComponent } from '../../ui/icon/icon.component';
 import { NavHeaderComponent } from '../../ui/nav-header/nav-header.component';

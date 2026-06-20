@@ -6,7 +6,7 @@ import {
   buildDefaultDimensions,
   type DimensionBand,
   type DimensionRegistryState,
-} from '../faces/dimension-band';
+} from './dimension-band';
 
 function bandDistance(b: DimensionBand, ratio: number): number {
   if (ratio < b.minRatio) return b.minRatio - ratio;

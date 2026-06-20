@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { FaceOverlayComponent } from './face-overlay.component';
-import { ClockService } from '../../services/clock.service';
+import { ClockService } from '@core/clock.service';
 import { AUTO_HIDE_MS } from '@core/animation-timing';
 
 const mem: Record<string, string> = {};

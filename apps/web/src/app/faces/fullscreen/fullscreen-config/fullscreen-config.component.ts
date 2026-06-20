@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, viewChild } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FullscreenConfigStore } from '../fullscreen-config-store.service';
-import { DimensionRegistry } from '../../../services/dimension-registry.service';
+import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
 import { SheetComponent } from '../../../ui/sheet/sheet.component';
 import { NavHeaderComponent } from '../../../ui/nav-header/nav-header.component';
 import { IconButtonComponent } from '../../../ui/icon-button/icon-button.component';

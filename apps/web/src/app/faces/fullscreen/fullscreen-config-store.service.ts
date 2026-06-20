@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { DimensionRegistry } from '../../services/dimension-registry.service';
-import { BandConfigStore } from '../band-config-store';
+import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
+import { BandConfigStore } from '@core/dimensions/band-config-store';
 import { buildDefaultFields } from './fullscreen-presets.data';
 import { type FullscreenFields, type SectionKey } from './fullscreen-preset';
 

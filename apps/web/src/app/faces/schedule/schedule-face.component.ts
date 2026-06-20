@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
-import { ClockService } from '../../services/clock.service';
+import { ClockService } from '@core/clock.service';
 import { ScheduleStoreService } from './schedule-store.service';
 import { ScheduleConfigComponent } from './schedule-config/schedule-config.component';
 import { IconComponent } from '../../ui/icon/icon.component';
 import { ContainerSizeDirective } from '../../ui/container-size/container-size.directive';
-import { FaceConfigService } from '../../services/face-config.service';
+import { FaceConfigService } from '@core/face-config.service';
 import { activeSegment, framedWindow } from './schedule-formatter';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildDefaultFields } from './fullscreen-presets.data';
-import { BUILT_IN_BANDS } from '../dimension-band';
+import { BUILT_IN_BANDS } from '@core/dimensions/dimension-band';
 
 describe('buildDefaultFields', () => {
   it('returns one FullscreenFields per band id (the eight bands)', () => {

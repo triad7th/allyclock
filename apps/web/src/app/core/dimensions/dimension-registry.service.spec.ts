@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { DimensionRegistry } from './dimension-registry.service';
-import { BUILT_IN_BANDS, DIMENSIONS_KEY } from '../faces/dimension-band';
+import { BUILT_IN_BANDS, DIMENSIONS_KEY } from './dimension-band';
 
 const mem: Record<string, string> = {};
 const storageMock = {

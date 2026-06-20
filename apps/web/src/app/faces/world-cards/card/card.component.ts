@@ -1,7 +1,7 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { LocationService } from '../../../services/location.service';
-import { ClockService } from '../../../services/clock.service';
+import { LocationService } from '@core/location.service';
+import { ClockService } from '@core/clock.service';
 
 @Component({
   selector: 'app-card',
