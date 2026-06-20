@@ -2,12 +2,12 @@ import { Component, computed, DestroyRef, inject, signal, viewChild } from '@ang
 import { NgComponentOutlet } from '@angular/common';
 import { FACES, FaceDescriptor } from '@features/faces/face-registry';
 import { FacePreferenceService } from '@features/faces/face-preference.service';
-import { ConfigureButtonComponent } from './controls/configure-button/configure-button.component';
-import { AdjustButtonComponent } from './controls/adjust-button/adjust-button.component';
-import { FacePickerSheetComponent } from './controls/face-picker-sheet/face-picker-sheet.component';
-import { TimeMachineComponent } from './controls/time-machine/time-machine.component';
+import { ConfigureButtonComponent } from './configure-button/configure-button.component';
+import { AdjustButtonComponent } from './adjust-button/adjust-button.component';
+import { FacePickerSheetComponent } from './face-picker-sheet/face-picker-sheet.component';
+import { TimeMachineComponent } from './time-machine/time-machine.component';
 import { FaceConfigService } from '@core/face-config.service';
-import { FaceOverlayComponent } from './controls/face-overlay/face-overlay.component';
+import { FaceOverlayComponent } from './face-overlay/face-overlay.component';
 import { FACE_TRANSITION_MS } from '@core/animation-timing';
 
 // One stacked face during a crossfade. The leaving face fades out while the
