@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { ClockService } from '@core/clock.service';
 import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 import { ScheduleStoreService } from './schedule-store.service';
@@ -16,7 +16,7 @@ import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
   templateUrl: './schedule-face.component.html',
   styleUrl: './schedule-face.component.scss',
 })
-export class ScheduleFaceComponent implements OnInit {
+export class ScheduleFaceComponent implements OnInit, OnDestroy {
   private readonly clock = inject(ClockService);
   private readonly store = inject(ScheduleStoreService);
   private readonly size = inject(ContainerSizeDirective);
@@ -61,6 +61,14 @@ export class ScheduleFaceComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadActivePreset();
+  }
+
+  ngOnDestroy(): void {
+    // If this face is torn down (e.g. a face switch) while its config sheet is
+    // open, reset the shared flag so the app's controls bar — which hides on
+    // `faceConfig.open()` — isn't left permanently hidden. (The auto-hide timer
+    // is now owned by AutoHideDirective, so there is no local timer to clear.)
+    this.faceConfig.open.set(false);
   }
 
   onImageLoad(event: Event): void {

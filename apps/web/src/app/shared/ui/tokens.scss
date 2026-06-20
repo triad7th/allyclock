@@ -1,7 +1,7 @@
 // Design tokens for the iOS dark palette, named to mirror Apple semantics.
 // Components reference them via `@use 'tokens' as t;` then `t.$tint`, etc.
 // The build resolves the bare `tokens` import through
-// `stylePreprocessorOptions.includePaths: ["src/app/ui"]` in angular.json.
+// `stylePreprocessorOptions.includePaths: ["src/app/shared/ui"]` in angular.json.
 
 // Accent / interactive blue (iOS systemBlue) and its hover state.
 $tint: #0a84ff;

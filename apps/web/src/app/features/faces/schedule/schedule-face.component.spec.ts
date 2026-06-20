@@ -112,6 +112,17 @@ describe('ScheduleFaceComponent', () => {
     expect(fixture.nativeElement.querySelector('app-schedule-config')).toBeNull();
   });
 
+  it('resets faceConfig.open on destroy if torn down while the config is open', () => {
+    const faceConfig = TestBed.inject(FaceConfigService);
+    const fixture = TestBed.createComponent(ScheduleFaceComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.onGearClick();
+    expect(faceConfig.open()).toBe(true);
+    // Destroy without going through onConfigClosed (e.g. a face switch).
+    fixture.destroy();
+    expect(faceConfig.open()).toBe(false);
+  });
+
   it('reloads the active preset on close, reflecting a preset switch immediately', () => {
     const fixture = TestBed.createComponent(ScheduleFaceComponent);
     fixture.detectChanges();
