@@ -15,7 +15,7 @@
   position: fixed;
   inset: 0;
   background: t.$backdrop;
-  animation: sheet-backdrop-fade t.$sheet-anim ease both;
+  animation: sheet-backdrop-fade var(--sheet-anim, 0.28s) ease both;
 }
 
 .sheet-panel {
@@ -31,7 +31,7 @@
   color: t.$label;
   border-radius: 16px 16px 0 0;
   outline: none;
-  animation: sheet-slide-up t.$sheet-anim cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: sheet-slide-up var(--sheet-anim, 0.28s) cubic-bezier(0.16, 1, 0.3, 1) both;
 
   // Fill the viewport; the content region scrolls.
   &.full-height {
@@ -41,11 +41,11 @@
 
 // Reverse of the entrance: fade the backdrop out and slide the sheet down.
 .sheet-overlay.closing .sheet-backdrop {
-  animation: sheet-backdrop-fade-out t.$sheet-anim ease both;
+  animation: sheet-backdrop-fade-out var(--sheet-anim, 0.28s) ease both;
 }
 
 .sheet-overlay.closing .sheet-panel {
-  animation: sheet-slide-down t.$sheet-anim cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: sheet-slide-down var(--sheet-anim, 0.28s) cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes sheet-backdrop-fade {
