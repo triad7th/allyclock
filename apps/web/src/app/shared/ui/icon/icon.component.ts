@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 // SF Symbol name -> SVG path data. The `name` input mirrors Apple's SF Symbol
 // names so native ports swap this component for `Image(systemName:)` directly.
 // Paths are drawn on a 24x24 viewBox with round caps/joins.
-const ICON_PATHS: Record<string, string> = {
+const ICON_PATHS = {
   pencil: 'M14.5 4.5l3 3M4 17l9.5-9.5 3 3L7 20l-4 1 1-4z',
   photo: 'M3 7.5A2.5 2.5 0 0 1 5.5 5h13A2.5 2.5 0 0 1 21 7.5v9A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5zM5 17l5-5 4 4 2.5-2.5L21 16',
   plus: 'M12 5v14M5 12h14',
@@ -22,7 +22,9 @@ const ICON_PATHS: Record<string, string> = {
   'arrow.right': 'M5 12h14M13 6l6 6-6 6',
   gearshape:
     'M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1zM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
-};
+} as const;
+
+export type SfSymbol = keyof typeof ICON_PATHS;
 
 @Component({
   selector: 'app-icon',
@@ -47,6 +49,6 @@ const ICON_PATHS: Record<string, string> = {
   `,
 })
 export class IconComponent {
-  readonly name = input.required<string>();
+  readonly name = input.required<SfSymbol>();
   readonly path = computed(() => ICON_PATHS[this.name()] ?? '');
 }

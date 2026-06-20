@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { IconComponent } from './icon.component';
+import { IconComponent, SfSymbol } from './icon.component';
 
 @Component({
   standalone: true,
@@ -9,7 +9,7 @@ import { IconComponent } from './icon.component';
   template: '<app-icon [name]="name" />',
 })
 class HostComponent {
-  name = 'pencil';
+  name: SfSymbol = 'pencil';
 }
 
 describe('IconComponent', () => {
@@ -21,7 +21,7 @@ describe('IconComponent', () => {
 
   function render(name: string): SVGElement | null {
     const fixture = TestBed.createComponent(HostComponent);
-    fixture.componentInstance.name = name;
+    fixture.componentInstance.name = name as SfSymbol;
     fixture.detectChanges();
     return fixture.nativeElement.querySelector('svg');
   }

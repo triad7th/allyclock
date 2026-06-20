@@ -12,6 +12,46 @@ This directory contains the Angular 21 Web app for AllyClock.
 - Native `Intl.DateTimeFormat` is used for all time/timezone formatting.
 - Vitest (via `@angular/build:unit-test`) is configured for unit tests; the app is zoneless and uses signals.
 
+## Architecture
+
+The app is structured into four tiers with one-way dependencies (`layout → features → core / shared`):
+
+```
+src/app/
+  core/           — app-wide singletons (ClockService, LocationService, FaceConfigService,
+                    DimensionRegistryService, animation-timing constants)
+  shared/ui/      — reusable UI primitives (IconComponent, SheetComponent, NavHeaderComponent,
+                    IconButtonComponent, ContainerSizeDirective, AutoHideDirective, tokens.scss)
+  features/faces/ — face-specific logic and components (face-registry, fullscreen, schedule,
+                    world-cards, FacePreferenceService)
+  layout/         — app shell and chrome (AppComponent, ConfigureButtonComponent,
+                    AdjustButtonComponent, FacePickerSheetComponent, TimeMachineComponent,
+                    FaceOverlayComponent)
+```
+
+### Dependency rule
+
+- `core/` and `shared/ui/` must not import from `features/` or `layout/`.
+- `features/` may import from `core/` and `shared/ui/` only.
+- `layout/` may import from all lower tiers.
+
+### Path aliases
+
+Use these tsconfig path aliases for cross-tier imports (no app-internal barrel files):
+
+| Alias | Resolves to |
+|-------|-------------|
+| `@core/*` | `src/app/core/*` |
+| `@shared/*` | `src/app/shared/*` |
+| `@features/*` | `src/app/features/*` |
+| `@layout/*` | `src/app/layout/*` |
+
+### Naming conventions
+
+- Type suffixes are **kept**: `.component`, `.service`, `.directive`, `.spec`, `.pipe`.
+- Use `git mv` (never delete+recreate) when moving files to preserve blame history.
+- Imports *within* a subtree that moves together stay relative. Cross-tier imports use the `@tier/…` alias.
+
 ## Commands
 
 Run these commands from the repository root:
@@ -33,12 +73,14 @@ npm test
 ## Important Files
 
 - `src/main.ts` bootstraps the standalone Angular app.
-- `src/app/app.component.*` owns the page layout.
-- `src/app/faces/face-registry.ts` lists the selectable clock faces; each face lives in its own directory under `src/app/faces/`.
-- `src/app/faces/schedule/` contains the Daily Schedule face: image panning, drag-marker config, and IndexedDB image storage.
-- `src/app/controls/` contains the "Face" button (opens the face picker sheet) and the Time Machine control (mocks the clock via `ClockService`).
-- `src/app/services/clock.service.ts` exposes `now()`; the Time Machine overrides it with `setMock()`/`clearMock()` so every face can be previewed at an arbitrary instant.
-- `src/app/services/location.service.ts` maps region IDs to flag URLs and timezone offsets.
+- `src/app/layout/app.component.*` owns the page layout.
+- `src/app/features/faces/face-registry.ts` lists the selectable clock faces; each face lives in its own directory under `src/app/features/faces/`.
+- `src/app/features/faces/schedule/` contains the Daily Schedule face: image panning, drag-marker config, and IndexedDB image storage.
+- `src/app/layout/` contains the "Face" button (opens the face picker sheet) and the Time Machine control (mocks the clock via `ClockService`).
+- `src/app/core/clock.service.ts` exposes `now()`; the Time Machine overrides it with `setMock()`/`clearMock()` so every face can be previewed at an arbitrary instant.
+- `src/app/core/location.service.ts` maps region IDs to flag URLs and timezone offsets.
+- `src/app/core/animation-timing.ts` is the single source of truth for animation duration constants (also pushed to CSS custom properties at bootstrap).
+- `src/app/shared/ui/icon/icon.component.ts` is the icon abstraction layer keyed to SF Symbol names.
 - `src/styles.scss` contains global styles.
 - `angular.json` defines Angular build, serve, test, assets, global styles, and scripts.
 

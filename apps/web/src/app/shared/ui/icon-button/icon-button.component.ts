@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent, SfSymbol } from '../icon/icon.component';
 
 /**
  * Reusable 34px circular iOS nav button.
@@ -27,7 +27,7 @@ import { IconComponent } from '../icon/icon.component';
 })
 export class IconButtonComponent {
   /** SF Symbol name rendered inside the button. */
-  readonly icon = input.required<string>();
+  readonly icon = input.required<SfSymbol>();
   /** Visual style. `secondary`/`primary` are used today; `destructive` is for completeness. */
   readonly variant = input<'secondary' | 'primary' | 'destructive'>('secondary');
   /** Used as both aria-label and title. */

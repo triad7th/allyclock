@@ -13,7 +13,7 @@ import { ScheduleStoreService } from '../schedule-store.service';
 import { ScheduleSegment } from '../schedule-formatter';
 import { DEFAULT_IMAGE_SRC } from '../default-schedule';
 import { DEFAULT_PRESET_ID, type SchedulePreset } from '../schedule-preset';
-import { ScheduleMarkerComponent } from './schedule-marker.component';
+import { ScheduleMarkerComponent } from '../schedule-marker/schedule-marker.component';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';

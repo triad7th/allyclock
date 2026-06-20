@@ -68,11 +68,11 @@ Root scripts delegate to `apps/web`. App-local commands can also be run from `ap
 - `apps/web/package.json` owns Angular dependencies and app-local scripts.
 - `apps/web/angular.json` defines Angular build, serve, test, assets, global styles, and scripts.
 - `apps/web/src/main.ts` bootstraps the standalone Angular app.
-- `apps/web/src/app/app.component.*` owns the page layout.
-- `apps/web/src/app/faces/face-registry.ts` lists the selectable clock faces.
-- `apps/web/src/app/faces/` contains one directory per clock face (fullscreen, world-cards).
-- `apps/web/src/app/controls/` contains the configure button and face picker sheet.
-- `apps/web/src/app/services/location.service.ts` maps region IDs to flag URLs and timezone offsets.
+- `apps/web/src/app/layout/app.component.*` owns the page layout.
+- `apps/web/src/app/features/faces/face-registry.ts` lists the selectable clock faces.
+- `apps/web/src/app/features/faces/` contains one directory per clock face (fullscreen, world-cards).
+- `apps/web/src/app/layout/` contains the configure button and face picker sheet.
+- `apps/web/src/app/core/location.service.ts` maps region IDs to flag URLs and timezone offsets.
 - `netlify.toml` defines the Netlify build base and publish directory.
 
 ## Coding Conventions
@@ -97,7 +97,7 @@ Root scripts delegate to `apps/web`. App-local commands can also be run from `ap
 The GitHub Actions workflow:
 
 - Runs on `main` pushes and manual dispatch.
-- Uses Node.js 20.x.
+- Uses Node.js 24.x.
 - Runs `npm --prefix apps/web ci`.
 - Runs `npm --prefix apps/web run build --if-present`.
 - Deploys `apps/web/dist/allyclock/browser` to Netlify site `allyclock`.
