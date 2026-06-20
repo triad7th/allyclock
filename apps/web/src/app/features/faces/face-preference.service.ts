@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { DEFAULT_FACE_ID, FACES } from '../faces/face-registry';
+import { DEFAULT_FACE_ID, FACES } from './face-registry';
 
 const STORAGE_KEY = 'allyclock.face';
 

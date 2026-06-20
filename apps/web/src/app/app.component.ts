@@ -1,7 +1,7 @@
 import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
-import { FACES, FaceDescriptor } from './faces/face-registry';
-import { FacePreferenceService } from '@core/face-preference.service';
+import { FACES, FaceDescriptor } from '@features/faces/face-registry';
+import { FacePreferenceService } from '@features/faces/face-preference.service';
 import { ConfigureButtonComponent } from './controls/configure-button/configure-button.component';
 import { AdjustButtonComponent } from './controls/adjust-button/adjust-button.component';
 import { FacePickerSheetComponent } from './controls/face-picker-sheet/face-picker-sheet.component';

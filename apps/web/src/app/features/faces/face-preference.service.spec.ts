@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { FacePreferenceService } from './face-preference.service';
-import { DEFAULT_FACE_ID } from '../faces/face-registry';
+import { DEFAULT_FACE_ID } from './face-registry';
 
 const mockStorage: Record<string, string> = {};
 

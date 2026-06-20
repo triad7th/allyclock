@@ -1,6 +1,6 @@
 import { NgComponentOutlet } from '@angular/common';
 import { Component, input, output, viewChild } from '@angular/core';
-import { FACES } from '../../faces/face-registry';
+import { FACES } from '@features/faces/face-registry';
 import { SheetComponent } from '@shared/ui/sheet/sheet.component';
 
 @Component({
