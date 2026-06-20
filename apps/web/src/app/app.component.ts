@@ -7,6 +7,7 @@ import { AdjustButtonComponent } from './controls/adjust-button/adjust-button.co
 import { FacePickerSheetComponent } from './controls/face-picker-sheet/face-picker-sheet.component';
 import { TimeMachineComponent } from './controls/time-machine/time-machine.component';
 import { FaceConfigService } from './services/face-config.service';
+import { FaceOverlayComponent } from './controls/face-overlay/face-overlay.component';
 import { FACE_TRANSITION_MS } from './config/animation-timing';
 
 // One stacked face during a crossfade. The leaving face fades out while the
@@ -25,6 +26,7 @@ interface FaceLayer {
     AdjustButtonComponent,
     FacePickerSheetComponent,
     TimeMachineComponent,
+    FaceOverlayComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

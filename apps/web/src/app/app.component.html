@@ -5,9 +5,10 @@
     </div>
   }
 </main>
+<app-face-overlay [sheetOpen]="sheetOpen()" />
 <div class="controls-bar" [class.hidden]="faceConfig.open()">
   <app-configure-button [pinned]="sheetOpen()" (open)="openSheet()" />
-  @if (activeFaceId() === 'fullscreen') {
+  @if (activeFace().configComponent) {
     <app-adjust-button (open)="openAdjust()" />
   }
   <app-time-machine />
