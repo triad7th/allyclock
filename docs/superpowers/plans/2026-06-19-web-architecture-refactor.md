@@ -27,7 +27,7 @@
 | `config/animation-timing.ts` | `core/animation-timing.ts` | `@core/animation-timing` |
 | `services/clock.service.ts(+spec)` | `core/clock.service.ts(+spec)` | `@core/clock.service` |
 | `services/face-config.service.ts` | `core/face-config.service.ts` | `@core/face-config.service` |
-| `services/face-preference.service.ts(+spec)` | `core/face-preference.service.ts(+spec)` | `@core/face-preference.service` |
+| `services/face-preference.service.ts(+spec)` | `features/faces/face-preference.service.ts(+spec)` | `@features/faces/face-preference.service` |  (transits `core/` in Task 2; relocated to `features/faces/` in Task 4 — it depends on `face-registry`, so it's a faces concern, not core) |
 | `services/location.service.ts(+spec)` | `core/location.service.ts(+spec)` | `@core/location.service` |
 | `faces/dimension-band.ts` | `core/dimensions/dimension-band.ts` | `@core/dimensions/dimension-band` |
 | `services/dimension-registry.service.ts(+spec)` | `core/dimensions/dimension-registry.service.ts(+spec)` | `@core/dimensions/dimension-registry.service` |
@@ -234,10 +234,12 @@ git commit -m "$(printf 'refactor(web): move UI primitives + tokens + range-slid
 ## Task 4: `features/faces/`
 
 **Files:**
-- Move: `faces/face-registry.ts` + the three face dirs → `features/faces/`.
-- Modify: importers of `faces/*`.
+- Move: `faces/face-registry.ts` + the three face dirs → `features/faces/`; AND relocate `core/face-preference.service.ts(+spec)` → `features/faces/`.
+- Modify: importers of `faces/*` and of `face-preference`.
 
-- [ ] **Step 1: Move the faces subtree**
+> **Why face-preference moves here:** `FacePreferenceService` imports `FACES`/`DEFAULT_FACE_ID` from `face-registry` to validate/default the active face id. In `core/` that is an illegal upward `core → faces` import (flagged in Task 2 review). It is a faces concern; co-locating it with `face-registry` makes the import a clean sibling and keeps `core/` free of feature knowledge.
+
+- [ ] **Step 1: Move the faces subtree + relocate face-preference**
 
 ```bash
 mkdir -p apps/web/src/app/features/faces
@@ -246,28 +248,34 @@ git mv apps/web/src/app/faces/fullscreen apps/web/src/app/features/faces/fullscr
 git mv apps/web/src/app/faces/schedule apps/web/src/app/features/faces/schedule
 git mv apps/web/src/app/faces/world-cards apps/web/src/app/features/faces/world-cards
 rmdir apps/web/src/app/faces
+git mv apps/web/src/app/core/face-preference.service.ts apps/web/src/app/features/faces/face-preference.service.ts
+git mv apps/web/src/app/core/face-preference.service.spec.ts apps/web/src/app/features/faces/face-preference.service.spec.ts
 ```
 
 (Intra-face relative imports — e.g. `fullscreen-face` → `./clock-formatter`, `./fullscreen-style`, `./fullscreen-config/…` — are unchanged; the whole subtree moved together. The `@core/*` and `@shared/ui/*` aliases written in Tasks 2–3 are already correct and need no change.)
 
-- [ ] **Step 2: Rewrite external importers of faces to `@features/faces/*`**
+- [ ] **Step 2: Fix face-preference's now-sibling import**
+
+In `features/faces/face-preference.service.ts`, change its import of `face-registry` from `'@features/faces/face-registry'` (or the relative `../faces/face-registry` it had in core) to the sibling form `'./face-registry'`. Do the same in `face-preference.service.spec.ts`.
+
+- [ ] **Step 3: Rewrite external importers to `@features/faces/*`**
 
 ```bash
-grep -rn "faces/face-registry\|faces/fullscreen\|faces/schedule\|faces/world-cards" apps/web/src --include=*.ts
+grep -rn "faces/face-registry\|faces/fullscreen\|faces/schedule\|faces/world-cards\|@core/face-preference\|core/face-preference" apps/web/src --include=*.ts
 ```
 
-The main importer is `app.component.ts` (imports `FACES`/`FaceDescriptor`/`DEFAULT_FACE_ID` from `face-registry`, and `face-registry.ts` imports the three face components + `FullscreenConfigComponent`). Rewrite `'./faces/face-registry'` → `'@features/faces/face-registry'`. Inside `face-registry.ts`, its imports of the face components stay relative (`./fullscreen/fullscreen-face.component`, etc.) since they moved with it.
+`app.component.ts` imports `FACES`/`FaceDescriptor`/`DEFAULT_FACE_ID` from `face-registry` and `FacePreferenceService` from face-preference — rewrite both to `'@features/faces/face-registry'` and `'@features/faces/face-preference.service'`. Inside `face-registry.ts`, its imports of the face components stay relative (`./fullscreen/fullscreen-face.component`, etc.) since they moved with it. Confirm `grep -rn "faces/\|@features" apps/web/src/app/core` returns ZERO (core is now free of any faces import).
 
-- [ ] **Step 3: Verify**
+- [ ] **Step 4: Verify**
 
 Run: `npm run build:web` → success.
 Run: `npm run test:web` → green.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
 git add -A
-git commit -m "$(printf 'refactor(web): move faces under features/faces/\n\nCo-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>')"
+git commit -m "$(printf 'refactor(web): move faces + face-preference under features/faces/\n\nCo-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>')"
 ```
 
 ---

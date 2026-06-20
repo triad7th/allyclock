@@ -52,8 +52,7 @@ apps/web/src/app/
   app.config.ts                                  (unchanged location)
   core/
     clock.service.ts(+spec)                       ← services/
-    face-config.service.ts                        ← services/
-    face-preference.service.ts(+spec)             ← services/
+    face-config.service.ts                        ← services/  (panel open/adjust state; no face knowledge)
     location.service.ts(+spec)                    ← services/  (future packages/core)
     animation-timing.ts                           ← config/    (config/ dir removed)
     dimensions/
@@ -68,6 +67,8 @@ apps/web/src/app/
   features/
     faces/
       face-registry.ts                            ← faces/
+      face-preference.service.ts(+spec)           ← services/  (depends on the face
+                                                     registry → a faces concern, NOT core)
       fullscreen/   (face, fullscreen-config/, fullscreen-toggles/, store,
                      presets, fullscreen-style, clock-formatter)   ← faces/fullscreen/
       schedule/     (face, schedule-config/, schedule-marker/ [extracted to own dir],
