@@ -55,14 +55,30 @@ export abstract class BandConfigStore<T> {
     return seeded;
   }
 
-  // Additive: existing per-band values win; any band id missing from the
-  // persisted state is filled from defaults. Never blanket-wipes tuning.
-  private migrate(state: BandConfigState<T>): BandConfigState<T> {
-    const byBand = { ...this.buildDefaults(), ...state.byBand };
+  // Combine one band's default with its persisted value. Default: take the
+  // persisted band wholesale (band-id-level merge — historical behavior).
+  // Override to do field-level migration (fill new fields, translate shapes).
+  protected mergeBand(defaults: T, persisted: T): T {
+    return persisted ?? defaults;
+  }
+
+  // Additive: every default band id is present; a persisted band is combined
+  // with its default via mergeBand (so new fields can be filled). Never wipes.
+  protected migrate(state: BandConfigState<T>): BandConfigState<T> {
+    const defaults = this.buildDefaults();
+    const byBand: Record<string, T> = {};
+    for (const id of Object.keys(defaults)) {
+      byBand[id] = id in state.byBand ? this.mergeBand(defaults[id], state.byBand[id]) : defaults[id];
+    }
+    // Carry any persisted band ids not in defaults (forward-compat), untouched.
+    for (const id of Object.keys(state.byBand)) {
+      if (!(id in byBand)) byBand[id] = state.byBand[id];
+    }
     const migrated: BandConfigState<T> = { version: this.version(), byBand };
     if (
       state.version !== this.version() ||
-      Object.keys(byBand).length !== Object.keys(state.byBand).length
+      Object.keys(byBand).length !== Object.keys(state.byBand).length ||
+      this.version() > state.version
     ) {
       this.persist(migrated);
     }

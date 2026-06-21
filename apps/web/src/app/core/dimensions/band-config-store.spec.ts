@@ -55,4 +55,23 @@ describe('BandConfigStore', () => {
     expect(s.config('a')).toEqual({ n: 9, on: false }); // existing preserved
     expect(s.config('b')).toEqual({ n: 2, on: true });   // missing filled from defaults
   });
+
+  it('mergeBand override is applied to persisted bands on load (field-level migration)', () => {
+    // A subclass that fills a missing field from defaults rather than taking the
+    // persisted band wholesale.
+    class MergeStore extends BandConfigStore<{ a: number; b?: number }> {
+      protected storageKey(): string { return 'test.merge'; }
+      protected version(): number { return 2; }
+      protected buildDefaults(): Record<string, { a: number; b?: number }> {
+        return { x: { a: 1, b: 9 } };
+      }
+      protected override mergeBand(defaults: { a: number; b?: number }, persisted: { a: number; b?: number }) {
+        return { ...defaults, ...persisted };
+      }
+      constructor() { super(); this.init(); }
+    }
+    mem['test.merge'] = JSON.stringify({ version: 1, byBand: { x: { a: 5 } } });
+    const s = new MergeStore();
+    expect(s.config('x')).toEqual({ a: 5, b: 9 }); // persisted a wins, default b filled
+  });
 });
