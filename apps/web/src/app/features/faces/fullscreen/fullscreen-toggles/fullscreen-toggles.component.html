@@ -43,18 +43,21 @@
 
       <!-- Bar -->
       <div class="knobs-section">
-        <div class="knobs-toggle-row">
+        <div class="knobs-segment-row">
           <span class="knobs-section-label">Bar</span>
-          <button
-            type="button"
-            class="knobs-toggle"
-            [class.on]="showBar()"
-            data-knob="bar-visible"
-            (click)="toggleBar()"
-            [attr.aria-label]="showBar() ? 'Hide Bar' : 'Show Bar'"
-          >
-            <span class="knobs-toggle-thumb"></span>
-          </button>
+          <div class="knobs-segment" role="radiogroup" data-knob="bar-mode" aria-label="Bar mode">
+            @for (m of barModes; track m.mode) {
+              <button
+                type="button"
+                role="radio"
+                class="knobs-segment-btn"
+                [class.on]="barMode() === m.mode"
+                [attr.data-mode]="m.mode"
+                [attr.aria-checked]="barMode() === m.mode"
+                (click)="setBarMode(m.mode)"
+              >{{ m.label }}</button>
+            }
+          </div>
         </div>
       </div>
 

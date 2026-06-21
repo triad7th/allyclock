@@ -104,3 +104,38 @@ app-nav-header {
     transform: translateX(18px);
   }
 }
+
+// ── Segmented control (Bar mode) ───────────────────────────────────────────
+
+.knobs-segment-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.knobs-segment {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  background: t.$secondary-surface;
+  border-radius: 9px;
+}
+
+.knobs-segment-btn {
+  flex: 1 1 0;
+  border: none;
+  background: transparent;
+  color: t.$secondary-label;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.4rem 0;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &.on {
+    background: t.$tint;
+    color: #fff;
+  }
+}

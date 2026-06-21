@@ -10,10 +10,12 @@ export interface SectionStyle {
   opacity: number;   // 0.2–1.0
 }
 
+export type BarMode = 'off' | 'divider' | 'progress';
+
 export interface BarStyle {
-  visible: boolean;
-  sizeScale: number; // scales bar width base, default 1.0
-  opacity: number;
+  mode: BarMode;     // 'off' subsumes the former visible:false
+  sizeScale: number; // unchanged
+  opacity: number;   // unchanged — drives divider line alpha
 }
 
 // Responsive base for a section group, used as `min(cqw·1cqw, cqh·1cqh)`.
@@ -29,6 +31,7 @@ export interface SectionBase {
 // the store; the band boundaries themselves live in DimensionRegistry.
 export interface FullscreenFields {
   bar: BarStyle;
+  secondsVisible: boolean;
   sections: {
     time: SectionStyle;
     weekday: SectionStyle;

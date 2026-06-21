@@ -4,7 +4,14 @@
     @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
   </div>
 
-  @if (activeFields().bar.visible) { <div class="bar divider"></div> }
+  @switch (activeFields().bar.mode) {
+    @case ('divider') { <div class="bar divider"></div> }
+    @case ('progress') {
+      <div class="bar progress" [style.--minute-progress]="minuteProgress()">
+        <span class="fill"></span>
+      </div>
+    }
+  }
 
   <div class="date">
     @if (activeFields().sections.weekday.visible) {

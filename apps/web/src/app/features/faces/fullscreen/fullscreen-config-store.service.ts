@@ -2,14 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
 import { BandConfigStore } from '@core/dimensions/band-config-store';
 import { buildDefaultFields } from './fullscreen-presets.data';
-import { type FullscreenFields, type SectionKey } from './fullscreen-preset';
+import { type FullscreenFields, type SectionKey, type BarMode } from './fullscreen-preset';
 
 @Injectable({ providedIn: 'root' })
 export class FullscreenConfigStore extends BandConfigStore<FullscreenFields> {
   private readonly registry = inject(DimensionRegistry);
 
   protected storageKey(): string { return 'allyclock.fullscreen.config'; }
-  protected version(): number { return 1; }
+  protected version(): number { return 2; }
   protected buildDefaults(): Record<string, FullscreenFields> { return buildDefaultFields(); }
 
   constructor() {
@@ -49,7 +49,26 @@ export class FullscreenConfigStore extends BandConfigStore<FullscreenFields> {
     this.patchAll((f) => ({ ...f, sections: { ...f.sections, [key]: { ...f.sections[key], visible } } }));
   }
 
-  setBarVisibleAll(visible: boolean): void {
-    this.patchAll((f) => ({ ...f, bar: { ...f.bar, visible } }));
+  setBarModeAll(mode: BarMode): void {
+    this.patchAll((f) => ({ ...f, bar: { ...f.bar, mode } }));
+  }
+
+  setSecondsVisibleAll(visible: boolean): void {
+    this.patchAll((f) => ({ ...f, secondsVisible: visible }));
+  }
+
+  // Field-level migration: fill new fields (secondsVisible, bar.mode) from the
+  // band's default while keeping persisted tuning; translate a legacy
+  // bar.visible boolean into the new bar.mode.
+  protected override mergeBand(defaults: FullscreenFields, persisted: FullscreenFields): FullscreenFields {
+    const legacy = persisted.bar as Partial<FullscreenFields['bar']> & { visible?: boolean };
+    const mode: BarMode =
+      legacy.mode ?? (legacy.visible === false ? 'off' : legacy.visible === true ? 'divider' : defaults.bar.mode);
+    return {
+      ...defaults,
+      ...persisted,
+      bar: { mode, sizeScale: legacy.sizeScale ?? defaults.bar.sizeScale, opacity: legacy.opacity ?? defaults.bar.opacity },
+      secondsVisible: persisted.secondsVisible ?? defaults.secondsVisible,
+    };
   }
 }

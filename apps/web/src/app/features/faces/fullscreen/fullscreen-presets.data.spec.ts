@@ -16,9 +16,10 @@ describe('buildDefaultFields', () => {
     );
   });
 
-  it('defaults bar visible and weekday/gmt visible on every band', () => {
+  it('defaults bar mode to progress and sets secondsVisible true on every band', () => {
     for (const fields of Object.values(buildDefaultFields())) {
-      expect(fields.bar.visible).toBe(true);
+      expect(fields.bar.mode).toBe('progress');
+      expect(fields.secondsVisible).toBe(true);
       expect(fields.sections.weekday.visible).toBe(true);
       expect(fields.sections.gmt.visible).toBe(true);
     }

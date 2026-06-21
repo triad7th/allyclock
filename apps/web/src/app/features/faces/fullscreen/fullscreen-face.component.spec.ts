@@ -1,9 +1,21 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { FullscreenFaceComponent } from './fullscreen-face.component';
+import { FullscreenConfigStore } from './fullscreen-config-store.service';
+import { ClockService } from '@core/clock.service';
+
+const mem: Record<string, string> = {};
+const storageMock = {
+  getItem: (k: string) => mem[k] ?? null,
+  setItem: (k: string, v: string) => { mem[k] = v; },
+  removeItem: (k: string) => { delete mem[k]; },
+  clear: () => { for (const k of Object.keys(mem)) delete mem[k]; },
+};
 
 describe('FullscreenFaceComponent', () => {
   beforeEach(async () => {
+    storageMock.clear();
+    vi.stubGlobal('localStorage', storageMock);
     await TestBed.configureTestingModule({
       imports: [FullscreenFaceComponent],
     }).compileComponents();
@@ -45,5 +57,35 @@ describe('FullscreenFaceComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     expect(fixture.componentInstance.activeFields().bases.time.minCqh).toBeGreaterThan(0);
+  });
+
+  it('renders the bar per mode (divider / progress / nothing)', () => {
+    const store = TestBed.inject(FullscreenConfigStore);
+    const fixture = TestBed.createComponent(FullscreenFaceComponent);
+    const host = fixture.nativeElement as HTMLElement;
+    Object.defineProperty(host, 'clientWidth', { value: 840, configurable: true });
+    Object.defineProperty(host, 'clientHeight', { value: 400, configurable: true });
+
+    store.setBarModeAll('divider');
+    fixture.detectChanges();
+    expect(host.querySelector('.bar.divider')).toBeTruthy();
+    expect(host.querySelector('.bar.progress')).toBeNull();
+
+    store.setBarModeAll('progress');
+    fixture.detectChanges();
+    expect(host.querySelector('.bar.progress')).toBeTruthy();
+    expect(host.querySelector('.bar.divider')).toBeNull();
+
+    store.setBarModeAll('off');
+    fixture.detectChanges();
+    expect(host.querySelector('.bar')).toBeNull();
+  });
+
+  it('minuteProgress reflects the (mocked) instant within the minute', () => {
+    // 22:50:30.000 → 30/60 = 0.5
+    TestBed.inject(ClockService).setMock(new Date('2026-06-20T22:50:30.000-07:00'));
+    const fixture = TestBed.createComponent(FullscreenFaceComponent);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.minuteProgress()).toBeCloseTo(0.5, 2);
   });
 });

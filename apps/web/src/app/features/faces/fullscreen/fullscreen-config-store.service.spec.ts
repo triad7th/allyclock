@@ -53,11 +53,46 @@ describe('FullscreenConfigStore', () => {
     }
   });
 
-  it('setBarVisibleAll writes bar visibility to every band', () => {
-    store.setBarVisibleAll(false);
+  it('setBarModeAll writes the mode to every band', () => {
+    store.setBarModeAll('off');
     for (const fields of Object.values(store.state().byBand)) {
-      expect(fields.bar.visible).toBe(false);
+      expect(fields.bar.mode).toBe('off');
     }
+  });
+
+  it('setSecondsVisibleAll writes seconds visibility to every band', () => {
+    store.setSecondsVisibleAll(false);
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.secondsVisible).toBe(false);
+    }
+  });
+
+  it('migrates a legacy v1 band (bar.visible, no secondsVisible), preserving tuning', () => {
+    const legacy = {
+      version: 1,
+      byBand: {
+        mini: {
+          bar: { visible: true, sizeScale: 1, opacity: 0.5 },
+          sections: { time: { visible: true, sizeScale: 1.4, weight: 200, opacity: 1 },
+            weekday: { visible: true, sizeScale: 1, weight: 300, opacity: 0.6 },
+            month: { visible: true, sizeScale: 1, weight: 300, opacity: 0.6 },
+            day: { visible: true, sizeScale: 1, weight: 300, opacity: 0.6 },
+            gmt: { visible: true, sizeScale: 1, weight: 300, opacity: 0.6 } },
+          bases: { time: { cqw: 120, cqh: 68 }, date: { cqw: 8, cqh: 5 }, bar: { cqw: 120, cqh: 56 } },
+          gaps: { timeToBar: 1, barToDate: 1, betweenDateParts: 1 },
+        },
+      },
+    };
+    mem['allyclock.fullscreen.config'] = JSON.stringify(legacy);
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({});
+    const fresh = TestBed.inject(FullscreenConfigStore);
+    const mini = fresh.config('mini');
+    expect(mini.bar.mode).toBe('divider');           // visible:true → divider
+    expect((mini.bar as { visible?: boolean }).visible).toBeUndefined(); // legacy key dropped
+    expect(mini.bar.opacity).toBe(0.5);              // tuning preserved
+    expect(mini.sections.time.sizeScale).toBe(1.4);  // tuning preserved
+    expect(mini.secondsVisible).toBe(true);          // new field filled
   });
 
   it('sample() returns a representative band fields object', () => {

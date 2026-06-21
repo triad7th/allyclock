@@ -43,6 +43,14 @@ export class FullscreenFaceComponent implements OnDestroy {
 
   readonly styleVars = computed<Record<string, string>>(() => varsFor(this.activeFields()));
 
+  // Fraction of the current minute elapsed, ~30fps from clock.now(); drives the
+  // bar's progress fill. Seconds/ms are timezone-invariant, so local getters are
+  // correct regardless of the active zone.
+  readonly minuteProgress = computed(() => {
+    const d = this.clock.now();
+    return (d.getSeconds() + d.getMilliseconds() / 1000) / 60;
+  });
+
   // The Display (toggles) panel is owned locally by the face's gear, unlike the
   // Adjust (size) panel which is triggered from the app controls bar.
   readonly togglesOpen = signal(false);

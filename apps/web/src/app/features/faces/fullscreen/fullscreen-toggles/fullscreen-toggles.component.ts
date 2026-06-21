@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output, viewChild } from '@angular/core';
 import { FullscreenConfigStore } from '../fullscreen-config-store.service';
+import { type BarMode } from '../fullscreen-preset';
 import { SheetComponent } from '@shared/ui/sheet/sheet.component';
 import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
 import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
@@ -25,7 +26,12 @@ export class FullscreenTogglesComponent {
   // Every band shares these values (toggles write all), so read a sample band.
   readonly showWeekday = computed(() => this.store.sample().sections.weekday.visible);
   readonly showGmt = computed(() => this.store.sample().sections.gmt.visible);
-  readonly showBar = computed(() => this.store.sample().bar.visible);
+  readonly barMode = computed(() => this.store.sample().bar.mode);
+  readonly barModes: ReadonlyArray<{ mode: BarMode; label: string }> = [
+    { mode: 'off', label: 'Off' },
+    { mode: 'divider', label: 'Divider' },
+    { mode: 'progress', label: 'Progress' },
+  ];
 
   toggleWeekday(): void {
     this.store.setSectionVisibleAll('weekday', !this.showWeekday());
@@ -33,8 +39,8 @@ export class FullscreenTogglesComponent {
   toggleGmt(): void {
     this.store.setSectionVisibleAll('gmt', !this.showGmt());
   }
-  toggleBar(): void {
-    this.store.setBarVisibleAll(!this.showBar());
+  setBarMode(mode: BarMode): void {
+    this.store.setBarModeAll(mode);
   }
 
   close(): void {

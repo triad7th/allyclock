@@ -24,7 +24,8 @@ const PHONE = {
 
 function fields(bases: FullscreenFields['bases']): FullscreenFields {
   return {
-    bar: { visible: true, sizeScale: 1, opacity: 0.34 },
+    bar: { mode: 'progress', sizeScale: 1, opacity: 0.34 },
+    secondsVisible: true,
     sections: {
       time: timeStyle(),
       weekday: dateStyle(),

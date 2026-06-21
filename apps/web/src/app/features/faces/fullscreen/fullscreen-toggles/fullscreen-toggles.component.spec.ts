@@ -63,14 +63,20 @@ describe('FullscreenTogglesComponent', () => {
     }
   });
 
-  it('toggling Bar writes visible to every band', () => {
+  it('renders the Bar segmented control with the active mode marked', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();
-    const before = store.sample().bar.visible;
-    (fixture.nativeElement.querySelector('[data-knob="bar-visible"]') as HTMLButtonElement).click();
+    const on = fixture.nativeElement.querySelector('[data-knob="bar-mode"] [aria-checked="true"]') as HTMLElement;
+    expect(on.getAttribute('data-mode')).toBe('progress'); // default
+  });
+
+  it('clicking a Bar segment broadcasts the mode to every band', () => {
+    const fixture = TestBed.createComponent(FullscreenTogglesComponent);
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector('[data-mode="off"]') as HTMLButtonElement).click();
     fixture.detectChanges();
     for (const fields of Object.values(store.state().byBand)) {
-      expect(fields.bar.visible).toBe(!before);
+      expect(fields.bar.mode).toBe('off');
     }
   });
 });

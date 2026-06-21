@@ -81,6 +81,6 @@ describe('FullscreenConfigComponent', () => {
     const fixture = make(2.1);
     expect(fixture.nativeElement.querySelector('[data-knob="weekday-visible"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('[data-knob="gmt-visible"]')).toBeNull();
-    expect(fixture.nativeElement.querySelector('[data-knob="bar-visible"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-knob="bar-mode"]')).toBeNull();
   });
 });

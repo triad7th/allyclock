@@ -34,15 +34,28 @@
   margin-top: 0.55em;
 }
 .bar {
-  // Length proportional to the time font size, using LAP's time:bar ratio
-  // (LAP time 68cqh, bar 56cqh) so the divider scales with the clock everywhere.
+  // Length proportional to the time font size, using LAP's time:bar ratio.
   width: calc(var(--time-base) * var(--time-scale, 1) * 56 / 68);
   height: 1.5px;
-  opacity: var(--bar-opacity, 0.34);
   margin-bottom: var(--gap-bar-date, 0.5rem);
 }
 .bar.divider {
   background: currentColor;
+  opacity: var(--bar-opacity, 0.34);
+}
+.bar.progress {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+.bar.progress .fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  transform: scaleX(var(--minute-progress, 0));
+  background: currentColor;
+  opacity: 0.85;
 }
 .date {
   display: flex;
