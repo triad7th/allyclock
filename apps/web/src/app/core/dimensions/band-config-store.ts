@@ -77,8 +77,7 @@ export abstract class BandConfigStore<T> {
     const migrated: BandConfigState<T> = { version: this.version(), byBand };
     if (
       state.version !== this.version() ||
-      Object.keys(byBand).length !== Object.keys(state.byBand).length ||
-      this.version() > state.version
+      Object.keys(byBand).length !== Object.keys(state.byBand).length
     ) {
       this.persist(migrated);
     }

@@ -28,7 +28,7 @@ export class FullscreenTogglesComponent {
   readonly showWeekday = computed(() => this.store.sample().sections.weekday.visible);
   readonly showGmt = computed(() => this.store.sample().sections.gmt.visible);
   readonly barMode = computed(() => this.store.sample().bar.mode);
-  readonly barModes: ReadonlyArray<{ mode: BarMode; label: string }> = [
+  readonly barModes: readonly { mode: BarMode; label: string }[] = [
     { mode: 'off', label: 'Off' },
     { mode: 'divider', label: 'Divider' },
     { mode: 'progress', label: 'Progress' },

@@ -44,8 +44,8 @@ export class FullscreenFaceComponent implements OnDestroy {
   readonly styleVars = computed<Record<string, string>>(() => varsFor(this.activeFields()));
 
   // Fraction of the current minute elapsed, ~30fps from clock.now(); drives the
-  // bar's progress fill. Seconds/ms are timezone-invariant, so local getters are
-  // correct regardless of the active zone.
+  // bar's progress fill. Seconds/ms are invariant across modern (minute-aligned)
+  // zone offsets, so local getters match the displayed time's seconds.
   readonly minuteProgress = computed(() => {
     const d = this.clock.now();
     return (d.getSeconds() + d.getMilliseconds() / 1000) / 60;
