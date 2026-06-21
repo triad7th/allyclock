@@ -1,12 +1,14 @@
 export interface BigTime {
   digits: string;
   ampm: string | null;
+  seconds: string;
 }
 
 export function bigTime(date: Date, locale: string, timeZone: string): BigTime {
   const parts = new Intl.DateTimeFormat(locale, {
     hour: 'numeric',
     minute: '2-digit',
+    second: '2-digit',
     timeZone,
   }).formatToParts(date);
 
@@ -15,8 +17,9 @@ export function bigTime(date: Date, locale: string, timeZone: string): BigTime {
     .map((part) => part.value)
     .join(':');
   const ampm = parts.find((part) => part.type === 'dayPeriod')?.value ?? null;
+  const seconds = parts.find((part) => part.type === 'second')?.value ?? '00';
 
-  return { digits, ampm };
+  return { digits, ampm, seconds };
 }
 
 export function precise(date: Date, timeZone: string): string {

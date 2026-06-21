@@ -24,6 +24,7 @@ export class FullscreenTogglesComponent {
   private readonly sheet = viewChild(SheetComponent);
 
   // Every band shares these values (toggles write all), so read a sample band.
+  readonly showSeconds = computed(() => this.store.sample().secondsVisible);
   readonly showWeekday = computed(() => this.store.sample().sections.weekday.visible);
   readonly showGmt = computed(() => this.store.sample().sections.gmt.visible);
   readonly barMode = computed(() => this.store.sample().bar.mode);
@@ -33,6 +34,9 @@ export class FullscreenTogglesComponent {
     { mode: 'progress', label: 'Progress' },
   ];
 
+  toggleSeconds(): void {
+    this.store.setSecondsVisibleAll(!this.showSeconds());
+  }
   toggleWeekday(): void {
     this.store.setSectionVisibleAll('weekday', !this.showWeekday());
   }

@@ -9,18 +9,25 @@ describe('bigTime', () => {
     expect(bigTime(date, 'en-US', 'America/Los_Angeles')).toEqual({
       digits: '8:09',
       ampm: 'PM',
+      seconds: '05',
     });
   });
 
   it('formats 24-hour locales without a marker', () => {
-    expect(bigTime(date, 'en-GB', 'UTC')).toEqual({ digits: '3:09', ampm: null });
+    expect(bigTime(date, 'en-GB', 'UTC')).toEqual({ digits: '3:09', ampm: null, seconds: '05' });
   });
 
   it('uses localized day-period symbols', () => {
     expect(bigTime(date, 'ko-KR', 'Asia/Seoul')).toEqual({
       digits: '12:09',
       ampm: '오후',
+      seconds: '05',
     });
+  });
+
+  it('bigTime includes zero-padded seconds', () => {
+    const d = new Date('2026-06-20T22:50:07-07:00');
+    expect(bigTime(d, 'en-US', 'America/Los_Angeles').seconds).toBe('07');
   });
 });
 

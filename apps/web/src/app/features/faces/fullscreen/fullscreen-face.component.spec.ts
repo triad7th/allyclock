@@ -88,4 +88,17 @@ describe('FullscreenFaceComponent', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance.minuteProgress()).toBeCloseTo(0.5, 2);
   });
+
+  it('renders the whisper seconds by default and hides them when toggled off', () => {
+    const fixture = TestBed.createComponent(FullscreenFaceComponent);
+    const host = fixture.nativeElement as HTMLElement;
+    Object.defineProperty(host, 'clientWidth', { value: 840, configurable: true });
+    Object.defineProperty(host, 'clientHeight', { value: 400, configurable: true });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.time .seconds')).toBeTruthy();
+
+    TestBed.inject(FullscreenConfigStore).setSecondsVisibleAll(false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.time .seconds')).toBeNull();
+  });
 });

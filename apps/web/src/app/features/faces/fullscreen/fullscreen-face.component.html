@@ -1,7 +1,10 @@
 <div class="clock" [style]="styleVars()">
   <div class="time">
     <span class="digits">{{ big().digits }}</span>
-    @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
+    <span class="flank">
+      @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
+      @if (activeFields().secondsVisible) { <span class="seconds">{{ big().seconds }}</span> }
+    </span>
   </div>
 
   @switch (activeFields().bar.mode) {

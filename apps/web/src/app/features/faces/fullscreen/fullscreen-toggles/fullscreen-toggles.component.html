@@ -7,6 +7,23 @@
     <!-- ── Toggles panel ───────────────────────────────────────────────── -->
     <div class="knobs-panel">
 
+      <!-- Seconds -->
+      <div class="knobs-section">
+        <div class="knobs-toggle-row">
+          <span class="knobs-section-label">Seconds</span>
+          <button
+            type="button"
+            class="knobs-toggle"
+            [class.on]="showSeconds()"
+            data-knob="seconds-visible"
+            (click)="toggleSeconds()"
+            [attr.aria-label]="showSeconds() ? 'Hide Seconds' : 'Show Seconds'"
+          >
+            <span class="knobs-toggle-thumb"></span>
+          </button>
+        </div>
+      </div>
+
       <!-- Weekday -->
       <div class="knobs-section">
         <div class="knobs-toggle-row">

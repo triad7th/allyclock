@@ -25,13 +25,25 @@
   opacity: var(--time-opacity, 1);
   margin-bottom: var(--gap-time-bar, 0.5rem);
 }
+.flank {
+  align-self: stretch;          // take the digits' full height
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 .ampm {
   font-size: 0.15em;
   font-weight: 300;
   letter-spacing: 0.18em;
   opacity: 0.85;
-  align-self: flex-start;
-  margin-top: 0.55em;
+  margin-top: 0.55em;           // load-bearing optical nudge (keep)
+}
+.seconds {
+  margin-top: auto;             // bottom-anchor, with or without AM/PM
+  font-size: 0.10em;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  opacity: 0.28;                // whisper
 }
 .bar {
   // Length proportional to the time font size, using LAP's time:bar ratio.
