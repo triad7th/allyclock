@@ -65,12 +65,19 @@ app-nav-header {
   color: t.$secondary-label;
 }
 
-// One labelled switch inside a grouped card (Seconds+Weekday, GMT+Flag): label
-// on the left, switch on the right. Stacked by the card's column gap.
-.knobs-toggle-row {
+// Two labelled switches sitting side by side in a grouped card (Seconds+Weekday,
+// GMT+Flag). Each cell stacks its label over the switch, mirroring the
+// label-over-control layout of the Bar / Time Zone cards.
+.knobs-pair {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: 1rem;
+}
+
+.knobs-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   gap: 0.6rem;
 }
 

@@ -17,9 +17,6 @@
   }
 
   <div class="date">
-    @if (activeFields().flagVisible) {
-      <app-flag class="date-flag" [countryCode]="displayCountry()" />
-    }
     @if (activeFields().sections.weekday.visible) {
       <span class="weekday">{{ parts().weekday }}</span>
       <span class="sep">·</span>
@@ -29,6 +26,9 @@
     @if (activeFields().sections.gmt.visible) {
       <span class="sep">·</span>
       <span class="gmt">{{ parts().gmt }}</span>
+    }
+    @if (activeFields().flagVisible) {
+      <app-flag class="date-flag" [countryCode]="displayCountry()" />
     }
   </div>
 </div>

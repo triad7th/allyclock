@@ -10,61 +10,65 @@
 
       <!-- Seconds + Weekday -->
       <div class="knobs-section">
-        <div class="knobs-toggle-row">
-          <span class="knobs-section-label">Seconds</span>
-          <button
-            type="button"
-            class="knobs-toggle"
-            [class.on]="showSeconds()"
-            data-knob="seconds-visible"
-            (click)="toggleSeconds()"
-            [attr.aria-label]="showSeconds() ? 'Hide Seconds' : 'Show Seconds'"
-          >
-            <span class="knobs-toggle-thumb"></span>
-          </button>
-        </div>
-        <div class="knobs-toggle-row">
-          <span class="knobs-section-label">Weekday</span>
-          <button
-            type="button"
-            class="knobs-toggle"
-            [class.on]="showWeekday()"
-            data-knob="weekday-visible"
-            (click)="toggleWeekday()"
-            [attr.aria-label]="showWeekday() ? 'Hide Weekday' : 'Show Weekday'"
-          >
-            <span class="knobs-toggle-thumb"></span>
-          </button>
+        <div class="knobs-pair">
+          <div class="knobs-cell">
+            <span class="knobs-section-label">Seconds</span>
+            <button
+              type="button"
+              class="knobs-toggle"
+              [class.on]="showSeconds()"
+              data-knob="seconds-visible"
+              (click)="toggleSeconds()"
+              [attr.aria-label]="showSeconds() ? 'Hide Seconds' : 'Show Seconds'"
+            >
+              <span class="knobs-toggle-thumb"></span>
+            </button>
+          </div>
+          <div class="knobs-cell">
+            <span class="knobs-section-label">Weekday</span>
+            <button
+              type="button"
+              class="knobs-toggle"
+              [class.on]="showWeekday()"
+              data-knob="weekday-visible"
+              (click)="toggleWeekday()"
+              [attr.aria-label]="showWeekday() ? 'Hide Weekday' : 'Show Weekday'"
+            >
+              <span class="knobs-toggle-thumb"></span>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- GMT + Flag -->
       <div class="knobs-section">
-        <div class="knobs-toggle-row">
-          <span class="knobs-section-label">GMT</span>
-          <button
-            type="button"
-            class="knobs-toggle"
-            [class.on]="showGmt()"
-            data-knob="gmt-visible"
-            (click)="toggleGmt()"
-            [attr.aria-label]="showGmt() ? 'Hide GMT' : 'Show GMT'"
-          >
-            <span class="knobs-toggle-thumb"></span>
-          </button>
-        </div>
-        <div class="knobs-toggle-row">
-          <span class="knobs-section-label">Flag</span>
-          <button
-            type="button"
-            class="knobs-toggle"
-            [class.on]="showFlag()"
-            data-knob="flag-visible"
-            (click)="toggleFlag()"
-            [attr.aria-label]="showFlag() ? 'Hide Flag' : 'Show Flag'"
-          >
-            <span class="knobs-toggle-thumb"></span>
-          </button>
+        <div class="knobs-pair">
+          <div class="knobs-cell">
+            <span class="knobs-section-label">GMT</span>
+            <button
+              type="button"
+              class="knobs-toggle"
+              [class.on]="showGmt()"
+              data-knob="gmt-visible"
+              (click)="toggleGmt()"
+              [attr.aria-label]="showGmt() ? 'Hide GMT' : 'Show GMT'"
+            >
+              <span class="knobs-toggle-thumb"></span>
+            </button>
+          </div>
+          <div class="knobs-cell">
+            <span class="knobs-section-label">Flag</span>
+            <button
+              type="button"
+              class="knobs-toggle"
+              [class.on]="showFlag()"
+              data-knob="flag-visible"
+              (click)="toggleFlag()"
+              [attr.aria-label]="showFlag() ? 'Hide Flag' : 'Show Flag'"
+            >
+              <span class="knobs-toggle-thumb"></span>
+            </button>
+          </div>
         </div>
       </div>
 
