@@ -48,17 +48,24 @@
   }
 }
 
-// Layout wrapper inside <app-sheet>'s panel: the sheet chrome (background,
-// rounded corners, slide animation, grab handle) is owned by <app-sheet>.
+// Layout wrapper inside <app-sheet>'s panel — mirrors the Adjustment/Settings
+// `.cfg` shell (the sheet chrome itself is owned by <app-sheet>).
 .tm-sheet {
-  // Query container so the controls reflow to columns based on the sheet's
-  // own width, independent of the window.
-  container-type: inline-size;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  color: t.$label;
   text-align: left;
+  padding: 0.5rem 1.5rem calc(2rem + env(safe-area-inset-bottom, 0px));
+}
+
+app-nav-header {
+  display: block;
+  flex: 0 0 auto;
+  margin-bottom: 1.5rem;
 }
 
 // Trailing group inside the nav header: the Live/Mock switch sits beside the
@@ -113,26 +120,38 @@
   box-shadow: 0 0 5px currentColor;
 }
 
-// Controls grid: one column when narrow, three across on a wide sheet.
+// Controls: CSS multi-column flow, mirroring the Adjustment/Settings panels —
+// cards reflow to 2/3 columns by the panel's own width and pack tightly.
 .tm-controls {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
-  padding: 0.25rem 1.25rem 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  container-type: inline-size;
+  padding-top: 1.5rem;
 }
 
-@container (min-width: 820px) {
+@container (min-width: 600px) {
   .tm-controls {
-    grid-template-columns: repeat(3, 1fr);
-    align-items: start;
+    column-count: 2;
+    column-gap: 1rem;
   }
 }
 
-// Each field is a clean vertical block, no card or separators.
+@container (min-width: 900px) {
+  .tm-controls {
+    column-count: 3;
+  }
+}
+
+// Each field is a card, matching the Adjustment/Settings `.knobs-section`.
 .tm-field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  break-inside: avoid;
+  margin-bottom: 1rem;
 }
 
 .tm-field-head {
@@ -216,7 +235,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0.25rem 1.25rem 0;
+  padding-top: 1.5rem;
   min-width: 0;
 }
 

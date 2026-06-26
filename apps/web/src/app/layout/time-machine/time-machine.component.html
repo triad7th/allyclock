@@ -15,7 +15,7 @@
 @if (panelOpen()) {
   <app-sheet sheetLabel="Time Machine" (closed)="panelOpen.set(false)">
     <div class="tm-sheet">
-      <app-nav-header title="Time Machine">
+      <app-nav-header title="Time Machine" [flush]="true">
         <app-icon-button navLeading icon="xmark" label="Close" (click)="cancel()" />
         <span navTrailing class="tm-trailing">
           <button

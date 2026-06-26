@@ -22,25 +22,23 @@ app-nav-header {
 .knobs-panel {
   flex: 1 1 auto;
   overflow-y: auto;
-  // Query container so the knobs reflow to columns based on the panel's own
-  // width, mirroring the Time Machine controls.
+  // Query container so the cards reflow to columns based on the panel's own
+  // width. CSS multi-column flow (not grid) packs cards of differing heights
+  // tightly, matching the Settings panel.
   container-type: inline-size;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
   padding-top: 1.5rem;
 }
 
 @container (min-width: 600px) {
   .knobs-panel {
-    grid-template-columns: repeat(2, 1fr);
-    align-items: start;
+    column-count: 2;
+    column-gap: 1rem;
   }
 }
 
 @container (min-width: 900px) {
   .knobs-panel {
-    grid-template-columns: repeat(3, 1fr);
+    column-count: 3;
   }
 }
 
@@ -51,6 +49,9 @@ app-nav-header {
   background: rgba(255, 255, 255, 0.04);
   border-radius: 12px;
   padding: 0.75rem 1rem;
+  // In multi-column flow, keep each card intact and spaced (replaces grid gap).
+  break-inside: avoid;
+  margin-bottom: 1rem;
 }
 
 .knobs-section-header {
