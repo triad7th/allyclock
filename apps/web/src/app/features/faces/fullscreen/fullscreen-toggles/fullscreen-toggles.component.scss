@@ -34,7 +34,8 @@ app-nav-header {
 @container (min-width: 600px) {
   .knobs-panel {
     grid-template-columns: repeat(2, 1fr);
-    align-items: start;
+    // Default `stretch`: cards in a row take the row's height, so a short toggle
+    // card matches the taller Bar / Time Zone card beside it.
   }
 }
 
@@ -51,6 +52,9 @@ app-nav-header {
   background: rgba(255, 255, 255, 0.04);
   border-radius: 12px;
   padding: 0.75rem 1rem;
+  // Uniform card height across the whole grid (not just within a row) — covers
+  // the tallest card (Time Zone). border-box is global (Bootstrap).
+  min-height: 5.5rem;
 }
 
 .knobs-section-label {

@@ -35,7 +35,7 @@ app-nav-header {
 @container (min-width: 600px) {
   .knobs-panel {
     grid-template-columns: repeat(2, 1fr);
-    align-items: start;
+    // Default `stretch`: cards in a row share the row's height (uniform cards).
   }
 }
 
@@ -52,6 +52,8 @@ app-nav-header {
   background: rgba(255, 255, 255, 0.04);
   border-radius: 12px;
   padding: 0.75rem 1rem;
+  // Uniform card height across the grid (matches the Settings panel).
+  min-height: 5.5rem;
 }
 
 .knobs-section-header {
