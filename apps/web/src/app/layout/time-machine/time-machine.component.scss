@@ -60,6 +60,9 @@
   color: t.$label;
   text-align: left;
   padding: 0.5rem 1.5rem calc(2rem + env(safe-area-inset-bottom, 0px));
+  // Query container for the controls grid below — on this ANCESTOR, not the
+  // controls themselves (a container can't query its own size).
+  container-type: inline-size;
 }
 
 app-nav-header {
@@ -120,25 +123,27 @@ app-nav-header {
   box-shadow: 0 0 5px currentColor;
 }
 
-// Controls: CSS multi-column flow, mirroring the Adjustment/Settings panels —
-// cards reflow to 2/3 columns by the panel's own width and pack tightly.
+// Controls grid: reflows to 2/3 columns by the sheet's width, mirroring the
+// Adjustment/Settings panels.
 .tm-controls {
   flex: 1 1 auto;
   overflow-y: auto;
-  container-type: inline-size;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
   padding-top: 1.5rem;
 }
 
 @container (min-width: 600px) {
   .tm-controls {
-    column-count: 2;
-    column-gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start;
   }
 }
 
 @container (min-width: 900px) {
   .tm-controls {
-    column-count: 3;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -150,8 +155,6 @@ app-nav-header {
   background: rgba(255, 255, 255, 0.04);
   border-radius: 12px;
   padding: 0.75rem 1rem;
-  break-inside: avoid;
-  margin-bottom: 1rem;
 }
 
 .tm-field-head {
