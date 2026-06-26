@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, output, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output, signal, viewChild } from '@angular/core';
 import { FullscreenConfigStore } from '../fullscreen-config-store.service';
 import { type BarMode } from '../fullscreen-preset';
 import { SheetComponent } from '@shared/ui/sheet/sheet.component';
 import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
 import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
+import { ZoneCatalog, type TimeZoneOption } from '@core/zone-catalog';
+import { ZonePickerComponent } from '@shared/ui/zone-picker/zone-picker.component';
 
 /**
  * Dimension-agnostic visibility toggles for the Fullscreen face (Weekday / GMT /
@@ -14,12 +16,13 @@ import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.componen
 @Component({
   selector: 'app-fullscreen-toggles',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent],
+  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, ZonePickerComponent],
   templateUrl: './fullscreen-toggles.component.html',
   styleUrl: './fullscreen-toggles.component.scss',
 })
 export class FullscreenTogglesComponent {
   private readonly store = inject(FullscreenConfigStore);
+  private readonly catalog = inject(ZoneCatalog);
   readonly closed = output<void>();
   private readonly sheet = viewChild(SheetComponent);
 
@@ -33,6 +36,24 @@ export class FullscreenTogglesComponent {
     { mode: 'divider', label: 'Divider' },
     { mode: 'progress', label: 'Progress' },
   ];
+
+  readonly zonePickerOpen = signal(false);
+  readonly faceZone = computed(() => this.store.sample().timeZone);
+  // "Follow Time Machine" synthetic entry prepended; '' never reaches Intl.
+  readonly zoneOptions: TimeZoneOption[] = [
+    { id: '', label: 'Follow Time Machine', offset: -100000 },
+    ...this.catalog.options(),
+  ];
+  readonly faceZoneLabel = computed(
+    () => this.zoneOptions.find((z) => z.id === this.faceZone())?.label ?? this.faceZone(),
+  );
+
+  openZonePicker(): void { this.zonePickerOpen.set(true); }
+  closeZonePicker(): void { this.zonePickerOpen.set(false); }
+  pickZone(id: string): void {
+    this.store.setTimeZoneAll(id);
+    this.zonePickerOpen.set(false);
+  }
 
   toggleSeconds(): void {
     this.store.setSecondsVisibleAll(!this.showSeconds());

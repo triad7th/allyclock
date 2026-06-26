@@ -67,6 +67,13 @@ describe('FullscreenConfigStore', () => {
     }
   });
 
+  it('setTimeZoneAll broadcasts the zone to every band', () => {
+    store.setTimeZoneAll('Asia/Seoul');
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.timeZone).toBe('Asia/Seoul');
+    }
+  });
+
   it('migrates a legacy v1 band (bar.visible, no secondsVisible), preserving tuning', () => {
     const legacy = {
       version: 1,

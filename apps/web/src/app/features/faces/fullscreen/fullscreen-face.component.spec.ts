@@ -28,6 +28,20 @@ describe('FullscreenFaceComponent', () => {
     expect(el.querySelector('.digits')?.textContent).toMatch(/\d{1,2}:\d{2}/);
   });
 
+  it('displayZone follows the clock zone by default, else the per-face zone', () => {
+    const store = TestBed.inject(FullscreenConfigStore);
+    const clock = TestBed.inject(ClockService);
+    const fixture = TestBed.createComponent(FullscreenFaceComponent);
+    fixture.detectChanges();
+    // default '' → follows the clock's zone
+    expect(fixture.componentInstance.displayZone()).toBe(clock.timeZone());
+    // a per-face zone wins (without flipping the clock to mock)
+    store.setTimeZoneAll('Asia/Seoul');
+    fixture.detectChanges();
+    expect(fixture.componentInstance.displayZone()).toBe('Asia/Seoul');
+    expect(clock.isMocked()).toBe(false);
+  });
+
   it('renders the date line with weekday, month, and day parts', () => {
     const fixture = TestBed.createComponent(FullscreenFaceComponent);
     fixture.detectChanges();

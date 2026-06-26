@@ -139,3 +139,35 @@ app-nav-header {
     color: #fff;
   }
 }
+
+.knobs-tz {
+  background: t.$secondary-surface;
+  border: none;
+  border-radius: 8px;
+  color: t.$tint;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover { background: t.$secondary-surface-hover; }
+}
+
+.knobs-zonepicker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.knobs-tz-back {
+  align-self: center;
+  background: none;
+  border: none;
+  color: t.$tint;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}

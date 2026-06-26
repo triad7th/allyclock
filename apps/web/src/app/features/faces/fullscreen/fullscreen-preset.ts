@@ -32,6 +32,7 @@ export interface SectionBase {
 export interface FullscreenFields {
   bar: BarStyle;
   secondsVisible: boolean;
+  timeZone: string; // '' = follow the global clock zone
   sections: {
     time: SectionStyle;
     weekday: SectionStyle;

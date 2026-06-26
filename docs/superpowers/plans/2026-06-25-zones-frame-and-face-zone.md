@@ -413,7 +413,6 @@ export class ZonePickerComponent {
   (input)="query.set($any($event.target).value)"
   placeholder="Search time zone"
   aria-label="Search time zone"
-  autofocus
 />
 <div class="zp-list">
   @for (z of filtered(); track z.id) {

@@ -4,6 +4,7 @@
       <app-icon-button navLeading icon="xmark" label="Close" (click)="close()" />
     </app-nav-header>
 
+    @if (!zonePickerOpen()) {
     <!-- ── Toggles panel ───────────────────────────────────────────────── -->
     <div class="knobs-panel">
 
@@ -78,6 +79,22 @@
         </div>
       </div>
 
+      <!-- Time Zone -->
+      <div class="knobs-section">
+        <div class="knobs-toggle-row">
+          <span class="knobs-section-label">Time Zone</span>
+          <button type="button" class="knobs-tz" data-knob="time-zone" (click)="openZonePicker()">
+            {{ faceZoneLabel() }}
+          </button>
+        </div>
+      </div>
+
     </div>
+    } @else {
+      <div class="knobs-zonepicker">
+        <app-zone-picker [options]="zoneOptions" [selectedId]="faceZone()" (picked)="pickZone($event)" />
+        <button type="button" class="knobs-tz-back" (click)="closeZonePicker()">Cancel</button>
+      </div>
+    }
   </div>
 </app-sheet>

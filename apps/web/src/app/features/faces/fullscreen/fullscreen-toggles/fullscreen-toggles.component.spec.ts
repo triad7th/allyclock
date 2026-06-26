@@ -90,4 +90,26 @@ describe('FullscreenTogglesComponent', () => {
       expect(fields.bar.mode).toBe('off');
     }
   });
+
+  it('the Time Zone card opens the zone picker sub-view', () => {
+    const fixture = TestBed.createComponent(FullscreenTogglesComponent);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-zone-picker')).toBeNull();
+    (fixture.nativeElement.querySelector('[data-knob="time-zone"]') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-zone-picker')).toBeTruthy();
+  });
+
+  it('picking a zone broadcasts it to every band; Follow ("") resets', () => {
+    const fixture = TestBed.createComponent(FullscreenTogglesComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.pickZone('Asia/Seoul');
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.timeZone).toBe('Asia/Seoul');
+    }
+    fixture.componentInstance.pickZone('');
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.timeZone).toBe('');
+    }
+  });
 });

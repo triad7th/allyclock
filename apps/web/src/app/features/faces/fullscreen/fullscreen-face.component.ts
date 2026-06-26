@@ -38,8 +38,10 @@ export class FullscreenFaceComponent implements OnDestroy {
   });
   readonly activeFields = computed(() => this.store.fieldsFor(this.ratio()));
 
-  readonly big = computed(() => bigTime(this.clock.now(), this.locale, this.clock.timeZone()));
-  readonly parts = computed(() => dateParts(this.clock.now(), this.locale, this.clock.timeZone()));
+  readonly displayZone = computed(() => this.activeFields().timeZone || this.clock.timeZone());
+
+  readonly big = computed(() => bigTime(this.clock.now(), this.locale, this.displayZone()));
+  readonly parts = computed(() => dateParts(this.clock.now(), this.locale, this.displayZone()));
 
   readonly styleVars = computed<Record<string, string>>(() => varsFor(this.activeFields()));
 
