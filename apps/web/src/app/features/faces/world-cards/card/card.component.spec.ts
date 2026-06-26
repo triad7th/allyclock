@@ -32,6 +32,6 @@ describe('CardComponent', () => {
     fixture.componentRef.setInput('state', 'KR');
     fixture.detectChanges();
     const img = fixture.nativeElement.querySelector('img') as HTMLImageElement;
-    expect(img.src).toContain('SOUTH_KOREA');
+    expect(img.getAttribute('src')).toBe('flags/1x1/kr.svg');
   });
 });

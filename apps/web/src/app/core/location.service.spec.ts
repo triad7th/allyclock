@@ -34,9 +34,10 @@ describe('LocationService', () => {
     expect(service.getTimeZone('XX', summer)).toBe('-07:00');
   });
 
-  it('maps regions to flag URLs', () => {
-    expect(service.getFlag('KR')).toContain('SOUTH_KOREA');
-    expect(service.getFlag('UK')).toContain('GREAT_BRITAIN');
-    expect(service.getFlag('US')).toContain('USA');
+  it('maps regions to ISO country codes', () => {
+    expect(service.getCountryCode('KR')).toBe('kr');
+    expect(service.getCountryCode('UK')).toBe('gb');
+    expect(service.getCountryCode('US')).toBe('us');
+    expect(service.getCountryCode('LA')).toBe('us');
   });
 });

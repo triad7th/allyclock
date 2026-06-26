@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import type { TimeZoneOption } from '@core/zone-catalog';
+import { countryCodeForZone } from '@core/zone-country';
+import { FlagComponent } from '@shared/ui/flag/flag.component';
 
 // Searchable zone list: a search box over a scrollable, filtered list. Live-apply
 // on tap (emits picked immediately — no draft/commit). Hosts supply the options
@@ -8,6 +10,7 @@ import type { TimeZoneOption } from '@core/zone-catalog';
 @Component({
   selector: 'app-zone-picker',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FlagComponent],
   templateUrl: './zone-picker.component.html',
   styleUrl: './zone-picker.component.scss',
 })
@@ -15,6 +18,9 @@ export class ZonePickerComponent {
   readonly options = input.required<TimeZoneOption[]>();
   readonly selectedId = input<string>('');
   readonly picked = output<string>();
+
+  // Zone id -> ISO country code for the row flag (null synthetic/unknown -> globe).
+  readonly countryFor = countryCodeForZone;
 
   readonly query = signal('');
   readonly filtered = computed(() => {

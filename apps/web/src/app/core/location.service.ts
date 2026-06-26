@@ -5,17 +5,18 @@ import { zoneOffsetMinutes } from './zone-catalog';
   providedIn: 'root',
 })
 export class LocationService {
-  public getFlag(id: string): string {
+  // Region id -> ISO 3166-1 alpha-2 country code, the semantic key the flag layer
+  // renders (replaces the old CDN flag URLs). 'LA' (Los Angeles) flies the US flag.
+  public getCountryCode(id: string): string {
     switch (id) {
+      case 'UK':
+        return 'gb';
+      case 'KR':
+        return 'kr';
       case 'US':
       case 'LA':
-        return 'https://cdn4.iconfinder.com/data/icons/rounded-square-national-flags/512/USA-128.png';
-      case 'UK':
-        return 'https://cdn4.iconfinder.com/data/icons/rounded-square-national-flags/512/GREAT_BRITAIN-128.png';
-      case 'KR':
-        return 'https://cdn1.iconfinder.com/data/icons/rounded-square-national-flags/512/SOUTH_KOREA-128.png';
       default:
-        return 'https://cdn4.iconfinder.com/data/icons/rounded-square-national-flags/512/USA-128.png';
+        return 'us';
     }
   }
 

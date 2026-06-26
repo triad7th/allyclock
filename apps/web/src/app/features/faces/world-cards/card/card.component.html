@@ -1,5 +1,5 @@
 <div class="card-row d-flex flex-row justify-content-between align-items-center">
-  <img class="flag" [src]="flag()" [alt]="state() + ' flag'" />
+  <app-flag class="flag" [countryCode]="countryCode()" [name]="state()" />
   <div class="times d-flex flex-column justify-content-center align-items-end text-white">
     <h1 class="time-primary">
       {{ now() | date: 'hh:mm a' : timeZone() }}

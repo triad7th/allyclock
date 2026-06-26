@@ -15,7 +15,8 @@
       [attr.data-id]="z.id"
       (click)="pick(z.id)"
     >
-      {{ z.label }}
+      <app-flag class="zp-flag" [countryCode]="countryFor(z.id)" />
+      <span class="zp-label">{{ z.label }}</span>
     </button>
   } @empty {
     <p class="zp-empty">No matching time zone</p>
