@@ -33,29 +33,11 @@
 
       @if (tzPickerOpen()) {
         <div class="tm-tzpicker">
-          <input
-            class="tm-tz-search"
-            type="text"
-            [value]="tzQuery()"
-            (input)="tzQuery.set($any($event.target).value)"
-            placeholder="Search time zone"
-            aria-label="Search time zone"
-            autofocus
+          <app-zone-picker
+            [options]="zoneOptions"
+            [selectedId]="clock.timeZone()"
+            (picked)="onTimeZone($event); closeTzPicker()"
           />
-          <div class="tm-tz-list">
-            @for (z of filteredZones(); track z.id) {
-              <button
-                type="button"
-                class="tm-tz-option"
-                [class.active]="z.id === tzDraft()"
-                (click)="pickTimeZone(z.id)"
-              >
-                {{ z.label }}
-              </button>
-            } @empty {
-              <p class="tm-tz-empty">No matching time zone</p>
-            }
-          </div>
           <button type="button" class="tm-tz-back" (click)="closeTzPicker()">Cancel</button>
         </div>
       } @else {
@@ -100,6 +82,27 @@
           <div class="tm-field tm-field-tz">
             <span class="tm-field-label">Time Zone</span>
             <button type="button" class="tm-tz" (click)="openTzPicker()">{{ activeZoneLabel() }}</button>
+          </div>
+          <div class="tm-field tm-field-zonemode">
+            <span class="tm-field-label">On zone change</span>
+            <div class="tm-segment" role="radiogroup" aria-label="On zone change">
+              <button
+                type="button"
+                role="radio"
+                class="tm-segment-btn"
+                [class.on]="zoneChangeMode() === 'move'"
+                [attr.aria-checked]="zoneChangeMode() === 'move'"
+                (click)="zoneChangeMode.set('move')"
+              >Move moment</button>
+              <button
+                type="button"
+                role="radio"
+                class="tm-segment-btn"
+                [class.on]="zoneChangeMode() === 'freeze'"
+                [attr.aria-checked]="zoneChangeMode() === 'freeze'"
+                (click)="zoneChangeMode.set('freeze')"
+              >Freeze moment</button>
+            </div>
           </div>
         </div>
       }
