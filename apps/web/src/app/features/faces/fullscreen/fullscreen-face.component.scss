@@ -79,6 +79,16 @@
 .date .sep {
   opacity: 0.4;
 }
+// Zone flag badge leading the date row. Sized to the date text and centered off
+// the baseline so the square sits level with the uppercase glyphs. Spacing to
+// the next part is the row's flex `gap` (letter-spacing applies to text, not the
+// replaced flag box, so no margin nudge is needed).
+.date-flag {
+  align-self: center;
+  width: calc(var(--date-base) * 1.2);
+  height: calc(var(--date-base) * 1.2);
+  border-radius: 2px;
+}
 .weekday {
   font-size: calc(var(--date-base) * var(--weekday-scale, 1));
   font-weight: var(--weekday-weight, 300);

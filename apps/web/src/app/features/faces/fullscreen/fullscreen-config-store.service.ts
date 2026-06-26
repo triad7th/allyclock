@@ -9,7 +9,7 @@ export class FullscreenConfigStore extends BandConfigStore<FullscreenFields> {
   private readonly registry = inject(DimensionRegistry);
 
   protected storageKey(): string { return 'allyclock.fullscreen.config'; }
-  protected version(): number { return 3; }
+  protected version(): number { return 4; }
   protected buildDefaults(): Record<string, FullscreenFields> { return buildDefaultFields(); }
 
   constructor() {
@@ -57,6 +57,10 @@ export class FullscreenConfigStore extends BandConfigStore<FullscreenFields> {
     this.patchAll((f) => ({ ...f, secondsVisible: visible }));
   }
 
+  setFlagVisibleAll(visible: boolean): void {
+    this.patchAll((f) => ({ ...f, flagVisible: visible }));
+  }
+
   setTimeZoneAll(timeZone: string): void {
     this.patchAll((f) => ({ ...f, timeZone }));
   }
@@ -73,6 +77,7 @@ export class FullscreenConfigStore extends BandConfigStore<FullscreenFields> {
       ...persisted,
       bar: { mode, sizeScale: legacy.sizeScale ?? defaults.bar.sizeScale, opacity: legacy.opacity ?? defaults.bar.opacity },
       secondsVisible: persisted.secondsVisible ?? defaults.secondsVisible,
+      flagVisible: persisted.flagVisible ?? defaults.flagVisible,
       timeZone: persisted.timeZone ?? defaults.timeZone,
     };
   }

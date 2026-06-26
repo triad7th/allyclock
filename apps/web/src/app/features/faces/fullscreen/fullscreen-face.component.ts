@@ -14,13 +14,15 @@ import { FullscreenConfigStore } from './fullscreen-config-store.service';
 import { FullscreenConfigComponent } from './fullscreen-config/fullscreen-config.component';
 import { FullscreenTogglesComponent } from './fullscreen-toggles/fullscreen-toggles.component';
 import { IconComponent } from '@shared/ui/icon/icon.component';
+import { FlagComponent } from '@shared/ui/flag/flag.component';
+import { countryCodeForZone } from '@core/zone-country';
 import { bigTime, dateParts } from './clock-formatter';
 import { varsFor } from './fullscreen-style';
 
 @Component({
   selector: 'app-fullscreen-face',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AutoHideDirective, FullscreenConfigComponent, FullscreenTogglesComponent, IconComponent],
+  imports: [AutoHideDirective, FullscreenConfigComponent, FullscreenTogglesComponent, IconComponent, FlagComponent],
   hostDirectives: [ContainerSizeDirective],
   templateUrl: './fullscreen-face.component.html',
   styleUrl: './fullscreen-face.component.scss',
@@ -39,6 +41,8 @@ export class FullscreenFaceComponent implements OnDestroy {
   readonly activeFields = computed(() => this.store.fieldsFor(this.ratio()));
 
   readonly displayZone = computed(() => this.activeFields().timeZone || this.clock.timeZone());
+  // ISO country for the display zone's flag badge (null -> globe fallback).
+  readonly displayCountry = computed(() => countryCodeForZone(this.displayZone()));
 
   readonly big = computed(() => bigTime(this.clock.now(), this.locale, this.displayZone()));
   readonly parts = computed(() => dateParts(this.clock.now(), this.locale, this.displayZone()));

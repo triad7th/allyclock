@@ -74,6 +74,17 @@ describe('FullscreenTogglesComponent', () => {
     }
   });
 
+  it('toggling Flag broadcasts visibility to every band', () => {
+    const fixture = TestBed.createComponent(FullscreenTogglesComponent);
+    fixture.detectChanges();
+    const before = store.sample().flagVisible;
+    (fixture.nativeElement.querySelector('[data-knob="flag-visible"]') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.flagVisible).toBe(!before);
+    }
+  });
+
   it('renders the Bar segmented control with the active mode marked', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();

@@ -32,6 +32,7 @@ export class FullscreenTogglesComponent {
   readonly showSeconds = computed(() => this.store.sample().secondsVisible);
   readonly showWeekday = computed(() => this.store.sample().sections.weekday.visible);
   readonly showGmt = computed(() => this.store.sample().sections.gmt.visible);
+  readonly showFlag = computed(() => this.store.sample().flagVisible);
   readonly barMode = computed(() => this.store.sample().bar.mode);
   readonly barModes: readonly { mode: BarMode; label: string }[] = [
     { mode: 'off', label: 'Off' },
@@ -67,6 +68,9 @@ export class FullscreenTogglesComponent {
   }
   toggleGmt(): void {
     this.store.setSectionVisibleAll('gmt', !this.showGmt());
+  }
+  toggleFlag(): void {
+    this.store.setFlagVisibleAll(!this.showFlag());
   }
   setBarMode(mode: BarMode): void {
     this.store.setBarModeAll(mode);

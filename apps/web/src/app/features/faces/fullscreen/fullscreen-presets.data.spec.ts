@@ -16,10 +16,11 @@ describe('buildDefaultFields', () => {
     );
   });
 
-  it('defaults bar mode to progress, sets secondsVisible true, and timeZone to empty string on every band', () => {
+  it('defaults bar mode to progress, sets secondsVisible true, flagVisible false, and timeZone to empty string on every band', () => {
     for (const fields of Object.values(buildDefaultFields())) {
       expect(fields.bar.mode).toBe('progress');
       expect(fields.secondsVisible).toBe(true);
+      expect(fields.flagVisible).toBe(false);
       expect(fields.timeZone).toBe('');
       expect(fields.sections.weekday.visible).toBe(true);
       expect(fields.sections.gmt.visible).toBe(true);

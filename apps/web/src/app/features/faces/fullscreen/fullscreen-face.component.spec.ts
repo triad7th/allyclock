@@ -103,6 +103,17 @@ describe('FullscreenFaceComponent', () => {
     expect(fixture.componentInstance.minuteProgress()).toBeCloseTo(0.5, 2);
   });
 
+  it('shows the zone flag in the date row only when the Flag toggle is on', () => {
+    const store = TestBed.inject(FullscreenConfigStore);
+    const fixture = TestBed.createComponent(FullscreenFaceComponent);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.date app-flag')).toBeNull();
+
+    store.setFlagVisibleAll(true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.date app-flag')).toBeTruthy();
+  });
+
   it('renders the whisper seconds by default and hides them when toggled off', () => {
     const fixture = TestBed.createComponent(FullscreenFaceComponent);
     const host = fixture.nativeElement as HTMLElement;

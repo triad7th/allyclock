@@ -65,6 +65,15 @@ app-nav-header {
   color: t.$secondary-label;
 }
 
+// One labelled switch inside a grouped card (Seconds+Weekday, GMT+Flag): label
+// on the left, switch on the right. Stacked by the card's column gap.
+.knobs-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
 // ── iOS-style toggle switch ────────────────────────────────────────────────
 
 .knobs-toggle {

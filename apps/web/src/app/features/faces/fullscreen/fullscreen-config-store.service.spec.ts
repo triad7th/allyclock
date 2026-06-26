@@ -67,6 +67,13 @@ describe('FullscreenConfigStore', () => {
     }
   });
 
+  it('setFlagVisibleAll writes flag visibility to every band', () => {
+    store.setFlagVisibleAll(true);
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.flagVisible).toBe(true);
+    }
+  });
+
   it('setTimeZoneAll broadcasts the zone to every band', () => {
     store.setTimeZoneAll('Asia/Seoul');
     for (const fields of Object.values(store.state().byBand)) {
@@ -100,6 +107,7 @@ describe('FullscreenConfigStore', () => {
     expect(mini.bar.opacity).toBe(0.5);              // tuning preserved
     expect(mini.sections.time.sizeScale).toBe(1.4);  // tuning preserved
     expect(mini.secondsVisible).toBe(true);          // new field filled
+    expect(mini.flagVisible).toBe(false);            // new field filled from defaults
   });
 
   it('sample() returns a representative band fields object', () => {
