@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { ClockService } from '@core/clock.service';
 import { ZoneCatalog, type TimeZoneOption } from '@core/zone-catalog';
+import { countryCodeForZone } from '@core/zone-country';
 import {
   instantFromWallClock,
   wallClockInZone,
@@ -9,6 +10,7 @@ import {
   type WallClock,
 } from '@core/zone-time';
 import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
+import { FlagComponent } from '@shared/ui/flag/flag.component';
 import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
@@ -32,6 +34,7 @@ function dayOfYearOf(w: WallClock): number {
   selector: 'app-time-machine',
   imports: [
     AutoHideDirective,
+    FlagComponent,
     IconButtonComponent,
     IconComponent,
     NavHeaderComponent,
@@ -51,6 +54,9 @@ export class TimeMachineComponent {
   private readonly sheet = viewChild(SheetComponent);
 
   readonly zoneOptions: TimeZoneOption[] = this.catalog.options();
+
+  // Zone id -> ISO country code for the selector flag (null -> globe fallback).
+  readonly countryFor = countryCodeForZone;
 
   // datetime-local draft, held as the wall-clock string IN the TM zone.
   readonly draft = signal('');

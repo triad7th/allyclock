@@ -81,7 +81,10 @@
           </div>
           <div class="tm-field tm-field-tz">
             <span class="tm-field-label">Time Zone</span>
-            <button type="button" class="tm-tz" (click)="openTzPicker()">{{ activeZoneLabel() }}</button>
+            <button type="button" class="tm-tz" (click)="openTzPicker()">
+              <app-flag class="tm-tz-flag" [countryCode]="countryFor(clock.timeZone())" />
+              <span class="tm-tz-label">{{ activeZoneLabel() }}</span>
+            </button>
           </div>
           <div class="tm-field tm-field-zonemode">
             <span class="tm-field-label">On zone change</span>

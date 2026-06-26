@@ -176,6 +176,9 @@
 // Time-zone trigger: a left-aligned field showing the current zone; opens the
 // searchable picker. Matches the datetime field's look.
 .tm-tz {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   width: 100%;
   background: t.$secondary-surface;
   border: none;
@@ -190,6 +193,21 @@
   &:hover {
     background: t.$secondary-surface-hover;
   }
+}
+
+.tm-tz-flag {
+  flex: 0 0 auto;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 4px;
+  color: t.$secondary-label; // tints the globe fallback
+}
+
+.tm-tz-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 // Searchable zone picker: a search box over a scrollable, filtered list, shown

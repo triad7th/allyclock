@@ -79,12 +79,13 @@
         </div>
       </div>
 
-      <!-- Time Zone -->
+      <!-- Time Zone (label row + full-width value row, like the Time Machine) -->
       <div class="knobs-section">
-        <div class="knobs-toggle-row">
+        <div class="knobs-tz-field">
           <span class="knobs-section-label">Time Zone</span>
           <button type="button" class="knobs-tz" data-knob="time-zone" (click)="openZonePicker()">
-            {{ faceZoneLabel() }}
+            <app-flag class="knobs-tz-flag" [countryCode]="countryFor(faceZone())" />
+            <span class="knobs-tz-label">{{ faceZoneLabel() }}</span>
           </button>
         </div>
       </div>

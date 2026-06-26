@@ -5,7 +5,9 @@ import { SheetComponent } from '@shared/ui/sheet/sheet.component';
 import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
 import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 import { ZoneCatalog, type TimeZoneOption } from '@core/zone-catalog';
+import { countryCodeForZone } from '@core/zone-country';
 import { ZonePickerComponent } from '@shared/ui/zone-picker/zone-picker.component';
+import { FlagComponent } from '@shared/ui/flag/flag.component';
 
 /**
  * Dimension-agnostic visibility toggles for the Fullscreen face (Weekday / GMT /
@@ -16,7 +18,7 @@ import { ZonePickerComponent } from '@shared/ui/zone-picker/zone-picker.componen
 @Component({
   selector: 'app-fullscreen-toggles',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, ZonePickerComponent],
+  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, ZonePickerComponent, FlagComponent],
   templateUrl: './fullscreen-toggles.component.html',
   styleUrl: './fullscreen-toggles.component.scss',
 })
@@ -47,6 +49,8 @@ export class FullscreenTogglesComponent {
   readonly faceZoneLabel = computed(
     () => this.zoneOptions.find((z) => z.id === this.faceZone())?.label ?? this.faceZone(),
   );
+  // Zone id -> ISO country code for the selector flag (null -> globe fallback).
+  readonly countryFor = countryCodeForZone;
 
   openZonePicker(): void { this.zonePickerOpen.set(true); }
   closeZonePicker(): void { this.zonePickerOpen.set(false); }

@@ -140,20 +140,43 @@ app-nav-header {
   }
 }
 
+// Time Zone field: label on top, full-width value button below (2 rows).
+.knobs-tz-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
 .knobs-tz {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
   background: t.$secondary-surface;
   border: none;
   border-radius: 8px;
   color: t.$tint;
-  font-size: 0.82rem;
-  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+  text-align: left;
+  padding: 0.5rem 0.7rem;
   cursor: pointer;
-  max-width: 60%;
+
+  &:hover { background: t.$secondary-surface-hover; }
+}
+
+.knobs-tz-flag {
+  flex: 0 0 auto;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 4px;
+  color: t.$secondary-label; // tints the globe fallback
+}
+
+.knobs-tz-label {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-
-  &:hover { background: t.$secondary-surface-hover; }
 }
 
 .knobs-zonepicker {
