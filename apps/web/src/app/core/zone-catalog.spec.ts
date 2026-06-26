@@ -19,9 +19,7 @@ describe('zone-catalog', () => {
     const seoul = opts.find((o) => o.id === 'Asia/Seoul')!;
     expect(seoul.label).toBe('Asia/Seoul  +09:00');
     for (let i = 1; i < opts.length; i++) {
-      const prev = opts[i - 1];
-      const cur = opts[i];
-      expect(prev.offset < cur.offset || (prev.offset === cur.offset && prev.id <= cur.id)).toBe(true);
+      expect(opts[i - 1].offset).toBeLessThanOrEqual(opts[i].offset);
     }
   });
 });

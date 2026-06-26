@@ -53,7 +53,7 @@ export function buildTimeZoneOptions(localZone: string, at: Date): TimeZoneOptio
       const offset = zoneOffsetMinutes(id, at);
       return { id, offset, label: `${id}  ${formatOffset(offset)}` };
     })
-    .sort((a, b) => a.offset - b.offset || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+    .sort((a, b) => a.offset - b.offset || a.id.localeCompare(b.id));
 }
 
 // App-wide cached zone catalog: the full-IANA scan runs once. Consumers (Time
