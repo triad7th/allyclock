@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { zoneOffsetMinutes } from './zone-catalog';
 
 @Injectable({
   providedIn: 'root',
@@ -33,10 +34,9 @@ export class LocationService {
 }
 
 function offsetOf(timeZone: string, date: Date): string {
-  const name =
-    new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'longOffset' })
-      .formatToParts(date)
-      .find((part) => part.type === 'timeZoneName')?.value ?? 'GMT';
-  const match = name.match(/([+-]\d{2}:\d{2})$/);
-  return match ? match[1] : '+00:00';
+  const min = zoneOffsetMinutes(timeZone, date);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const sign = min < 0 ? '-' : '+'; // ASCII minus — preserves existing output
+  const abs = Math.abs(min);
+  return `${sign}${pad(Math.floor(abs / 60))}:${pad(abs % 60)}`;
 }
