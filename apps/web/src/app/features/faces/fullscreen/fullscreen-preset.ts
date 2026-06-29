@@ -32,6 +32,7 @@ export interface SectionBase {
 export interface FullscreenFields {
   bar: BarStyle;
   secondsVisible: boolean;
+  zoneVisible: boolean; // show the display zone's city name in the date row
   flagVisible: boolean; // show the display zone's country flag in the date row
   timeZone: string; // '' = follow the global clock zone
   sections: {

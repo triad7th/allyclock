@@ -63,6 +63,17 @@ describe('FullscreenTogglesComponent', () => {
     }
   });
 
+  it('toggling Zone broadcasts visibility to every band', () => {
+    const fixture = TestBed.createComponent(FullscreenTogglesComponent);
+    fixture.detectChanges();
+    const before = store.sample().zoneVisible;
+    (fixture.nativeElement.querySelector('[data-knob="zone-visible"]') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    for (const fields of Object.values(store.state().byBand)) {
+      expect(fields.zoneVisible).toBe(!before);
+    }
+  });
+
   it('toggling Seconds broadcasts visibility to every band', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();

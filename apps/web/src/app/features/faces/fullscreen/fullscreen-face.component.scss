@@ -104,10 +104,30 @@
   font-weight: var(--day-weight, 300);
   opacity: var(--day-opacity, 0.6);
 }
+// Display zone's city name, sitting just before the GMT offset. Shares the
+// muted date-part look; never wraps mid-name.
+.zone {
+  font-size: var(--date-base);
+  font-weight: 300;
+  opacity: 0.6;
+  white-space: nowrap;
+}
 .gmt {
   font-size: calc(var(--date-base) * var(--gmt-scale, 1));
   font-weight: var(--gmt-weight, 300);
   opacity: var(--gmt-opacity, 0.6);
+  // Keep the globe glued to its offset digits — never split across lines.
+  white-space: nowrap;
+}
+// Globe standing in for the "GMT" prefix on the offset (e.g. globe + "−7").
+// Sized just under the uppercase cap height and nudged onto the digits' optical
+// centre; the small right margin sets the gap to the number. Inherits .gmt's
+// opacity so it matches the muted offset text.
+.gmt-globe {
+  width: 0.82em;
+  height: 0.82em;
+  vertical-align: -0.1em;
+  margin-right: 0.12em;
 }
 
 // Bottom-right gear: opens the Display (toggles) panel. Auto-hides with the

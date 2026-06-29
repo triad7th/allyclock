@@ -31,6 +31,7 @@ export class FullscreenTogglesComponent {
   // Every band shares these values (toggles write all), so read a sample band.
   readonly showSeconds = computed(() => this.store.sample().secondsVisible);
   readonly showWeekday = computed(() => this.store.sample().sections.weekday.visible);
+  readonly showZone = computed(() => this.store.sample().zoneVisible);
   readonly showGmt = computed(() => this.store.sample().sections.gmt.visible);
   readonly showFlag = computed(() => this.store.sample().flagVisible);
   readonly barMode = computed(() => this.store.sample().bar.mode);
@@ -65,6 +66,9 @@ export class FullscreenTogglesComponent {
   }
   toggleWeekday(): void {
     this.store.setSectionVisibleAll('weekday', !this.showWeekday());
+  }
+  toggleZone(): void {
+    this.store.setZoneVisibleAll(!this.showZone());
   }
   toggleGmt(): void {
     this.store.setSectionVisibleAll('gmt', !this.showGmt());

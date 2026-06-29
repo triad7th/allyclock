@@ -40,9 +40,22 @@
         </div>
       </div>
 
-      <!-- GMT + Flag -->
+      <!-- Zone + GMT + Flag -->
       <div class="knobs-section">
         <div class="knobs-pair">
+          <div class="knobs-cell">
+            <span class="knobs-section-label">Zone</span>
+            <button
+              type="button"
+              class="knobs-toggle"
+              [class.on]="showZone()"
+              data-knob="zone-visible"
+              (click)="toggleZone()"
+              [attr.aria-label]="showZone() ? 'Hide Time Zone' : 'Show Time Zone'"
+            >
+              <span class="knobs-toggle-thumb"></span>
+            </button>
+          </div>
           <div class="knobs-cell">
             <span class="knobs-section-label">GMT</span>
             <button

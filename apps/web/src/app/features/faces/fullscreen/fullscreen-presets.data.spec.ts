@@ -20,6 +20,7 @@ describe('buildDefaultFields', () => {
     for (const fields of Object.values(buildDefaultFields())) {
       expect(fields.bar.mode).toBe('progress');
       expect(fields.secondsVisible).toBe(true);
+      expect(fields.zoneVisible).toBe(false);
       expect(fields.flagVisible).toBe(false);
       expect(fields.timeZone).toBe('');
       expect(fields.sections.weekday.visible).toBe(true);

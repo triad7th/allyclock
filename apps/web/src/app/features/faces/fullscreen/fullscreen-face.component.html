@@ -23,12 +23,18 @@
     }
     <span class="month">{{ parts().month }}</span>
     <span class="day">{{ parts().day }}</span>
+    @if (activeFields().zoneVisible) {
+      <span class="sep">·</span>
+      <span class="zone">{{ zoneCityLabel() }}</span>
+    }
     @if (activeFields().sections.gmt.visible) {
       <span class="sep">·</span>
-      <span class="gmt">{{ parts().gmt }}</span>
+      <span class="gmt"><app-icon class="gmt-globe" name="globe" />{{ parts().gmt }}</span>
     }
-    @if (activeFields().flagVisible) {
-      <app-flag class="date-flag" [countryCode]="displayCountry()" />
+    <!-- Trailing flag only for zones with a real country; countryless zones
+         (UTC/Etc) would otherwise duplicate the globe already shown above. -->
+    @if (activeFields().flagVisible && displayCountry(); as country) {
+      <app-flag class="date-flag" [countryCode]="country" />
     }
   </div>
 </div>

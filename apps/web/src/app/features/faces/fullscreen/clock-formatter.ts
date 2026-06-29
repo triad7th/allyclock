@@ -1,3 +1,5 @@
+import { zoneOffsetMinutes } from '@core/zone-catalog';
+
 export interface BigTime {
   digits: string;
   ampm: string | null;
@@ -50,6 +52,31 @@ export function gmtOffset(date: Date, timeZone: string): string {
   return normalized.replace('-', '−');
 }
 
+// Compact UTC offset for the date row's globe badge: sign + hours, appending
+// ":mm" only when the zone isn't on a whole hour ("−7", "+9", "+5:30", "+0").
+// The globe icon stands in for the "GMT" prefix. U+2212 minus, matching the app.
+export function compactOffset(date: Date, timeZone: string): string {
+  const min = zoneOffsetMinutes(timeZone, date);
+  const sign = min < 0 ? '−' : '+';
+  const abs = Math.abs(min);
+  const hours = Math.floor(abs / 60);
+  const minutes = abs % 60;
+  return minutes === 0 ? `${sign}${hours}` : `${sign}${hours}:${String(minutes).padStart(2, '0')}`;
+}
+
+// City label derived from an IANA zone id: the last path segment, underscores
+// spaced out and uppercased ("America/Los_Angeles" -> "LOS ANGELES"). When
+// `abbreviate` is true (a country flag already supplies the locale), collapse a
+// multi-word city to its initials, or a single word to its first three letters
+// ("LOS ANGELES" -> "LA", "London" -> "LON", "UTC" -> "UTC").
+export function zoneCity(timeZone: string, abbreviate: boolean): string {
+  const city = (timeZone.split('/').pop() ?? timeZone).replace(/_/g, ' ');
+  if (!abbreviate) return city.toUpperCase();
+  const words = city.split(/[\s-]+/).filter(Boolean);
+  const label = words.length > 1 ? words.map((w) => w[0]).join('') : city.slice(0, 3);
+  return label.toUpperCase();
+}
+
 export interface DateParts { weekday: string; month: string; day: string; gmt: string; }
 
 export function dateParts(date: Date, locale: string, timeZone: string): DateParts {
@@ -57,5 +84,5 @@ export function dateParts(date: Date, locale: string, timeZone: string): DatePar
     weekday: 'short', month: 'short', day: 'numeric', timeZone,
   }).formatToParts(date);
   const get = (t: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === t)?.value ?? '';
-  return { weekday: get('weekday'), month: get('month'), day: get('day'), gmt: gmtOffset(date, timeZone) };
+  return { weekday: get('weekday'), month: get('month'), day: get('day'), gmt: compactOffset(date, timeZone) };
 }

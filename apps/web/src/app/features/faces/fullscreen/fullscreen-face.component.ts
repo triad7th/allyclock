@@ -16,7 +16,7 @@ import { FullscreenTogglesComponent } from './fullscreen-toggles/fullscreen-togg
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { FlagComponent } from '@shared/ui/flag/flag.component';
 import { countryCodeForZone } from '@core/zone-country';
-import { bigTime, dateParts } from './clock-formatter';
+import { bigTime, dateParts, zoneCity } from './clock-formatter';
 import { varsFor } from './fullscreen-style';
 
 @Component({
@@ -43,6 +43,11 @@ export class FullscreenFaceComponent implements OnDestroy {
   readonly displayZone = computed(() => this.activeFields().timeZone || this.clock.timeZone());
   // ISO country for the display zone's flag badge (null -> globe fallback).
   readonly displayCountry = computed(() => countryCodeForZone(this.displayZone()));
+  // The flag actually renders only when its toggle is on AND the zone has a
+  // country. When it shows, the city collapses to an abbreviation (LA, not LOS
+  // ANGELES) since the flag already conveys the locale.
+  readonly flagShown = computed(() => this.activeFields().flagVisible && !!this.displayCountry());
+  readonly zoneCityLabel = computed(() => zoneCity(this.displayZone(), this.flagShown()));
 
   readonly big = computed(() => bigTime(this.clock.now(), this.locale, this.displayZone()));
   readonly parts = computed(() => dateParts(this.clock.now(), this.locale, this.displayZone()));

@@ -65,8 +65,8 @@ app-nav-header {
   color: t.$secondary-label;
 }
 
-// Two labelled switches sitting side by side in a grouped card (Seconds+Weekday,
-// GMT+Flag). Each cell stacks its label over the switch, mirroring the
+// Labelled switches sitting side by side in a grouped card (Seconds+Weekday,
+// Zone+GMT+Flag). Each cell stacks its label over the switch, mirroring the
 // label-over-control layout of the Bar / Time Zone cards.
 .knobs-pair {
   display: flex;

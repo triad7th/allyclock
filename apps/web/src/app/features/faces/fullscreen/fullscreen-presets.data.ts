@@ -26,6 +26,7 @@ function fields(bases: FullscreenFields['bases']): FullscreenFields {
   return {
     bar: { mode: 'progress', sizeScale: 1, opacity: 0.34 },
     secondsVisible: true,
+    zoneVisible: false,
     flagVisible: false,
     timeZone: '',
     sections: {
