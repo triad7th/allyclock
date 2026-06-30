@@ -8,26 +8,26 @@
       <div class="knobs-panel">
         <!-- Cities -->
         <div class="knobs-section">
-          <span class="knobs-section-label">Cities</span>
+          <div class="cities-header">
+            <span class="knobs-section-label">Cities</span>
+            <span class="knobs-section-label">Line Break</span>
+          </div>
           @for (card of cards(); track card.id) {
             <div class="city-row" [attr.data-card]="card.id">
               <button type="button" class="city-zone" data-knob="card-zone" (click)="openZonePicker(card.id)">
                 <app-flag class="city-flag" [countryCode]="countryFor(card.zone)" />
                 <span class="city-name">{{ cityLabel(card.zone) }}</span>
               </button>
-              <div class="lb-cell">
-                <span class="lb-label">Line Break</span>
-                <button
-                  type="button"
-                  class="knobs-toggle"
-                  [class.on]="card.lineBreak"
-                  data-knob="card-linebreak"
-                  [attr.aria-label]="card.lineBreak ? 'Line break on' : 'Line break off'"
-                  (click)="setLineBreak(card.id, !card.lineBreak)"
-                >
-                  <span class="knobs-toggle-thumb"></span>
-                </button>
-              </div>
+              <button
+                type="button"
+                class="knobs-toggle"
+                [class.on]="card.lineBreak"
+                data-knob="card-linebreak"
+                [attr.aria-label]="card.lineBreak ? 'Line break on' : 'Line break off'"
+                (click)="setLineBreak(card.id, !card.lineBreak)"
+              >
+                <span class="knobs-toggle-thumb"></span>
+              </button>
               @if (canRemove()) {
                 <app-icon-button class="city-remove" icon="trash" variant="destructive" label="Remove" data-knob="card-remove" (click)="remove(card.id)" />
               }

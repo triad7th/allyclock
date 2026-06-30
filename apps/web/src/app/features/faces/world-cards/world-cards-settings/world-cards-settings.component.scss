@@ -85,21 +85,12 @@ app-nav-header {
   white-space: nowrap;
 }
 
-// Line Break switch with its label stacked above it.
-.lb-cell {
-  flex: 0 0 auto;
+// Section header: "Cities" on the left, a single "Line Break" column heading
+// on the right (above the per-row toggles).
+.cities-header {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-}
-.lb-label {
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: t.$secondary-label;
-  white-space: nowrap;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
 .knobs-toggle {
