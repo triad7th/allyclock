@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-29
 **Status:** Approved (brainstorm), pending implementation plan
-**Area:** `apps/web` — `features/faces/world-cards`, `features/faces/face-registry`, reuses `features/faces/fullscreen/clock-formatter`, `core/zone-*`, `shared/ui`
+**Area:** `apps/web` — `features/faces/world-cards`, `features/faces/face-registry`, reuses `features/faces/fullscreen/clock-formatter`, `core/dimensions`, `core/zone-*`, `shared/ui`
 
 ## Goal
 
@@ -13,8 +13,9 @@ and Adjust — mirroring the Fullscreen face**:
 - **Settings** (the face's gear): manage the list of clocks — how many cards,
   each card's time zone, each card's width (**full row** vs **cell**), and a
   global **section mode** (3-section vs 2-section).
-- **Adjust** (the shell controls-bar button): three font-size sliders — **main**
-  (clock), **subtitle** (precision + GMT), **info** (date + zone name).
+- **Adjust** (the shell controls-bar button): three **resolution-based**
+  font-size sliders — **Time** (clock), **Precision** (`HH:mm:ss.cc` + GMT),
+  **Date** (date + zone name) — tuned per dimension band, like Fullscreen.
 - A **responsive grid renderer** that auto-fits *cell* cards into as many
   columns as the container width allows, with *full-row* cards spanning all
   columns.
@@ -32,14 +33,19 @@ discipline as the Fullscreen config.
 3. **Zone name uses the Fullscreen city style, abbreviated** — `zoneCity(zone,
    true)` → `LA` / `LON` / `SEO`. The card always shows a large flag separately,
    so the abbreviation is enough. (Not the GMT/`zzzz` style used today.)
-4. **Font sizes are GLOBAL** (three tiers), not per-card and not per-viewport
-   band.
-5. **Config is a single global object**, persisted to `localStorage`. Not
-   `BandConfigStore` (nothing here is responsive-per-band; responsiveness is
-   handled in CSS).
-6. **Responsive layout is pure CSS Grid** (`auto-fit` + `minmax`), no JS
-   measurement. Container queries already keep it correct full-screen and inside
-   the scaled face-picker preview.
+4. **Font sizes are RESOLUTION-BASED** (per dimension band), not a single global
+   value. The three tiers (Time / Precision / Date) are tuned per band exactly
+   like the Fullscreen Adjust panel, so adjusting at one viewport size does not
+   change another.
+5. **Config reuses `BandConfigStore` + `DimensionRegistry`** (mirroring
+   Fullscreen), so the port stays mechanical. The **card list and section mode
+   are global**, stored by broadcasting the same value to every band (the
+   established Fullscreen pattern for "applies to all"); the **sizes are
+   per-band**.
+6. **Responsive column packing is pure CSS Grid** (`auto-fit` + `minmax`), no JS
+   measurement. Container queries keep it correct full-screen and inside the
+   scaled face-picker preview. (Band resolution drives font *sizes*; CSS
+   auto-fit drives *column count* — complementary.)
 
 ### Visual direction (locked via mockups)
 
@@ -48,21 +54,21 @@ discipline as the Fullscreen config.
   font size as AM/PM**, dimmed to ~`0.32` opacity. *(This is a deliberate
   divergence from the Fullscreen face, where seconds are smaller (`0.10em`) than
   AM/PM (`0.15em`).)*
-- **Font:** System / SF Pro via `system-ui` (the app default). Big time + info
-  use it; the precision subtitle keeps the existing mono stack.
+- **Font:** System / SF Pro via `system-ui` (the app default). Big time + date
+  use it; the precision row keeps the existing mono stack.
 - **3-section main:** same AM/PM treatment, **no seconds** (seconds live in the
-  precision subtitle).
+  precision row).
 - **Default layout seed:** *Featured + pair* — first card full-row, the rest
   cells — matching today's look. Fully overridable per-card.
 
 ## Architecture
 
-New files under `features/faces/world-cards/`:
+New/rewritten files under `features/faces/world-cards/`:
 
-```
+```text
 world-cards-config.ts                       — types
-world-cards-config-store.service.ts         — signal store + persistence
-world-cards-presets.data.ts                 — default seed
+world-cards-config-store.service.ts         — BandConfigStore subclass + mutations
+world-cards-presets.data.ts                 — per-band default seed
 world-cards-face.component.{ts,html,scss}   — renderer (existing, rewritten)
 card/card.component.{ts,html,scss}          — config-driven card (existing, rewritten)
 world-cards-settings/                        — Settings panel (gear)
@@ -86,49 +92,58 @@ export interface WorldCardConfig {
   span: CardSpan;
 }
 
-export interface WorldCardsConfig {
-  version: number;
+export interface WorldCardSizes {
+  time: number;       // 0.5–2.0, default 1.0
+  precision: number;  // 0.5–2.0, default 1.0
+  date: number;       // 0.5–2.0, default 1.0
+}
+
+// Per-band fields. `sectionMode` + `cards` are GLOBAL — broadcast identically to
+// every band (read from any band). `sizes` is per-band (resolution-based).
+export interface WorldCardsFields {
   sectionMode: SectionMode;
-  sizes: { main: number; subtitle: number; info: number }; // 0.5–2.0, default 1.0
   cards: WorldCardConfig[];
+  sizes: WorldCardSizes;
 }
 
 export const MIN_CARDS = 1;
 export const MAX_CARDS = 12;
 ```
 
-### Store (`WorldCardsConfigStore`, `providedIn: 'root'`)
+### Store (`WorldCardsConfigStore extends BandConfigStore<WorldCardsFields>`)
 
-A small signal-backed store (NOT `BandConfigStore`). Responsibilities:
+Mirrors `FullscreenConfigStore`:
 
-- Load from `localStorage` key `allyclock.world-cards.config`; on parse failure
-  or absence, seed from `buildDefaultConfig()` and persist.
-- `migrate()` by `version`: fill any missing fields from defaults (e.g. a future
-  field), never wipe a user's card list; bump version and re-persist when shape
-  changes. Initial `version: 1`.
-- Expose readonly selectors: `cards()`, `sectionMode()`, `sizes()`.
-- Mutations (each commits + persists, applied live):
-  - `addCard()` — append `{ id: nextId, zone: <local zone>, span: 'cell' }`;
-    no-op at `MAX_CARDS`.
-  - `removeCard(id)` — splice; no-op at `MIN_CARDS`.
-  - `setCardZone(id, zone)`, `setCardSpan(id, span)`.
-  - `setSectionMode(mode)`, `setSize('main'|'subtitle'|'info', value)`.
-- `id` allocation: a monotonic counter derived from `max(existing ids) + 1` at
-  load, so ids stay stable across a session and persist.
+- `storageKey(): 'allyclock.world-cards.config'`, `version(): 1`.
+- `buildDefaults()` → one `WorldCardsFields` per band id (band ids from
+  `BUILT_IN_BANDS`, same as Fullscreen). `sectionMode` + `cards` identical across
+  all bands; `sizes` all `{ time: 1, precision: 1, date: 1 }`.
+- `fieldsFor(ratio)` → `config(registry.resolveForRatio(ratio).id)` (injects
+  `DimensionRegistry`), exactly like Fullscreen.
+- `sample()` → any band's fields, for reading the global `cards` / `sectionMode`.
+- **Global mutations broadcast** via `patchAll` (write to every band):
+  `setSectionModeAll(mode)`, `addCard()` (append `{ id: nextId(), zone: <local
+  zone>, span: 'cell' }`, no-op at `MAX_CARDS`), `removeCard(id)` (no-op at
+  `MIN_CARDS`), `setCardZone(id, zone)`, `setCardSpan(id, span)`.
+- **Per-band size mutation** via `patch(bandId, …)`: `setSize(bandId, 'time' |
+  'precision' | 'date', value)`.
+- `mergeBand(defaults, persisted)` fills any missing field from defaults (e.g.
+  a new size key) without dropping the user's card list; bump version + re-persist
+  on shape change (inherited additive `migrate`).
+- `id` allocation: monotonic counter seeded from `max(existing card ids) + 1` at
+  load (ids are global, so derive from any band's `cards`).
 
 ### Defaults (`world-cards-presets.data.ts`)
 
 ```ts
-buildDefaultConfig(): WorldCardsConfig => ({
-  version: 1,
-  sectionMode: 'three',
-  sizes: { main: 1, subtitle: 1, info: 1 },
-  cards: [
-    { id: 1, zone: 'America/Los_Angeles', span: 'full' }, // US, featured
-    { id: 2, zone: 'Europe/London',        span: 'cell' },
-    { id: 3, zone: 'Asia/Seoul',           span: 'cell' },
-  ],
-})
+const DEFAULT_CARDS: WorldCardConfig[] = [
+  { id: 1, zone: 'America/Los_Angeles', span: 'full' }, // US, featured
+  { id: 2, zone: 'Europe/London',        span: 'cell' },
+  { id: 3, zone: 'Asia/Seoul',           span: 'cell' },
+];
+
+// buildDefaultFields(): Record<bandId, WorldCardsFields> — every band gets the
+// same DEFAULT_CARDS (deep-cloned) + sectionMode 'three' + sizes all 1.0.
 ```
 
 Country/flag derives from the zone via `countryCodeForZone(zone)` (same helper
@@ -157,19 +172,20 @@ today's `UTC` simplification — a deliberate, minor behavior change.
 Render per `sectionMode`:
 
 - **`'three'` (current style):**
-  - main: `digits` + `ampm` (no seconds), Fullscreen flank.
-  - subtitle: `precise` + `gmtOffset` (mono), e.g. `20:09:05.27 GMT−07:00`.
-  - info: `MMM d, y` + `· {{ zoneCity }}`, e.g. `JUN 28 · LA`.
+  - **Time** tier: `digits` + `ampm` (no seconds), Fullscreen flank.
+  - **Precision** tier: `precise` + `gmtOffset` (mono), e.g.
+    `20:09:05.27 GMT−07:00`.
+  - **Date** tier: `MMM d, y` + `· {{ zoneCity }}`, e.g. `JUN 28 · LA`.
 - **`'two'`:**
-  - main: `digits` + flank (`ampm` over `seconds`, left-aligned, equal size,
-    seconds dimmed).
-  - info: same as above. No subtitle.
+  - **Time** tier: `digits` + flank (`ampm` over `seconds`, left-aligned, equal
+    size, seconds dimmed).
+  - **Date** tier: same as above. No precision row.
 
 Font scales come from CSS custom properties set by the face on the grid
-container (`--wc-main-scale`, `--wc-subtitle-scale`, `--wc-info-scale`); the card
+container (`--wc-time-scale`, `--wc-precision-scale`, `--wc-date-scale`); the card
 SCSS multiplies its base sizes by them (mirrors Fullscreen's `varsFor`). Font
-family is `system-ui` for main/info; the subtitle keeps the existing `.mono`
-stack.
+family is `system-ui` for Time/Date; the Precision tier keeps the existing
+`.mono` stack.
 
 ## Settings panel (the gear — local to the face)
 
@@ -181,7 +197,7 @@ Contents:
 
 - **Nav header** with an `xmark` close button.
 - **Layout** section: a segmented control `3 Sections | 2 Sections` →
-  `setSectionMode`.
+  `setSectionModeAll`.
 - **Cities** section: a vertical list, one row per card —
   - a zone button (flag + abbreviated city) that opens a `ZonePickerComponent`
     sub-view (same open→pick→close flow as the Fullscreen toggles' zone picker);
@@ -194,21 +210,25 @@ Contents:
 - No drag-reordering in v1 (order = insertion order). The `id` field is in place
   so reordering can be added later without a data migration.
 
-## Adjust panel (shell controls-bar button)
+## Adjust panel (shell controls-bar button, resolution-based)
 
 `WorldCardsConfigComponent` is the registry `configComponent`; it renders when
 `faceConfig.adjustOpen()` is true (set by the shell's Adjust button, exactly like
-Fullscreen). It mirrors `fullscreen-config.component` structure:
+Fullscreen). It takes a `ratio` input from the face and resolves the **active
+dimension band** from it (via `DimensionRegistry`), then reads/writes **that
+band's** sizes — so the sliders are resolution-based. Mirrors
+`fullscreen-config.component` structure:
 
 - Sliders (range `0.5–2.0`, step `0.05`, live, with a numeric readout):
-  **Main**, **Subtitle**, **Info** → `setSize(…)`.
-- The **Subtitle** slider is hidden when `sectionMode() === 'two'` (no subtitle
-  exists in that mode).
+  **Time**, **Precision**, **Date** → `setSize(activeBandId, …)`.
+- The **Precision** slider is hidden when `sectionMode() === 'two'` (no precision
+  row exists in that mode).
 
 ## Renderer & responsive layout
 
 `WorldCardsFaceComponent` injects `WorldCardsConfigStore`, `FaceConfigService`,
-and `ClockService`. Template:
+and `ClockService`, and uses the `ContainerSizeDirective` host directive (like
+Fullscreen) to measure its own width/height → `ratio` → active band. Template:
 
 ```html
 <div class="cards" [style]="styleVars()">
@@ -218,18 +238,23 @@ and `ClockService`. Template:
 </div>
 <button class="gear" appAutoHide …>…</button>
 @if (settingsOpen()) { <app-world-cards-settings (closed)="closeSettings()" /> }
-@if (faceConfig.adjustOpen()) { <app-world-cards-config (closed)="closeAdjust()" /> }
+@if (faceConfig.adjustOpen()) {
+  <app-world-cards-config [ratio]="ratio()" (closed)="closeAdjust()" />
+}
 ```
 
+- `activeFields = computed(() => store.fieldsFor(ratio()))`; `cards`,
+  `sectionMode`, and `sizes` read from it (cards/sectionMode are band-invariant
+  because broadcast).
 - `.cards` is `display: grid; grid-template-columns: repeat(auto-fit,
-  minmax(var(--wc-cell-min), 1fr));` `--wc-cell-min` scales with the **main**
-  size setting (bigger clocks → fewer, wider columns). `.full` cards get
-  `grid-column: 1 / -1`. `align-content: start`, a small inset, `column-gap`
+  minmax(var(--wc-cell-min), 1fr));` `--wc-cell-min` scales with the **Time**
+  size of the active band (bigger clocks → fewer, wider columns). `.full` cards
+  get `grid-column: 1 / -1`. `align-content: start`, a small inset, `column-gap`
   between cells (mirroring today's gutters).
 - `:host { container-type: inline-size; overflow-y: auto; }` stays, so the grid
   reacts to the face's own width (full-screen and in the scaled preview).
-- `styleVars()` (a `computed`) emits the three `--wc-*-scale` vars and
-  `--wc-cell-min` from `sizes()`.
+- `styleVars()` (a `computed`) emits `--wc-time-scale`, `--wc-precision-scale`,
+  `--wc-date-scale`, and `--wc-cell-min` from the active band's `sizes`.
 - Panel/controls coordination matches Fullscreen: opening Settings or Adjust
   sets `faceConfig.open` (hides the controls bar); closing clears it;
   `ngOnDestroy` resets `faceConfig.open`/`adjustOpen`.
@@ -238,28 +263,33 @@ and `ClockService`. Template:
 
 The SwiftUI port renders this with a `LazyVGrid` whose column count is computed
 from the available width (the divergence the porting guide expects); full-row
-cards use a single-column section. The data model (`WorldCardsConfig`) ports 1:1.
+cards use a single-column section. The `WorldCardsFields` model and per-band
+sizing port 1:1 onto the existing band machinery.
 
 ## Testing
 
 Vitest specs alongside each unit:
 
-- **Store:** default shape; `addCard`/`removeCard` with `MIN`/`MAX` guards;
-  `setCardZone`/`setCardSpan`/`setSectionMode`/`setSize`; persistence round-trip;
-  version migration fills missing fields without dropping cards.
-- **Card:** 3-section renders subtitle, 2-section omits it; seconds appear in the
-  main only in 2-section; abbreviated zone (`LA`); flag country derived from
-  zone; `.full` host class when `span === 'full'`.
-- **Settings:** Add appends (and is disabled at MAX); remove (and last-card
-  guard); span toggle writes; section-mode segmented control writes; zone-picker
-  open→pick updates the right card.
-- **Adjust:** each slider writes its size; Subtitle slider hidden in 2-section.
+- **Store:** default shape (one fields object per band id); `addCard`/`removeCard`
+  with `MIN`/`MAX` guards broadcast to every band; `setCardZone`/`setCardSpan`/
+  `setSectionModeAll` broadcast; `setSize(band, …)` writes only that band;
+  persistence round-trip; migration fills missing fields without dropping cards.
+- **Card:** 3-section renders the precision row, 2-section omits it; seconds
+  appear in the Time tier only in 2-section; abbreviated zone (`LA`); flag country
+  derived from zone; `.full` host class when `span === 'full'`.
+- **Settings:** Add appends (disabled at MAX); remove (and last-card guard); span
+  toggle writes; section-mode segmented control writes; zone-picker open→pick
+  updates the right card.
+- **Adjust:** each slider writes its size to the resolved band; a different band
+  (different ratio) keeps its own sizes; Precision slider hidden in 2-section.
 - **Face:** renders N cards; gear opens Settings; Adjust renders via
-  `faceConfig.adjustOpen()`; `styleVars()` reflects `sizes()`.
+  `faceConfig.adjustOpen()`; `styleVars()` reflects the active band's sizes;
+  different ratios resolve different bands.
 - Time-dependent assertions use fixed `Date` values (repo testing guidance).
 
 ## Out of scope (YAGNI)
 
-Per-card section mode; per-card font sizes; drag-reordering; per-viewport-band
-config; a "featured card auto-sizes larger" rule (full-row cards simply have more
-room — no special sizing logic). All deferrable without reworking this model.
+Per-card section mode; per-card font sizes; per-band card lists or spans;
+drag-reordering; a "featured card auto-sizes larger" rule (full-row cards simply
+have more room — no special sizing logic). All deferrable without reworking this
+model.
