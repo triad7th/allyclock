@@ -64,7 +64,8 @@
   opacity: 0.32;
   margin-top: auto;
   // Right-align the seconds under AM/PM (right edges flush).
-  align-self: flex-end;  
+  align-self: flex-end;
+  padding-bottom: 0.1em; 
 }
 
 .date {
