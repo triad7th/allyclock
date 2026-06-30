@@ -39,7 +39,7 @@ export class WorldCardsConfigStore extends BandConfigStore<WorldCardsFields> {
   // cards + sectionMode are broadcast to every band, so any band is a faithful
   // sample for reading those global values.
   sample(): WorldCardsFields {
-    return Object.values(this.state().byBand)[0];
+    return Object.values(this.state().byBand)[0] ?? Object.values(this.buildDefaults())[0];
   }
 
   private nextId(): number {
@@ -90,6 +90,8 @@ export class WorldCardsConfigStore extends BandConfigStore<WorldCardsFields> {
   ): WorldCardsFields {
     return {
       sectionMode: persisted.sectionMode ?? defaults.sectionMode,
+      // Cards are migrated wholesale (all-or-nothing). If WorldCardConfig ever
+      // gains a field, heal per-card here instead of taking persisted as-is.
       cards: persisted.cards ?? defaults.cards,
       sizes: { ...defaults.sizes, ...persisted.sizes },
     };
