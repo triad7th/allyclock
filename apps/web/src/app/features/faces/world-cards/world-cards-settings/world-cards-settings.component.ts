@@ -39,7 +39,7 @@ export class WorldCardsSettingsComponent {
 
   readonly countryFor = countryCodeForZone;
   cityLabel(zone: string): string {
-    return zoneCity(zone, true);
+    return zoneCity(zone, true) || this.zoneOptions.find((z) => z.id === zone)?.label || zone;
   }
   selectedZone(): string {
     const id = this.editingCardId();

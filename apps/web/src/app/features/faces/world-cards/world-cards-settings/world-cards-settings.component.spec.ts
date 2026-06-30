@@ -73,4 +73,13 @@ describe('WorldCardsSettingsComponent', () => {
     expect(store.sample().cards.find((c) => c.id === firstId)!.zone).toBe('Asia/Tokyo');
     expect(fixture.nativeElement.querySelector('app-zone-picker')).toBeNull();
   });
+
+  it('shows a GMT offset label for offset zones', () => {
+    const fixture = TestBed.createComponent(WorldCardsSettingsComponent);
+    fixture.detectChanges();
+    store.setCardZone(store.sample().cards[0].id, '-08:00');
+    fixture.detectChanges();
+    const cityName = fixture.nativeElement.querySelector('.city-row .city-name');
+    expect(cityName.textContent).toBe('GMT−08:00');
+  });
 });

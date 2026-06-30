@@ -107,6 +107,11 @@ describe('zoneCity', () => {
     expect(zoneCity('UTC', false)).toBe('UTC');
     expect(zoneCity('UTC', true)).toBe('UTC');
   });
+
+  it('returns no city for fixed-offset zones (the globe offset conveys them)', () => {
+    expect(zoneCity('-08:00', true)).toBe('');
+    expect(zoneCity('+05:30', false)).toBe('');
+  });
 });
 
 describe('dateParts', () => {
