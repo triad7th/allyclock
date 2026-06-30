@@ -16,6 +16,8 @@
   aspect-ratio: 1 / 1;
   border-radius: 16px;
   overflow: hidden;
+  // Bright globe for countryless/offset zones (the flag fallback inherits this).
+  color: #fff;
 }
 
 .times {

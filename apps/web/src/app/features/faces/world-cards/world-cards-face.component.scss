@@ -16,12 +16,16 @@
   padding: 0 0.5rem;
 }
 // A row of cards dividing the width evenly (always horizontally maximized).
+// Cards wrap once they'd get narrower than the basis below — so when the
+// time/date would start crowding the flag, the row collapses toward a single
+// column instead of overlapping. The basis scales with the Time size.
 .line {
   display: flex;
+  flex-wrap: wrap;
   column-gap: 1.5rem;
 }
 .line > app-card {
-  flex: 1 1 0;
+  flex: 1 1 calc(20rem * var(--wc-time-scale, 1));
   min-width: 0;
 }
 
