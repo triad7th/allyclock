@@ -53,16 +53,18 @@
 .ampm {
   font-size: calc(1.05rem * var(--wc-time-scale, 1));
   font-weight: 300;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.05em;
   opacity: 0.85;
   margin-top: 0.4em;
 }
 .seconds {
   font-size: calc(1.05rem * var(--wc-time-scale, 1));
   font-weight: 300;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.05em;
   opacity: 0.32;
   margin-top: auto;
+  // Right-align the seconds under AM/PM (right edges flush).
+  align-self: flex-end;  
 }
 
 .date {
