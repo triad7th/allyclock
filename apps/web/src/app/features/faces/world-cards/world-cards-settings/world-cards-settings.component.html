@@ -1,0 +1,82 @@
+<app-sheet sheetLabel="World Cards" (closed)="onSheetClosed()">
+  <div class="cfg">
+    <app-nav-header title="World Cards" [flush]="true">
+      <app-icon-button navLeading icon="xmark" label="Close" (click)="close()" />
+    </app-nav-header>
+
+    @if (editingCardId() === null) {
+      <div class="knobs-panel">
+        <!-- Layout: section mode -->
+        <div class="knobs-section">
+          <div class="knobs-segment-row">
+            <span class="knobs-section-label">Layout</span>
+            <div class="knobs-segment" role="radiogroup" data-knob="section-mode" aria-label="Section mode">
+              <button
+                type="button"
+                role="radio"
+                class="knobs-segment-btn"
+                [class.on]="sectionMode() === 'three'"
+                [attr.aria-checked]="sectionMode() === 'three'"
+                data-mode="three"
+                (click)="setSectionMode('three')"
+              >3 Sections</button>
+              <button
+                type="button"
+                role="radio"
+                class="knobs-segment-btn"
+                [class.on]="sectionMode() === 'two'"
+                [attr.aria-checked]="sectionMode() === 'two'"
+                data-mode="two"
+                (click)="setSectionMode('two')"
+              >2 Sections</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cities -->
+        <div class="knobs-section">
+          <span class="knobs-section-label">Cities</span>
+          @for (card of cards(); track card.id) {
+            <div class="city-row" [attr.data-card]="card.id">
+              <button type="button" class="city-zone" data-knob="card-zone" (click)="openZonePicker(card.id)">
+                <app-flag class="city-flag" [countryCode]="countryFor(card.zone)" />
+                <span class="city-name">{{ cityLabel(card.zone) }}</span>
+              </button>
+              <div class="knobs-segment span-seg" role="radiogroup" data-knob="card-span" aria-label="Card width">
+                <button
+                  type="button"
+                  role="radio"
+                  class="knobs-segment-btn"
+                  [class.on]="card.span === 'full'"
+                  [attr.aria-checked]="card.span === 'full'"
+                  data-span="full"
+                  (click)="setSpan(card.id, 'full')"
+                >Full</button>
+                <button
+                  type="button"
+                  role="radio"
+                  class="knobs-segment-btn"
+                  [class.on]="card.span === 'cell'"
+                  [attr.aria-checked]="card.span === 'cell'"
+                  data-span="cell"
+                  (click)="setSpan(card.id, 'cell')"
+                >Cell</button>
+              </div>
+              @if (canRemove()) {
+                <app-icon-button class="city-remove" icon="trash" variant="destructive" label="Remove" data-knob="card-remove" (click)="remove(card.id)" />
+              }
+            </div>
+          }
+          <button type="button" class="add-city" data-knob="add-card" (click)="add()" [disabled]="!canAdd()">
+            <app-icon name="plus" /> Add City
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div class="knobs-zonepicker">
+        <app-zone-picker [options]="zoneOptions" [selectedId]="selectedZone()" (picked)="pickZone($event)" />
+        <button type="button" class="knobs-tz-back" (click)="closeZonePicker()">Cancel</button>
+      </div>
+    }
+  </div>
+</app-sheet>

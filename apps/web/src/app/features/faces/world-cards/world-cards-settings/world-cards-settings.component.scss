@@ -1,0 +1,167 @@
+@use 'tokens' as t;
+
+.cfg {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: t.$label;
+  padding: 0.5rem 1.5rem 2rem;
+}
+
+app-nav-header {
+  display: block;
+  flex: 0 0 auto;
+  margin-bottom: 1.5rem;
+}
+
+.knobs-panel {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1.5rem;
+}
+
+.knobs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+}
+
+.knobs-section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: t.$secondary-label;
+}
+
+.knobs-segment-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.knobs-segment {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  background: t.$secondary-surface;
+  border-radius: 9px;
+}
+
+.knobs-segment-btn {
+  flex: 1 1 0;
+  border: none;
+  background: transparent;
+  color: t.$secondary-label;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.4rem 0;
+  border-radius: 7px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &.on {
+    background: t.$tint;
+    color: #fff;
+  }
+}
+
+// One card's editable row: zone button | span toggle | remove.
+.city-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.city-zone {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: t.$secondary-surface;
+  border: none;
+  border-radius: 8px;
+  color: t.$tint;
+  font-size: 0.9rem;
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+
+  &:hover {
+    background: t.$secondary-surface-hover;
+  }
+}
+
+.city-flag {
+  flex: 0 0 auto;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 4px;
+  color: t.$secondary-label;
+}
+
+.city-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.span-seg {
+  flex: 0 0 8rem;
+}
+
+.add-city {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+  background: none;
+  border: none;
+  color: t.$tint;
+  font-size: 0.9rem;
+  padding: 0.4rem;
+  cursor: pointer;
+
+  app-icon {
+    width: 1em;
+    height: 1em;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+.knobs-zonepicker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.knobs-tz-back {
+  align-self: center;
+  background: none;
+  border: none;
+  color: t.$tint;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
