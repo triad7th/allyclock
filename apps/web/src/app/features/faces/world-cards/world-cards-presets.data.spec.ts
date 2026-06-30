@@ -14,7 +14,7 @@ describe('buildDefaultFields', () => {
       expect(fields.sizes).toEqual({ time: 1, date: 1 });
       expect(fields.cards.map((c) => c.zone)).toEqual([
         'America/Los_Angeles',
-        'Europe/London',
+        'UTC',
         'Asia/Seoul',
       ]);
       expect(fields.cards[0].lineBreak).toBe(true);

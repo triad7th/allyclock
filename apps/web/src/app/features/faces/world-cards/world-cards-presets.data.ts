@@ -1,10 +1,10 @@
 import { BUILT_IN_BANDS } from '@core/dimensions/dimension-band';
 import type { WorldCardConfig, WorldCardsFields } from './world-cards-config';
 
-// US (ends its row), UK + KR together on the second row.
+// LA (ends its row), UTC + SEO together on the second row.
 const DEFAULT_CARDS: WorldCardConfig[] = [
   { id: 1, zone: 'America/Los_Angeles', lineBreak: true },
-  { id: 2, zone: 'Europe/London', lineBreak: false },
+  { id: 2, zone: 'UTC', lineBreak: false },
   { id: 3, zone: 'Asia/Seoul', lineBreak: false },
 ];
 

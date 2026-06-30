@@ -15,11 +15,12 @@
   // Small inset so content/borders aren't hard against the edges.
   padding: 0 0.5rem;
 }
-// A row of cards dividing the width evenly. Each card has a min-width that
-// holds its content (flag + the longest time/date line), so flexbox WRAPS the
-// row before a card gets narrow enough for the time/date to crowd the flag —
-// collapsing 3→2→1 columns as the width shrinks. `min(…, 100%)` keeps a lone
-// card from exceeding a very narrow viewport (or the face-picker preview).
+// A row of cards dividing the width evenly. Each card's min-width tracks its
+// real content — the flag (scales with Time) plus the date column (scales with
+// Date) — so flexbox wraps the row 3→2→1 only when a card would actually get
+// too narrow for the date to clear the flag. Basing it on the date (not the
+// whole card × Time) avoids over-wrapping when the Time size is large.
+// `min(…, 100%)` keeps a lone card from exceeding a narrow viewport / preview.
 .line {
   display: flex;
   flex-wrap: wrap;
@@ -27,7 +28,7 @@
 }
 .line > app-card {
   flex: 1 1 0;
-  min-width: min(calc(25rem * var(--wc-time-scale, 1)), 100%);
+  min-width: min(calc(92px * var(--wc-time-scale, 1) + 18rem * var(--wc-date-scale, 1)), 100%);
 }
 
 // Bottom-right gear: opens the Settings panel. Auto-hides with the other
