@@ -15,7 +15,8 @@ and Adjust — mirroring the Fullscreen face**:
   global **section mode** (3-section vs 2-section).
 - **Adjust** (the shell controls-bar button): three **resolution-based**
   font-size sliders — **Time** (clock), **Precision** (`HH:mm:ss.cc` + GMT),
-  **Date** (date + zone name) — tuned per dimension band, like Fullscreen.
+  **Date** (date + zone name + compact globe offset) — tuned per dimension band,
+  like Fullscreen.
 - A **responsive grid renderer** that auto-fits *cell* cards into as many
   columns as the container width allows, with *full-row* cards spanning all
   columns.
@@ -166,6 +167,9 @@ today's `UTC` simplification — a deliberate, minor behavior change.
   - `bigTime(now, locale, zone)` → `{ digits, ampm, seconds }`.
   - `precise(now, zone)` → `HH:mm:ss.cc`; `gmtOffset(now, zone)` → `GMT−07:00`.
   - `zoneCity(zone, true)` → abbreviated city (`LA`).
+  - `compactOffset(now, zone)` → `−7` / `+9` / `+5:30` (minutes only when the
+    zone isn't on a whole hour), rendered with a leading globe `app-icon` — the
+    same globe + compact-offset treatment as the Fullscreen date row.
   - Calendar date (`MMM d, y`) via `DatePipe` (already a dependency), then
     `· {{ zoneCity }}`.
 
@@ -174,12 +178,14 @@ Render per `sectionMode`:
 - **`'three'` (current style):**
   - **Time** tier: `digits` + `ampm` (no seconds), Fullscreen flank.
   - **Precision** tier: `precise` + `gmtOffset` (mono), e.g.
-    `20:09:05.27 GMT−07:00`.
-  - **Date** tier: `MMM d, y` + `· {{ zoneCity }}`, e.g. `JUN 28 · LA`.
+    `20:09:05.27 GMT−07:00` (keeps the full technical GMT).
+  - **Date** tier: `MMM d, y` + `· {{ zoneCity }}` + `· 🌐{{ compactOffset }}`,
+    e.g. `JUN 28 · LA · 🌐−7`.
 - **`'two'`:**
   - **Time** tier: `digits` + flank (`ampm` over `seconds`, left-aligned, equal
     size, seconds dimmed).
-  - **Date** tier: same as above. No precision row.
+  - **Date** tier: same as above (`JUN 28 · LA · 🌐−7`). No precision row — the
+    Date row's globe offset is the only zone-offset indicator in this mode.
 
 Font scales come from CSS custom properties set by the face on the grid
 container (`--wc-time-scale`, `--wc-precision-scale`, `--wc-date-scale`); the card
@@ -275,8 +281,10 @@ Vitest specs alongside each unit:
   `setSectionModeAll` broadcast; `setSize(band, …)` writes only that band;
   persistence round-trip; migration fills missing fields without dropping cards.
 - **Card:** 3-section renders the precision row, 2-section omits it; seconds
-  appear in the Time tier only in 2-section; abbreviated zone (`LA`); flag country
-  derived from zone; `.full` host class when `span === 'full'`.
+  appear in the Time tier only in 2-section; abbreviated zone (`LA`); Date row
+  shows the globe icon + compact offset (`−7`, minutes only when needed — assert
+  a whole-hour and a `:30` zone); flag country derived from zone; `.full` host
+  class when `span === 'full'`.
 - **Settings:** Add appends (disabled at MAX); remove (and last-card guard); span
   toggle writes; section-mode segmented control writes; zone-picker open→pick
   updates the right card.
