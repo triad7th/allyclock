@@ -1,0 +1,78 @@
+@use 'tokens' as t;
+
+.cfg {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: t.$label;
+  padding: 0.5rem 1.5rem 2rem;
+  container-type: inline-size;
+}
+
+app-nav-header {
+  display: block;
+  flex: 0 0 auto;
+  margin-bottom: 1.5rem;
+}
+
+.knobs-panel {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding-top: 1.5rem;
+}
+
+@container (min-width: 600px) {
+  .knobs-panel {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.knobs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  min-height: 5.5rem;
+}
+
+.knobs-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.knobs-section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: t.$secondary-label;
+}
+
+.knobs-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.knobs-row-value {
+  font-size: 0.72rem;
+  color: t.$label;
+  font-variant-numeric: tabular-nums;
+  flex: 0 0 2.4rem;
+  text-align: right;
+}
+
+.knobs-slider {
+  flex: 1 1 auto;
+  min-width: 0;
+}
