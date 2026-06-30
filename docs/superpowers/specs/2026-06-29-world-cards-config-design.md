@@ -170,8 +170,8 @@ today's `UTC` simplification — a deliberate, minor behavior change.
   - `compactOffset(now, zone)` → `−7` / `+9` / `+5:30` (minutes only when the
     zone isn't on a whole hour), rendered with a leading globe `app-icon` — the
     same globe + compact-offset treatment as the Fullscreen date row.
-  - Calendar date (`MMM d, y`) via `DatePipe` (already a dependency), then
-    `· {{ zoneCity }}`.
+  - Calendar date (`MMM d, y`) via `Intl.DateTimeFormat` with the IANA zone
+    (`DatePipe` can't take IANA zone names), then `· {{ zoneCity }}`.
 
 Render per `sectionMode`:
 
