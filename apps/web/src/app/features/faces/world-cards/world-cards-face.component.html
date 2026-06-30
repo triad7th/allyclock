@@ -1,5 +1,24 @@
-<div class="cards">
-  <app-card state="US"></app-card>
-  <app-card state="UK"></app-card>
-  <app-card state="KR"></app-card>
+<div class="cards" [style]="styleVars()">
+  @for (card of cards(); track card.id) {
+    <app-card [zone]="card.zone" [sectionMode]="sectionMode()" [span]="card.span" />
+  }
 </div>
+<button
+  appAutoHide
+  #ah="autoHide"
+  [revealBlocked]="faceConfig.open()"
+  type="button"
+  class="gear"
+  [class.hidden]="!ah.visible()"
+  (click)="openSettings()"
+  aria-label="World Cards settings"
+  title="World Cards settings"
+>
+  <app-icon name="gearshape" />
+</button>
+@if (settingsOpen()) {
+  <app-world-cards-settings (closed)="closeSettings()" />
+}
+@if (faceConfig.adjustOpen()) {
+  <app-world-cards-config [ratio]="ratio()" (closed)="closeAdjust()" />
+}

@@ -1,14 +1,22 @@
-<div class="card-row d-flex flex-row justify-content-between align-items-center">
-  <app-flag class="flag" [countryCode]="countryCode()" [name]="state()" />
-  <div class="times d-flex flex-column justify-content-center align-items-end text-white">
-    <h1 class="time-primary">
-      {{ now() | date: 'hh:mm a' : timeZone() }}
-    </h1>
-    <h5 class="time-detail mono">
-      {{ now() | date: 'HH:mm:ss.SS zzzz' : timeZone() }}
-    </h5>
-    <h5 class="time-date mono">
-      {{ now() | date: 'MMM d, y, zzzz' : timeZone() }}
-    </h5>
+<div class="card-row">
+  <app-flag class="flag" [countryCode]="countryCode()" />
+  <div class="times">
+    <div class="time">
+      <span class="digits">{{ big().digits }}</span>
+      <span class="flank">
+        @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
+        @if (sectionMode() === 'two') { <span class="seconds">{{ big().seconds }}</span> }
+      </span>
+    </div>
+    @if (sectionMode() === 'three') {
+      <div class="precision mono">{{ precision() }}</div>
+    }
+    <div class="date">
+      <span class="cal">{{ dateLabel() }}</span>
+      <span class="sep">·</span>
+      <span class="city">{{ city() }}</span>
+      <span class="sep">·</span>
+      <span class="offset"><app-icon class="globe" name="globe" />{{ offset() }}</span>
+    </div>
   </div>
 </div>

@@ -1,50 +1,104 @@
 :host {
   display: block;
 }
+// Full-row cards span every grid column; cell cards take a single auto-fit slot.
+:host(.full) {
+  grid-column: 1 / -1;
+}
 
 .card-row {
+  display: flex;
+  align-items: center;
   gap: 0.75rem;
-  // No horizontal padding: the bottom border lines up flush with the flag on
-  // the left and the time content on the right (gutter between cards comes from
-  // the grid column-gap, like the original).
   padding: 1rem 0;
   border-bottom: 1px solid #fff;
 }
 
 .flag {
   flex: 0 0 auto;
-  width: 110px;
+  width: calc(70px * var(--wc-time-scale, 1));
   aspect-ratio: 1 / 1;
   border-radius: 16px;
   overflow: hidden;
 }
 
 .times {
+  flex: 1 1 auto;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-.time-primary {
-  margin: 0 0 0.4rem;
-  font-size: 3.77rem;
-  line-height: 1;
+// Big time: digits + a left-aligned flank (AM/PM near the cap, seconds
+// bottom-anchored). Seconds share AM/PM's size, just dimmed.
+.time {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.06em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+.digits {
+  font-size: calc(3.4rem * var(--wc-time-scale, 1));
+  font-weight: 250;
+  letter-spacing: -0.01em;
+}
+.flank {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.ampm {
+  font-size: calc(0.85rem * var(--wc-time-scale, 1));
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  opacity: 0.85;
+  margin-top: 0.4em;
+}
+.seconds {
+  font-size: calc(0.85rem * var(--wc-time-scale, 1));
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  opacity: 0.32;
+  margin-top: auto;
+}
+
+.precision {
+  margin-top: 0.3rem;
+  font-size: calc(1.15rem * var(--wc-precision-scale, 1));
+  opacity: 0.9;
   white-space: nowrap;
 }
 
-.time-detail {
-  margin: 0;
-  font-size: 1.3rem;
+.date {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  margin-top: 0.3rem;
+  font-size: calc(0.9rem * var(--wc-date-scale, 1));
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.7;
   white-space: nowrap;
 }
-
-.time-date {
-  margin: 0;
-  font-size: 1rem;
+.date .sep {
+  opacity: 0.5;
+}
+.offset {
   white-space: nowrap;
 }
+.globe {
+  width: 0.82em;
+  height: 0.82em;
+  vertical-align: -0.1em;
+  margin-right: 0.12em;
+}
 
-// Cross-platform monospace stack. `consolas` alone only resolves on Windows;
-// macOS has no Consolas, so it fell back to the default sans-serif. Ending in
-// the generic `monospace` keyword guarantees a monospace face on every OS.
+// Cross-platform monospace stack for the precision row.
 .mono {
   font-family:
     'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
