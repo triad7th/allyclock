@@ -4,6 +4,7 @@ import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { FaceConfigService } from '@core/face-config.service';
 import { WorldCardsConfigStore } from './world-cards-config-store.service';
+import { type WorldCardConfig } from './world-cards-config';
 import { CardComponent } from './card/card.component';
 import { WorldCardsSettingsComponent } from './world-cards-settings/world-cards-settings.component';
 import { WorldCardsConfigComponent } from './world-cards-config/world-cards-config.component';
@@ -33,16 +34,26 @@ export class WorldCardsFaceComponent implements OnDestroy {
   });
   readonly activeFields = computed(() => this.store.fieldsFor(this.ratio()));
   readonly cards = computed(() => this.activeFields().cards);
-  readonly sectionMode = computed(() => this.activeFields().sectionMode);
+
+  readonly lines = computed<WorldCardConfig[][]>(() => {
+    const rows: WorldCardConfig[][] = [];
+    let row: WorldCardConfig[] = [];
+    for (const card of this.cards()) {
+      row.push(card);
+      if (card.lineBreak) {
+        rows.push(row);
+        row = [];
+      }
+    }
+    if (row.length) rows.push(row);
+    return rows;
+  });
 
   readonly styleVars = computed<Record<string, string>>(() => {
     const s = this.activeFields().sizes;
     return {
       '--wc-time-scale': `${s.time}`,
-      '--wc-precision-scale': `${s.precision}`,
       '--wc-date-scale': `${s.date}`,
-      // Min cell width scales with the Time size: bigger clocks → fewer, wider columns.
-      '--wc-cell-min': `calc(16rem * ${s.time})`,
     };
   });
 

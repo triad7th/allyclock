@@ -58,21 +58,14 @@ describe('WorldCardsConfigStore', () => {
     expect(store.sample().cards.length).toBe(1);
   });
 
-  it('setCardZone and setCardSpan broadcast to every band', () => {
+  it('setCardZone and setCardLineBreak broadcast to every band', () => {
     const id = store.sample().cards[1].id;
     store.setCardZone(id, 'Asia/Seoul');
-    store.setCardSpan(id, 'full');
+    store.setCardLineBreak(id, true);
     for (const fields of Object.values(store.state().byBand)) {
       const card = fields.cards.find((c) => c.id === id)!;
       expect(card.zone).toBe('Asia/Seoul');
-      expect(card.span).toBe('full');
-    }
-  });
-
-  it('setSectionModeAll broadcasts to every band', () => {
-    store.setSectionModeAll('two');
-    for (const fields of Object.values(store.state().byBand)) {
-      expect(fields.sectionMode).toBe('two');
+      expect(card.lineBreak).toBe(true);
     }
   });
 

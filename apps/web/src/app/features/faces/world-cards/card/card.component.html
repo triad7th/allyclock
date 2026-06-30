@@ -5,16 +5,15 @@
       <span class="digits">{{ big().digits }}</span>
       <span class="flank">
         @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
-        @if (sectionMode() === 'two') { <span class="seconds">{{ big().seconds }}</span> }
+        <span class="seconds">{{ big().seconds }}</span>
       </span>
     </div>
-    @if (sectionMode() === 'three') {
-      <div class="precision mono">{{ precision() }}</div>
-    }
     <div class="date">
       <span class="cal">{{ dateLabel() }}</span>
-      <span class="sep">·</span>
-      <span class="city">{{ city() }}</span>
+      @if (city(); as c) {
+        <span class="sep">·</span>
+        <span class="city">{{ c }}</span>
+      }
       <span class="sep">·</span>
       <span class="offset"><app-icon class="globe" name="globe" />{{ offset() }}</span>
     </div>

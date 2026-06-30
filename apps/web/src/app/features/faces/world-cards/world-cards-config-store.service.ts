@@ -5,8 +5,6 @@ import { buildDefaultFields } from './world-cards-presets.data';
 import {
   type WorldCardsFields,
   type WorldCardConfig,
-  type SectionMode,
-  type CardSpan,
   type WorldCardSizes,
   MIN_CARDS,
   MAX_CARDS,
@@ -36,7 +34,7 @@ export class WorldCardsConfigStore extends BandConfigStore<WorldCardsFields> {
     return this.config(this.registry.resolveForRatio(ratio).id);
   }
 
-  // cards + sectionMode are broadcast to every band, so any band is a faithful
+  // cards are broadcast to every band, so any band is a faithful
   // sample for reading those global values.
   sample(): WorldCardsFields {
     return Object.values(this.state().byBand)[0] ?? Object.values(this.buildDefaults())[0];
@@ -47,14 +45,10 @@ export class WorldCardsConfigStore extends BandConfigStore<WorldCardsFields> {
     return (ids.length ? Math.max(...ids) : 0) + 1;
   }
 
-  setSectionModeAll(mode: SectionMode): void {
-    this.patchAll((f) => ({ ...f, sectionMode: mode }));
-  }
-
   // Global: broadcast the new card list to every band. No-op at MAX_CARDS.
   addCard(zone: string): void {
     if (this.sample().cards.length >= MAX_CARDS) return;
-    const card: WorldCardConfig = { id: this.nextId(), zone, span: 'cell' };
+    const card: WorldCardConfig = { id: this.nextId(), zone, lineBreak: false };
     this.patchAll((f) => ({ ...f, cards: [...f.cards, { ...card }] }));
   }
 
@@ -70,10 +64,10 @@ export class WorldCardsConfigStore extends BandConfigStore<WorldCardsFields> {
     }));
   }
 
-  setCardSpan(id: number, span: CardSpan): void {
+  setCardLineBreak(id: number, lineBreak: boolean): void {
     this.patchAll((f) => ({
       ...f,
-      cards: f.cards.map((c) => (c.id === id ? { ...c, span } : c)),
+      cards: f.cards.map((c) => (c.id === id ? { ...c, lineBreak } : c)),
     }));
   }
 
@@ -89,7 +83,6 @@ export class WorldCardsConfigStore extends BandConfigStore<WorldCardsFields> {
     persisted: WorldCardsFields,
   ): WorldCardsFields {
     return {
-      sectionMode: persisted.sectionMode ?? defaults.sectionMode,
       // Cards are migrated wholesale (all-or-nothing). If WorldCardConfig ever
       // gains a field, heal per-card here instead of taking persisted as-is.
       cards: persisted.cards ?? defaults.cards,

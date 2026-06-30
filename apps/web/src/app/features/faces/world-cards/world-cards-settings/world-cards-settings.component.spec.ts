@@ -26,16 +26,6 @@ describe('WorldCardsSettingsComponent', () => {
     store = TestBed.inject(WorldCardsConfigStore);
   });
 
-  it('section-mode control broadcasts the mode to every band', () => {
-    const fixture = TestBed.createComponent(WorldCardsSettingsComponent);
-    fixture.detectChanges();
-    (fixture.nativeElement.querySelector('[data-mode="two"]') as HTMLButtonElement).click();
-    fixture.detectChanges();
-    for (const fields of Object.values(store.state().byBand)) {
-      expect(fields.sectionMode).toBe('two');
-    }
-  });
-
   it('renders one row per card and adds a card on Add City', () => {
     const fixture = TestBed.createComponent(WorldCardsSettingsComponent);
     fixture.detectChanges();
@@ -58,16 +48,16 @@ describe('WorldCardsSettingsComponent', () => {
     expect(fixture.nativeElement.querySelector('[data-knob="card-remove"]')).toBeNull();
   });
 
-  it('span toggle writes the card span to every band', () => {
+  it('line-break toggle flips the card lineBreak for that card across every band', () => {
     const fixture = TestBed.createComponent(WorldCardsSettingsComponent);
     fixture.detectChanges();
-    // Second card defaults to 'cell'; click its Full button.
+    // First card defaults to lineBreak: true; click its toggle (turns off).
     const rows = fixture.nativeElement.querySelectorAll('.city-row');
-    (rows[1].querySelector('[data-span="full"]') as HTMLButtonElement).click();
+    (rows[0].querySelector('[data-knob="card-linebreak"]') as HTMLButtonElement).click();
     fixture.detectChanges();
-    const id = store.sample().cards[1].id;
+    const id = store.sample().cards[0].id;
     for (const fields of Object.values(store.state().byBand)) {
-      expect(fields.cards.find((c) => c.id === id)!.span).toBe('full');
+      expect(fields.cards.find((c) => c.id === id)!.lineBreak).toBe(false);
     }
   });
 

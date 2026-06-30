@@ -25,14 +25,14 @@ describe('WorldCardsFaceComponent', () => {
     await TestBed.configureTestingModule({ imports: [WorldCardsFaceComponent] }).compileComponents();
   });
 
-  it('renders one card per configured zone, full cards spanning the grid', () => {
+  it('default cards produce 2 rows: first row 1 card, second row 2 cards', () => {
     const fixture = TestBed.createComponent(WorldCardsFaceComponent);
     fixture.detectChanges();
-    const cards = fixture.nativeElement.querySelectorAll('app-card');
-    expect(cards).toHaveLength(3); // default US/UK/KR
-    // The first default card is full-row.
-    expect((cards[0] as HTMLElement).classList.contains('full')).toBe(true);
-    expect((cards[1] as HTMLElement).classList.contains('full')).toBe(false);
+    const lines = fixture.nativeElement.querySelectorAll('.line');
+    expect(lines).toHaveLength(2);
+    expect(lines[0].querySelectorAll('app-card')).toHaveLength(1);
+    expect(lines[1].querySelectorAll('app-card')).toHaveLength(2);
+    expect(fixture.nativeElement.querySelectorAll('app-card')).toHaveLength(3);
   });
 
   it('opens the Settings panel from the gear', () => {

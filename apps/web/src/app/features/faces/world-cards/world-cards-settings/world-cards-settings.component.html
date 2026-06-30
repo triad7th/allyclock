@@ -6,33 +6,6 @@
 
     @if (editingCardId() === null) {
       <div class="knobs-panel">
-        <!-- Layout: section mode -->
-        <div class="knobs-section">
-          <div class="knobs-segment-row">
-            <span class="knobs-section-label">Layout</span>
-            <div class="knobs-segment" role="radiogroup" data-knob="section-mode" aria-label="Section mode">
-              <button
-                type="button"
-                role="radio"
-                class="knobs-segment-btn"
-                [class.on]="sectionMode() === 'three'"
-                [attr.aria-checked]="sectionMode() === 'three'"
-                data-mode="three"
-                (click)="setSectionMode('three')"
-              >3 Sections</button>
-              <button
-                type="button"
-                role="radio"
-                class="knobs-segment-btn"
-                [class.on]="sectionMode() === 'two'"
-                [attr.aria-checked]="sectionMode() === 'two'"
-                data-mode="two"
-                (click)="setSectionMode('two')"
-              >2 Sections</button>
-            </div>
-          </div>
-        </div>
-
         <!-- Cities -->
         <div class="knobs-section">
           <span class="knobs-section-label">Cities</span>
@@ -42,26 +15,16 @@
                 <app-flag class="city-flag" [countryCode]="countryFor(card.zone)" />
                 <span class="city-name">{{ cityLabel(card.zone) }}</span>
               </button>
-              <div class="knobs-segment span-seg" role="radiogroup" data-knob="card-span" aria-label="Card width">
-                <button
-                  type="button"
-                  role="radio"
-                  class="knobs-segment-btn"
-                  [class.on]="card.span === 'full'"
-                  [attr.aria-checked]="card.span === 'full'"
-                  data-span="full"
-                  (click)="setSpan(card.id, 'full')"
-                >Full</button>
-                <button
-                  type="button"
-                  role="radio"
-                  class="knobs-segment-btn"
-                  [class.on]="card.span === 'cell'"
-                  [attr.aria-checked]="card.span === 'cell'"
-                  data-span="cell"
-                  (click)="setSpan(card.id, 'cell')"
-                >Cell</button>
-              </div>
+              <button
+                type="button"
+                class="knobs-toggle"
+                [class.on]="card.lineBreak"
+                data-knob="card-linebreak"
+                [attr.aria-label]="card.lineBreak ? 'Line break on' : 'Line break off'"
+                (click)="setLineBreak(card.id, !card.lineBreak)"
+              >
+                <span class="knobs-toggle-thumb"></span>
+              </button>
               @if (canRemove()) {
                 <app-icon-button class="city-remove" icon="trash" variant="destructive" label="Remove" data-knob="card-remove" (click)="remove(card.id)" />
               }

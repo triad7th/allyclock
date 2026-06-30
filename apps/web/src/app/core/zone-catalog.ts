@@ -56,6 +56,24 @@ export function buildTimeZoneOptions(localZone: string, at: Date): TimeZoneOptio
     .sort((a, b) => a.offset - b.offset || a.id.localeCompare(b.id));
 }
 
+// Fixed-offset "special" zones for the picker: UTC plus every 30-minute GMT
+// offset from −12:00 to +14:00. Ids are ASCII offset strings ('+05:30',
+// '-08:00') which Intl.DateTimeFormat accepts as time zones; labels use U+2212
+// for the minus to match the rest of the app.
+export function buildSpecialZones(): TimeZoneOption[] {
+  const zones: TimeZoneOption[] = [{ id: 'UTC', label: 'UTC', offset: 0 }];
+  for (let min = -720; min <= 840; min += 30) {
+    if (min === 0) continue; // UTC already covers +00:00
+    const sign = min < 0 ? '-' : '+';
+    const abs = Math.abs(min);
+    const hh = String(Math.floor(abs / 60)).padStart(2, '0');
+    const mm = String(abs % 60).padStart(2, '0');
+    const display = min < 0 ? '−' : '+';
+    zones.push({ id: `${sign}${hh}:${mm}`, label: `GMT${display}${hh}:${mm}`, offset: min });
+  }
+  return zones.sort((a, b) => a.offset - b.offset);
+}
+
 // App-wide cached zone catalog: the full-IANA scan runs once. Consumers (Time
 // Machine, Settings picker) read the same list.
 @Injectable({ providedIn: 'root' })

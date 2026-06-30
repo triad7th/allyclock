@@ -70,6 +70,8 @@ export function compactOffset(date: Date, timeZone: string): string {
 // multi-word city to its initials, or a single word to its first three letters
 // ("LOS ANGELES" -> "LA", "London" -> "LON", "UTC" -> "UTC").
 export function zoneCity(timeZone: string, abbreviate: boolean): string {
+  // Fixed-offset zones ('+05:30', '−08:00') have no city — the globe offset says it.
+  if (/^[+−-]\d/.test(timeZone)) return '';
   const city = (timeZone.split('/').pop() ?? timeZone).replace(/_/g, ' ');
   if (!abbreviate) return city.toUpperCase();
   const words = city.split(/[\s-]+/).filter(Boolean);

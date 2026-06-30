@@ -33,7 +33,7 @@ describe('WorldCardsConfigComponent', () => {
     return fixture;
   }
 
-  it('the Time slider writes the size to the resolved band', () => {
+  it('the Time slider writes the size to the resolved band; Date slider exists; no Precision slider', () => {
     const fixture = mount(1.6); // 1.6 → lap band
     const slider = fixture.nativeElement.querySelector('[data-knob="time-size"]') as HTMLInputElement;
     slider.value = '1.5';
@@ -41,13 +41,7 @@ describe('WorldCardsConfigComponent', () => {
     fixture.detectChanges();
     expect(store.config('lap').sizes.time).toBe(1.5);
     expect(store.config('phone').sizes.time).toBe(1); // a different band keeps its own size
-  });
-
-  it('hides the Precision slider in 2-section mode', () => {
-    store.setSectionModeAll('two');
-    const fixture = mount(1.6);
-    expect(fixture.nativeElement.querySelector('[data-knob="precision-size"]')).toBeNull();
-    expect(fixture.nativeElement.querySelector('[data-knob="time-size"]')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('[data-knob="date-size"]')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('[data-knob="precision-size"]')).toBeNull();
   });
 });

@@ -1,6 +1,10 @@
 <div class="cards" [style]="styleVars()">
-  @for (card of cards(); track card.id) {
-    <app-card [zone]="card.zone" [sectionMode]="sectionMode()" [span]="card.span" />
+  @for (row of lines(); track $index) {
+    <div class="line">
+      @for (card of row; track card.id) {
+        <app-card [zone]="card.zone" />
+      }
+    </div>
   }
 </div>
 <button

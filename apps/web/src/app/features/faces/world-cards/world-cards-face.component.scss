@@ -10,15 +10,19 @@
 }
 
 .cards {
-  display: grid;
-  // Cell cards auto-fit into as many columns as the width allows; --wc-cell-min
-  // scales with the Time size. Full-row cards span every column (set in the card).
-  grid-template-columns: repeat(auto-fit, minmax(var(--wc-cell-min, 16rem), 1fr));
-  align-content: start;
+  display: flex;
+  flex-direction: column;
   // Small inset so content/borders aren't hard against the edges.
   padding: 0 0.5rem;
-  // Horizontal gutter between cells in a multi-column row.
+}
+// A row of cards dividing the width evenly (always horizontally maximized).
+.line {
+  display: flex;
   column-gap: 1.5rem;
+}
+.line > app-card {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 // Bottom-right gear: opens the Settings panel. Auto-hides with the other

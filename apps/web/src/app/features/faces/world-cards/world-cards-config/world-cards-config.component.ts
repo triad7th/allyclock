@@ -8,9 +8,8 @@ import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.componen
 import { type WorldCardSizes } from '../world-cards-config';
 
 /**
- * Resolution-based Adjust panel for World Cards: Time / Precision / Date font
+ * Resolution-based Adjust panel for World Cards: Time / Date font
  * sizes, tuned for the dimension band that matches the face's current ratio.
- * The Precision slider is hidden in 2-section mode (no precision row exists).
  */
 @Component({
   selector: 'app-world-cards-config',
@@ -29,7 +28,6 @@ export class WorldCardsConfigComponent {
 
   readonly editingBand = computed(() => this.registry.resolveForRatio(this.ratio()));
   readonly editingFields = computed(() => this.store.config(this.editingBand().id));
-  readonly sectionMode = computed(() => this.store.sample().sectionMode);
 
   close(): void {
     this.sheet()?.close();

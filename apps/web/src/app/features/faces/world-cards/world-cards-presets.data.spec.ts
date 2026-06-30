@@ -9,17 +9,16 @@ describe('buildDefaultFields', () => {
     );
   });
 
-  it('seeds three-section mode, unit sizes, and the US/UK/KR cards on every band', () => {
+  it('seeds unit sizes and the US/UK/KR cards on every band', () => {
     for (const fields of Object.values(buildDefaultFields())) {
-      expect(fields.sectionMode).toBe('three');
-      expect(fields.sizes).toEqual({ time: 1, precision: 1, date: 1 });
+      expect(fields.sizes).toEqual({ time: 1, date: 1 });
       expect(fields.cards.map((c) => c.zone)).toEqual([
         'America/Los_Angeles',
         'Europe/London',
         'Asia/Seoul',
       ]);
-      expect(fields.cards[0].span).toBe('full');
-      expect(fields.cards[1].span).toBe('cell');
+      expect(fields.cards[0].lineBreak).toBe(true);
+      expect(fields.cards[1].lineBreak).toBe(false);
     }
   });
 

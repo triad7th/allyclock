@@ -43,42 +43,7 @@ app-nav-header {
   color: t.$secondary-label;
 }
 
-.knobs-segment-row {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.knobs-segment {
-  display: flex;
-  gap: 2px;
-  padding: 2px;
-  background: t.$secondary-surface;
-  border-radius: 9px;
-}
-
-.knobs-segment-btn {
-  flex: 1 1 0;
-  border: none;
-  background: transparent;
-  color: t.$secondary-label;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding: 0.4rem 0;
-  border-radius: 7px;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
-
-  &.on {
-    background: t.$tint;
-    color: #fff;
-  }
-}
-
-// One card's editable row: zone button | span toggle | remove.
+// One card's editable row: zone button | line-break toggle | remove.
 .city-row {
   display: flex;
   align-items: center;
@@ -120,8 +85,37 @@ app-nav-header {
   white-space: nowrap;
 }
 
-.span-seg {
-  flex: 0 0 8rem;
+.knobs-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+  border: none;
+  background: t.$secondary-surface;
+  cursor: pointer;
+  padding: 0;
+  flex: 0 0 auto;
+  transition: background 0.2s ease;
+
+  &.on {
+    background: t.$tint;
+  }
+}
+.knobs-toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+
+  .knobs-toggle.on & {
+    transform: translateX(18px);
+  }
 }
 
 .add-city {
