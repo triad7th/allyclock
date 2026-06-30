@@ -85,12 +85,24 @@ app-nav-header {
   white-space: nowrap;
 }
 
-// Section header: "Cities" on the left, a single "Line Break" column heading
-// on the right (above the per-row toggles).
+// Grid-style header: "Cities" over the zone column, "Break" directly above the
+// toggle column, and a spacer matching the trash column (only present when the
+// rows show a remove button). Column widths mirror .city-row exactly.
 .cities-header {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  gap: 0.6rem; // matches .city-row
+}
+.cities-header .cities-h {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.cities-header .break-h {
+  flex: 0 0 44px; // toggle width
+  text-align: center;
+}
+.cities-header .remove-h {
+  flex: 0 0 34px; // icon-button (trash) width
 }
 
 .knobs-toggle {

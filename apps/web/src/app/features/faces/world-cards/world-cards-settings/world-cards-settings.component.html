@@ -9,8 +9,11 @@
         <!-- Cities -->
         <div class="knobs-section">
           <div class="cities-header">
-            <span class="knobs-section-label">Cities</span>
-            <span class="knobs-section-label">Line Break</span>
+            <span class="knobs-section-label cities-h">Cities</span>
+            <span class="knobs-section-label break-h">Break</span>
+            @if (canRemove()) {
+              <span class="remove-h" aria-hidden="true"></span>
+            }
           </div>
           @for (card of cards(); track card.id) {
             <div class="city-row" [attr.data-card]="card.id">
