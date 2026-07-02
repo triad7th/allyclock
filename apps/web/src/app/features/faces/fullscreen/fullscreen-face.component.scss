@@ -135,7 +135,9 @@
 .gear {
   position: fixed;
   right: 1rem;
-  bottom: 1rem;
+  // Matches the controls bar's bottom offset so the gear sits on the same
+  // baseline as the Face/Adjust/Time Machine buttons.
+  bottom: 1.5rem;
   z-index: 10;
   display: inline-flex;
   align-items: center;
