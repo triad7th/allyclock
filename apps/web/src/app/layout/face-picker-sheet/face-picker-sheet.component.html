@@ -1,5 +1,10 @@
 <app-sheet sheetLabel="Choose a clock face" (closed)="onSheetClosed()">
-  <div class="options">
+  <div class="picker-panel">
+    <app-nav-header title="Faces" [flush]="true">
+      <app-icon-button navLeading icon="xmark" label="Close" (click)="close()" />
+    </app-nav-header>
+
+    <div class="options">
     @for (face of faces; track face.id) {
       <button
         type="button"
@@ -18,5 +23,6 @@
         <span class="name">{{ face.displayName }}</span>
       </button>
     }
+    </div>
   </div>
 </app-sheet>

@@ -2,10 +2,12 @@ import { NgComponentOutlet } from '@angular/common';
 import { Component, Injector, input, output, viewChild } from '@angular/core';
 import { FACES } from '@features/faces/face-registry';
 import { SheetComponent } from '@shared/ui/sheet/sheet.component';
+import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
+import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 
 @Component({
   selector: 'app-face-picker-sheet',
-  imports: [NgComponentOutlet, SheetComponent],
+  imports: [NgComponentOutlet, SheetComponent, NavHeaderComponent, IconButtonComponent],
   templateUrl: './face-picker-sheet.component.html',
   styleUrl: './face-picker-sheet.component.scss',
 })
@@ -18,6 +20,12 @@ export class FacePickerSheetComponent {
 
   private readonly sheet = viewChild.required(SheetComponent);
   private pendingSelectId: string | null = null;
+
+  // Dismiss without choosing (the nav-header X). Plays the sheet's slide-out;
+  // onSheetClosed emits a plain faceClose since no selection is pending.
+  close(): void {
+    this.sheet().close();
+  }
 
   // Choose a face; remember it, then play the sheet's slide-out. The real
   // emit happens in onSheetClosed once <app-sheet> finishes its exit.

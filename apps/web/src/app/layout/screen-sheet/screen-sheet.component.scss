@@ -1,49 +1,97 @@
+// Regular panel scheme: flex column with the nav-header (leading X) on top,
+// matching the face config panels (.cfg).
+.screens-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 1.5rem 2rem;
+}
+
+app-nav-header {
+  display: block;
+  flex: 0 0 auto;
+  margin-bottom: 1.5rem;
+}
+
+// Centered layout matching the face picker: tiles wrap and stay grouped in the
+// middle rather than stretching edge-to-edge.
 .screen-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  display: flex;
   gap: 0.75rem;
-  padding: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .screen-tile,
 .add-tile {
   position: relative;
+  background: #2a2a2a;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 0.5rem;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.04);
-  color: #fff;
-  cursor: pointer;
+  gap: 0.5rem;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    background: #333;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+// Icon-only add tile: a large centered +, matching the preview footprint of the
+// tiles beside it so the row lines up.
+.add-tile {
+  justify-content: center;
+  width: calc(192px + 1rem);
+  min-height: calc(108px + 1rem + 0.85rem + 0.5rem);
+
+  app-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #ccc;
+  }
 }
 
 .add-tile[disabled] {
   opacity: 0.4;
   cursor: default;
+
+  &:hover {
+    transform: none;
+    background: #2a2a2a;
+  }
 }
 
 .preview {
   display: block;
-  width: 100%;
-  aspect-ratio: 16 / 10;
+  width: 192px;
+  height: 108px;
   overflow: hidden;
-  border-radius: 0.5rem;
+  border-radius: 6px;
   background: #000;
 }
 
 .preview-viewport {
   display: block;
-  width: 500%;
-  height: 500%;
+  width: 960px;
+  height: 540px;
   transform: scale(0.2);
   transform-origin: top left;
   pointer-events: none;
 }
 
 .name {
+  color: #ccc;
   font-size: 0.85rem;
 }
 
@@ -58,4 +106,5 @@
   justify-content: center;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.5);
+  color: #fff;
 }

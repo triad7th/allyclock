@@ -4,11 +4,19 @@ import { FACES, FaceDescriptor } from '@features/faces/face-registry';
 import { ScreensService } from '@core/screens/screens.service';
 import { SheetComponent } from '@shared/ui/sheet/sheet.component';
 import { IconComponent } from '@shared/ui/icon/icon.component';
+import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
+import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 
 @Component({
   selector: 'app-screen-sheet',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgComponentOutlet, SheetComponent, IconComponent],
+  imports: [
+    NgComponentOutlet,
+    SheetComponent,
+    IconComponent,
+    NavHeaderComponent,
+    IconButtonComponent,
+  ],
   templateUrl: './screen-sheet.component.html',
   styleUrl: './screen-sheet.component.scss',
 })

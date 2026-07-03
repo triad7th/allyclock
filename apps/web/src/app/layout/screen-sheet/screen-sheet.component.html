@@ -1,26 +1,42 @@
 <app-sheet sheetLabel="Screens" (closed)="onSheetClosed()">
-  <div class="screen-grid">
-    @for (screen of list(); track screen.id; let i = $index) {
-      <button type="button" class="screen-tile" (click)="jumpTo(i)">
-        <span class="preview" aria-hidden="true">
-          <span class="preview-viewport">
-            <ng-container
-              [ngComponentOutlet]="faceFor(screen.faceId).component"
-              [ngComponentOutletInjector]="injectorFor(screen.id)"
-            />
+  <div class="screens-panel">
+    <app-nav-header title="Screens" [flush]="true">
+      <app-icon-button navLeading icon="xmark" label="Close" (click)="close()" />
+    </app-nav-header>
+
+    <div class="screen-grid">
+      @for (screen of list(); track screen.id; let i = $index) {
+        <button type="button" class="screen-tile" (click)="jumpTo(i)">
+          <span class="preview" aria-hidden="true">
+            <span class="preview-viewport">
+              <ng-container
+                [ngComponentOutlet]="faceFor(screen.faceId).component"
+                [ngComponentOutletInjector]="injectorFor(screen.id)"
+              />
+            </span>
           </span>
-        </span>
-        <span class="name">{{ faceFor(screen.faceId).displayName }}</span>
-        @if (canRemove()) {
-          <span class="remove" role="button" aria-label="Delete screen" (click)="remove(screen.id, $event)">
-            <app-icon name="trash" />
-          </span>
-        }
+          <span class="name">{{ faceFor(screen.faceId).displayName }}</span>
+          @if (canRemove()) {
+            <span
+              class="remove"
+              role="button"
+              aria-label="Delete screen"
+              (click)="remove(screen.id, $event)"
+            >
+              <app-icon name="xmark" />
+            </span>
+          }
+        </button>
+      }
+      <button
+        type="button"
+        class="add-tile"
+        [disabled]="atCap()"
+        (click)="add()"
+        aria-label="Add screen"
+      >
+        <app-icon name="plus" />
       </button>
-    }
-    <button type="button" class="add-tile" [disabled]="atCap()" (click)="add()" aria-label="Add screen">
-      <app-icon name="plus" />
-      <span class="name">Add Screen</span>
-    </button>
+    </div>
   </div>
 </app-sheet>
