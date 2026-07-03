@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { SCREEN_ID } from '@core/screens/screen-id';
 import { WorldCardsSettingsComponent } from './world-cards-settings.component';
 import { WorldCardsConfigStore } from '../world-cards-config-store.service';
 
@@ -24,6 +25,7 @@ describe('WorldCardsSettingsComponent', () => {
     vi.stubGlobal('localStorage', storageMock);
     await TestBed.configureTestingModule({
       imports: [WorldCardsSettingsComponent],
+      providers: [{ provide: SCREEN_ID, useValue: 1 }, WorldCardsConfigStore],
     }).compileComponents();
     store = TestBed.inject(WorldCardsConfigStore);
   });

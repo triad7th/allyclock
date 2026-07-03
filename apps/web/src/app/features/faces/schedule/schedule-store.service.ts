@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { SCREEN_ID } from '@core/screens/screen-id';
 import { DEFAULT_IMAGE_SRC, DEFAULT_SEGMENTS } from './default-schedule';
 import type { ScheduleSegment } from './schedule-formatter';
 import {
@@ -6,7 +7,6 @@ import {
   DEFAULT_PRESET_NAME,
   LEGACY_IMAGE_KEY,
   LEGACY_SEGMENTS_KEY,
-  PRESETS_KEY,
   type SchedulePreset,
   type ScheduleState,
 } from './schedule-preset';
@@ -14,19 +14,23 @@ import {
 const IDB_DB_NAME = 'allyclock-schedule';
 const IDB_STORE_NAME = 'assets';
 
-function imageKey(presetId: string): string {
-  return `image:${presetId}`;
-}
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ScheduleStoreService {
+  private readonly screenId = inject(SCREEN_ID);
+
+  private presetsKey(): string {
+    return `allyclock.screen.${this.screenId}.schedule.presets`;
+  }
+
+  private imageKey(presetId: string): string {
+    return `s${this.screenId}:image:${presetId}`;
+  }
+
   // ---- State (localStorage) -------------------------------------------------
 
   loadState(): ScheduleState {
     try {
-      const raw = localStorage.getItem(PRESETS_KEY);
+      const raw = localStorage.getItem(this.presetsKey());
       if (raw) {
         try {
           const parsed = JSON.parse(raw) as ScheduleState;
@@ -45,7 +49,7 @@ export class ScheduleStoreService {
 
   private saveState(state: ScheduleState): void {
     try {
-      localStorage.setItem(PRESETS_KEY, JSON.stringify(state));
+      localStorage.setItem(this.presetsKey(), JSON.stringify(state));
     } catch {
       // quota or unavailable — keep in-memory only
     }
@@ -80,8 +84,27 @@ export class ScheduleStoreService {
     // any legacy image asynchronously, flipping hasImage + re-persisting when
     // done. The face calls loadPresetImage(id) regardless and falls back to the
     // bundled default, so the brief window before the flip is invisible.
+    if (this.screenId === 1) void this.migrateScreenOneImages(state);
     void this.migrateLegacyImage(state);
     return state;
+  }
+
+  // One-time re-key of pre-Screens image blobs (stored at `image:<id>`) into the
+  // screen-1 namespace (`s1:image:<id>`). Iterates the known preset ids because
+  // the IDB store has no key index. Safe to run repeatedly (missing keys no-op).
+  private async migrateScreenOneImages(state: ScheduleState): Promise<void> {
+    try {
+      const db = await openDb();
+      for (const preset of state.presets) {
+        const legacyKey = `image:${preset.id}`;
+        const blob = await idbGet<Blob>(db, IDB_STORE_NAME, legacyKey);
+        if (!blob) continue;
+        await idbPut(db, IDB_STORE_NAME, this.imageKey(preset.id), blob);
+        await idbDelete(db, IDB_STORE_NAME, legacyKey);
+      }
+    } catch {
+      // IDB unavailable — the face falls back to the bundled default image
+    }
   }
 
   private async migrateLegacyImage(state: ScheduleState): Promise<void> {
@@ -89,7 +112,7 @@ export class ScheduleStoreService {
       const db = await openDb();
       const blob = await idbGet<Blob>(db, IDB_STORE_NAME, LEGACY_IMAGE_KEY);
       if (!blob) return;
-      await idbPut(db, IDB_STORE_NAME, imageKey(DEFAULT_PRESET_ID), blob);
+      await idbPut(db, IDB_STORE_NAME, this.imageKey(DEFAULT_PRESET_ID), blob);
       await idbDelete(db, IDB_STORE_NAME, LEGACY_IMAGE_KEY);
       const def = state.presets.find((p) => p.id === DEFAULT_PRESET_ID);
       if (def) {
@@ -141,7 +164,7 @@ export class ScheduleStoreService {
       let blob: Blob | undefined;
       if (source.hasImage) {
         const db = await openDb();
-        blob = await idbGet<Blob>(db, IDB_STORE_NAME, imageKey(source.id));
+        blob = await idbGet<Blob>(db, IDB_STORE_NAME, this.imageKey(source.id));
       } else if (source.id === DEFAULT_PRESET_ID) {
         blob = await (await fetch(DEFAULT_IMAGE_SRC)).blob();
       }
@@ -193,7 +216,7 @@ export class ScheduleStoreService {
   async loadPresetImage(presetId: string): Promise<string | null> {
     try {
       const db = await openDb();
-      const blob = await idbGet<Blob>(db, IDB_STORE_NAME, imageKey(presetId));
+      const blob = await idbGet<Blob>(db, IDB_STORE_NAME, this.imageKey(presetId));
       if (!blob) return null;
       return URL.createObjectURL(blob);
     } catch {
@@ -204,7 +227,7 @@ export class ScheduleStoreService {
   async savePresetImage(presetId: string, blob: Blob): Promise<void> {
     try {
       const db = await openDb();
-      await idbPut(db, IDB_STORE_NAME, imageKey(presetId), blob);
+      await idbPut(db, IDB_STORE_NAME, this.imageKey(presetId), blob);
       this.setHasImage(presetId, true);
     } catch {
       // IDB unavailable — silently ignored
@@ -214,7 +237,7 @@ export class ScheduleStoreService {
   async removePresetImage(presetId: string): Promise<void> {
     try {
       const db = await openDb();
-      await idbDelete(db, IDB_STORE_NAME, imageKey(presetId));
+      await idbDelete(db, IDB_STORE_NAME, this.imageKey(presetId));
     } catch {
       // IDB unavailable — silently ignored
     }

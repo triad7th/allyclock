@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { SCREEN_ID } from '@core/screens/screen-id';
 import { FullscreenFaceComponent } from './fullscreen-face.component';
 import { FullscreenConfigStore } from './fullscreen-config-store.service';
 import { ClockService } from '@core/clock.service';
@@ -24,6 +25,7 @@ describe('FullscreenFaceComponent', () => {
     vi.stubGlobal('localStorage', storageMock);
     await TestBed.configureTestingModule({
       imports: [FullscreenFaceComponent],
+      providers: [{ provide: SCREEN_ID, useValue: 1 }, FullscreenConfigStore],
     }).compileComponents();
   });
 

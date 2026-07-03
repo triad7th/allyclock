@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { SCREEN_ID } from '@core/screens/screen-id';
 import { ScheduleStoreService } from './schedule-store.service';
 import { DEFAULT_SEGMENTS } from './default-schedule';
 import {
@@ -7,8 +8,9 @@ import {
   DEFAULT_PRESET_NAME,
   LEGACY_IMAGE_KEY,
   LEGACY_SEGMENTS_KEY,
-  PRESETS_KEY,
 } from './schedule-preset';
+
+const SCREEN_1_PRESETS_KEY = 'allyclock.screen.1.schedule.presets';
 
 // Minimal IDB mock — open() creates a fresh request each time so multiple
 // openDb() calls in a single test all resolve correctly.
@@ -96,7 +98,9 @@ describe('ScheduleStoreService', () => {
     lsMock = makeLsMock();
     vi.stubGlobal('localStorage', lsMock);
     vi.stubGlobal('indexedDB', makeIdbMock());
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [{ provide: SCREEN_ID, useValue: 1 }, ScheduleStoreService],
+    });
   });
 
   afterEach(() => {
@@ -121,20 +125,20 @@ describe('ScheduleStoreService', () => {
     const state = service.loadState();
     expect(state.presets[0].segments).toEqual(legacy);
     expect(localStorage.getItem(LEGACY_SEGMENTS_KEY)).toBeNull();
-    expect(localStorage.getItem(PRESETS_KEY)).not.toBeNull();
+    expect(localStorage.getItem(SCREEN_1_PRESETS_KEY)).not.toBeNull();
   });
 
   it('persists the seeded state so a second load is stable', () => {
     const service = TestBed.inject(ScheduleStoreService);
     service.loadState();
-    const raw = localStorage.getItem(PRESETS_KEY);
+    const raw = localStorage.getItem(SCREEN_1_PRESETS_KEY);
     expect(raw).not.toBeNull();
     const again = service.loadState();
     expect(again.presets).toHaveLength(1);
   });
 
   it('falls back to a fresh default state on corrupt JSON', () => {
-    localStorage.setItem(PRESETS_KEY, '{bad json}');
+    localStorage.setItem(SCREEN_1_PRESETS_KEY, '{bad json}');
     const service = TestBed.inject(ScheduleStoreService);
     const state = service.loadState();
     expect(state.presets[0].id).toBe(DEFAULT_PRESET_ID);

@@ -1,15 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
+import { SCREEN_ID } from '@core/screens/screen-id';
 import { BandConfigStore } from '@core/dimensions/band-config-store';
 import { buildDefaultFields } from './fullscreen-presets.data';
 import { type FullscreenFields, type SectionKey, type BarMode } from './fullscreen-preset';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class FullscreenConfigStore extends BandConfigStore<FullscreenFields> {
   private readonly registry = inject(DimensionRegistry);
+  private readonly screenId = inject(SCREEN_ID);
 
   protected storageKey(): string {
-    return 'allyclock.fullscreen.config';
+    return `allyclock.screen.${this.screenId}.fullscreen.config`;
   }
   protected version(): number {
     return 5;

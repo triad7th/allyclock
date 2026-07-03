@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { SCREEN_ID } from '@core/screens/screen-id';
 import { FullscreenConfigStore } from './fullscreen-config-store.service';
 
 const mem: Record<string, string> = {};
@@ -21,7 +22,9 @@ describe('FullscreenConfigStore', () => {
   beforeEach(() => {
     storageMock.clear();
     vi.stubGlobal('localStorage', storageMock);
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [{ provide: SCREEN_ID, useValue: 1 }, FullscreenConfigStore],
+    });
     store = TestBed.inject(FullscreenConfigStore);
   });
 
@@ -36,7 +39,7 @@ describe('FullscreenConfigStore', () => {
       'ultra',
       'wide',
     ]);
-    expect(JSON.parse(mem['allyclock.fullscreen.config']).byBand.mini).toBeDefined();
+    expect(JSON.parse(mem['allyclock.screen.1.fullscreen.config']).byBand.mini).toBeDefined();
   });
 
   it('fieldsFor(ratio) returns the fields for the band containing the ratio', () => {
@@ -50,7 +53,7 @@ describe('FullscreenConfigStore', () => {
     expect(store.config('phone').sections.time.sizeScale).toBe(1.5);
     expect(store.config('mini').sections.time.sizeScale).toBe(1); // other bands untouched
     expect(
-      JSON.parse(mem['allyclock.fullscreen.config']).byBand.phone.sections.time.sizeScale,
+      JSON.parse(mem['allyclock.screen.1.fullscreen.config']).byBand.phone.sections.time.sizeScale,
     ).toBe(1.5);
   });
 
@@ -118,9 +121,11 @@ describe('FullscreenConfigStore', () => {
         },
       },
     };
-    mem['allyclock.fullscreen.config'] = JSON.stringify(legacy);
+    mem['allyclock.screen.1.fullscreen.config'] = JSON.stringify(legacy);
     TestBed.resetTestingModule();
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [{ provide: SCREEN_ID, useValue: 1 }, FullscreenConfigStore],
+    });
     const fresh = TestBed.inject(FullscreenConfigStore);
     const mini = fresh.config('mini');
     expect(mini.bar.mode).toBe('divider'); // visible:true → divider
@@ -133,5 +138,12 @@ describe('FullscreenConfigStore', () => {
 
   it('sample() returns a representative band fields object', () => {
     expect(store.sample().sections.weekday.visible).toBe(true);
+  });
+
+  it('persists under the screen-namespaced key', () => {
+    const s = TestBed.inject(FullscreenConfigStore);
+    s.setSecondsVisibleAll(false);
+    expect(mem['allyclock.screen.1.fullscreen.config']).toBeDefined();
+    expect(mem['allyclock.fullscreen.config']).toBeUndefined();
   });
 });

@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { SCREEN_ID } from '@core/screens/screen-id';
+import { FullscreenConfigStore } from '@features/faces/fullscreen/fullscreen-config-store.service';
+import { WorldCardsConfigStore } from '@features/faces/world-cards/world-cards-config-store.service';
+import { ScheduleStoreService } from '@features/faces/schedule/schedule-store.service';
 import { FacePickerSheetComponent } from './face-picker-sheet.component';
 import { SHEET_ANIMATION_MS } from '@core/animation-timing';
 
@@ -8,6 +12,12 @@ describe('FacePickerSheetComponent', () => {
     vi.useFakeTimers();
     await TestBed.configureTestingModule({
       imports: [FacePickerSheetComponent],
+      providers: [
+        { provide: SCREEN_ID, useValue: 1 },
+        FullscreenConfigStore,
+        WorldCardsConfigStore,
+        ScheduleStoreService,
+      ],
     }).compileComponents();
   });
 

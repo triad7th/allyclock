@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { SCREEN_ID } from '@core/screens/screen-id';
 import { WorldCardsConfigStore } from './world-cards-config-store.service';
 import { MAX_CARDS } from './world-cards-config';
 
@@ -22,7 +23,9 @@ describe('WorldCardsConfigStore', () => {
   beforeEach(() => {
     storageMock.clear();
     vi.stubGlobal('localStorage', storageMock);
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [{ provide: SCREEN_ID, useValue: 1 }, WorldCardsConfigStore],
+    });
     store = TestBed.inject(WorldCardsConfigStore);
   });
 
@@ -37,7 +40,7 @@ describe('WorldCardsConfigStore', () => {
       'ultra',
       'wide',
     ]);
-    expect(JSON.parse(mem['allyclock.world-cards.config']).byBand.lap).toBeDefined();
+    expect(JSON.parse(mem['allyclock.screen.1.world-cards.config']).byBand.lap).toBeDefined();
   });
 
   it('addCard appends a uniquely-id card to every band, no-op at MAX', () => {
@@ -80,12 +83,19 @@ describe('WorldCardsConfigStore', () => {
     store.setSize('lap', 'time', 1.5);
     expect(store.config('lap').sizes.time).toBe(1.5);
     expect(store.config('phone').sizes.time).toBe(1); // other bands untouched
-    expect(JSON.parse(mem['allyclock.world-cards.config']).byBand.lap.sizes.time).toBe(1.5);
+    expect(JSON.parse(mem['allyclock.screen.1.world-cards.config']).byBand.lap.sizes.time).toBe(1.5);
   });
 
   it('fieldsFor(ratio) resolves the band containing the ratio', () => {
     store.setSize('phone', 'date', 1.8);
     expect(store.fieldsFor(0.4).sizes.date).toBe(1.8); // 0.4 → phone band
     expect(store.fieldsFor(1.6).sizes.date).toBe(1); // 1.6 → lap band
+  });
+
+  it('persists under the screen-namespaced key', () => {
+    const s = TestBed.inject(WorldCardsConfigStore);
+    s.addCard('UTC');
+    expect(mem['allyclock.screen.1.world-cards.config']).toBeDefined();
+    expect(mem['allyclock.world-cards.config']).toBeUndefined();
   });
 });

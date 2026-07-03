@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
+import { SCREEN_ID } from '@core/screens/screen-id';
 import { BandConfigStore } from '@core/dimensions/band-config-store';
 import { buildDefaultFields } from './world-cards-presets.data';
 import {
@@ -10,12 +11,13 @@ import {
   MAX_CARDS,
 } from './world-cards-config';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class WorldCardsConfigStore extends BandConfigStore<WorldCardsFields> {
   private readonly registry = inject(DimensionRegistry);
+  private readonly screenId = inject(SCREEN_ID);
 
   protected storageKey(): string {
-    return 'allyclock.world-cards.config';
+    return `allyclock.screen.${this.screenId}.world-cards.config`;
   }
   protected version(): number {
     return 1;

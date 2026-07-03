@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { SCREEN_ID } from '@core/screens/screen-id';
+import { FullscreenConfigStore } from '@features/faces/fullscreen/fullscreen-config-store.service';
+import { WorldCardsConfigStore } from '@features/faces/world-cards/world-cards-config-store.service';
+import { ScheduleStoreService } from '@features/faces/schedule/schedule-store.service';
 import { AppComponent } from './app.component';
 import { FaceConfigService } from '@core/face-config.service';
 import { FACE_TRANSITION_MS } from '@core/animation-timing';
@@ -27,6 +31,12 @@ describe('AppComponent', () => {
     vi.stubGlobal('localStorage', storageMock);
     await TestBed.configureTestingModule({
       imports: [AppComponent],
+      providers: [
+        { provide: SCREEN_ID, useValue: 1 },
+        FullscreenConfigStore,
+        WorldCardsConfigStore,
+        ScheduleStoreService,
+      ],
     }).compileComponents();
   });
 
