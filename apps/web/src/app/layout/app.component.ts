@@ -21,6 +21,8 @@ import { FaceOverlayComponent } from './face-overlay/face-overlay.component';
 import { snapIndex } from './screen-strip/swipe-snap';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
+import { ScreenButtonComponent } from './screen-button/screen-button.component';
+import { ScreenSheetComponent } from './screen-sheet/screen-sheet.component';
 
 interface MountedScreen {
   screen: ScreenConfig;
@@ -39,6 +41,8 @@ interface MountedScreen {
     FaceOverlayComponent,
     IconComponent,
     AutoHideDirective,
+    ScreenButtonComponent,
+    ScreenSheetComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

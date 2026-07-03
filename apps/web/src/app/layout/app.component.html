@@ -63,3 +63,10 @@
     (faceClose)="closeSheet()"
   />
 }
+
+@if (!faceConfig.open()) {
+  <app-screen-button [pinned]="screenSheetOpen()" (open)="openScreenSheet()" />
+}
+@if (screenSheetOpen()) {
+  <app-screen-sheet (closed)="closeScreenSheet()" />
+}

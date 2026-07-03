@@ -1,0 +1,12 @@
+<button
+  appAutoHide
+  #ah="autoHide"
+  type="button"
+  class="screen-button"
+  [class.hidden]="!ah.visible() && !pinned()"
+  (click)="open.emit()"
+  aria-label="Screens"
+  title="Screens"
+>
+  <app-icon name="square.grid.2x2" />
+</button>
