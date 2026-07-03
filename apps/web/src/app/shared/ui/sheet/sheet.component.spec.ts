@@ -16,7 +16,12 @@ describe('SheetComponent', () => {
   });
 
   function createSheet(
-    inputs: { backdrop?: boolean; fullHeight?: boolean; sheetLabel?: string } = {},
+    inputs: {
+      backdrop?: boolean;
+      fullHeight?: boolean;
+      sheetLabel?: string;
+      contained?: boolean;
+    } = {},
   ) {
     const fixture = TestBed.createComponent(SheetComponent);
     if (inputs.backdrop !== undefined) fixture.componentRef.setInput('backdrop', inputs.backdrop);
@@ -24,6 +29,8 @@ describe('SheetComponent', () => {
       fixture.componentRef.setInput('fullHeight', inputs.fullHeight);
     if (inputs.sheetLabel !== undefined)
       fixture.componentRef.setInput('sheetLabel', inputs.sheetLabel);
+    if (inputs.contained !== undefined)
+      fixture.componentRef.setInput('contained', inputs.contained);
     fixture.detectChanges();
     return fixture;
   }
@@ -52,6 +59,23 @@ describe('SheetComponent', () => {
     const fixture = createSheet({ fullHeight: true });
     const panel = (fixture.nativeElement as HTMLElement).querySelector('.sheet-panel');
     expect(panel?.classList.contains('full-height')).toBe(true);
+  });
+
+  // Face-embedded sheets render inside `.screens-strip`, which is `transform`ed
+  // for paging. A transformed ancestor is the containing block for `position:
+  // fixed` descendants, so a viewport-fixed overlay lands off-screen on any
+  // screen past the first. `contained` positions the overlay relative to the
+  // screen cell instead. Default stays viewport-fixed for app-level sheets.
+  it('does not mark the overlay contained by default', () => {
+    const fixture = createSheet();
+    const overlay = (fixture.nativeElement as HTMLElement).querySelector('.sheet-overlay');
+    expect(overlay?.classList.contains('contained')).toBe(false);
+  });
+
+  it('marks the overlay contained when [contained]=true', () => {
+    const fixture = createSheet({ contained: true });
+    const overlay = (fixture.nativeElement as HTMLElement).querySelector('.sheet-overlay');
+    expect(overlay?.classList.contains('contained')).toBe(true);
   });
 
   it('close() emits (closed) only after SHEET_ANIMATION_MS', () => {

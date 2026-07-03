@@ -11,6 +11,21 @@
   z-index: 20;
 }
 
+// Contained mode: position against the nearest positioned ancestor (the screen
+// cell) rather than the viewport. Used by face-embedded sheets, which live
+// inside the `transform`ed paging strip — a viewport-fixed overlay there is
+// laid out relative to the translated strip and slides off-screen on any screen
+// past the first. For the active screen the cell overlays the viewport, so the
+// visual result is identical to fixed.
+.sheet-overlay.contained {
+  position: absolute;
+
+  .sheet-backdrop,
+  .sheet-panel {
+    position: absolute;
+  }
+}
+
 .sheet-backdrop {
   position: fixed;
   inset: 0;

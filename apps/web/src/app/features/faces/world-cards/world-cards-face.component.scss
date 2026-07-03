@@ -34,7 +34,12 @@
 // Bottom-right gear: opens the Settings panel. Auto-hides with the other
 // on-face controls.
 .gear {
-  position: fixed;
+  // Absolute (not fixed) so it anchors to the screen cell, not the viewport:
+  // the face renders inside the `transform`ed paging strip, where a fixed
+  // element is laid out relative to the translated strip and slides off-screen
+  // on any screen past the first. For the active screen the cell overlays the
+  // viewport, so the gear still sits bottom-right on screen.
+  position: absolute;
   right: 1rem;
   // Matches the controls bar's bottom offset so the gear sits on the same
   // baseline as the Face/Adjust/Time Machine buttons.

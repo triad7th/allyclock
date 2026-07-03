@@ -24,6 +24,14 @@ export class SheetComponent implements OnDestroy {
   readonly backdrop = input(true);
   /** Panel fills the viewport (content scrolls) vs anchored to the bottom. */
   readonly fullHeight = input(false);
+  /**
+   * Position the overlay relative to the nearest positioned ancestor instead
+   * of the viewport. Face-embedded sheets set this because they render inside
+   * the paging strip, whose `transform` makes it the containing block for
+   * `position: fixed` — a viewport-fixed overlay would land off-screen on any
+   * screen past the first. App-level sheets leave it false (viewport-fixed).
+   */
+  readonly contained = input(false);
   /** aria-label for the dialog. */
   readonly sheetLabel = input<string>('');
 

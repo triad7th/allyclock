@@ -29,7 +29,12 @@ img {
 }
 
 .gear {
-  position: fixed;
+  // Absolute (not fixed) so it anchors to the screen cell, not the viewport:
+  // the face renders inside the `transform`ed paging strip, where a fixed
+  // element is laid out relative to the translated strip and slides off-screen
+  // on any screen past the first. The face `:host` is `position: relative`, so
+  // this anchors to the face — bottom-right on screen for the active cell.
+  position: absolute;
   bottom: 1.5rem;
   right: 1.5rem;
   background: rgba(30, 30, 30, 0.85);
