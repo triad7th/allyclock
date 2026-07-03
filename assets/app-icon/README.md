@@ -31,6 +31,24 @@ This directory contains deterministic SVG sources and PNG exports of the approve
 
 Add the background and foreground PNGs as separate layers in the tvOS App Icon image stack. The flattened file is a visual reference and is not a substitute for the parallax layers.
 
+### Web favicons
+
+The canonical source for the Web favicon set is `png/ios/AllyClock-AppIcon-1024.png`. The renderer generates these files in `apps/web/public`:
+
+- `favicon.ico`
+- `favicon-16x16.png`
+- `favicon-32x32.png`
+- `apple-touch-icon.png`
+- `icon-192.png`
+- `icon-512.png`
+- `site.webmanifest`
+
+Angular copies the contents of `apps/web/public` into the build output. Reproduce the favicon set from the repository root with the bundled Python runtime:
+
+```sh
+/Users/kevinlee/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 assets/app-icon/render_web_favicons.py
+```
+
 ## Design Invariants
 
 - Deep teal gradient: `#416F76` to `#244D56`
