@@ -1,0 +1,5 @@
+@for (layer of layers(); track layer.key) {
+  <div class="face-layer" [class.leaving]="layer.leaving">
+    <ng-container [ngComponentOutlet]="layer.face.component" />
+  </div>
+}
