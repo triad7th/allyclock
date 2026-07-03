@@ -46,6 +46,10 @@ yarn-error.log
 testem.log
 /typings
 
+# Python (asset-generation scripts under assets/app-icon)
+__pycache__/
+*.pyc
+
 # System Files
 .DS_Store
 Thumbs.db
