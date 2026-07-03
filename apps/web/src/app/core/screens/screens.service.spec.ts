@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Injector } from '@angular/core';
 import { ScreensService, MAX_SCREENS } from './screens.service';
@@ -26,11 +26,68 @@ function make(): ScreensService {
   return TestBed.inject(ScreensService);
 }
 
+// Minimal IDB mock that satisfies clearScreenImages: open without version,
+// objectStoreNames.contains, getAllKeys, delete, and tx.oncomplete.
+function makeIdbMock() {
+  const store: Record<string, unknown> = {};
+
+  const makeRequest = <T>(result: T): IDBRequest<T> => {
+    const req = { result, error: null } as unknown as IDBRequest<T>;
+    setTimeout(
+      () => (req as unknown as { onsuccess: (e: unknown) => void }).onsuccess?.({ target: req }),
+      0,
+    );
+    return req;
+  };
+
+  const makeTx = () => {
+    const tx = {
+      objectStore: () => ({
+        getAllKeys: () => makeRequest(Object.keys(store) as IDBValidKey[]),
+        delete: (key: string) => {
+          delete store[key];
+          return makeRequest(undefined);
+        },
+      }),
+      oncomplete: null as (() => void) | null,
+    };
+    setTimeout(() => tx.oncomplete?.(), 10);
+    return tx;
+  };
+
+  const db = {
+    transaction: () => makeTx(),
+    objectStoreNames: { contains: () => true },
+    close: () => {},
+  };
+
+  return {
+    open: () => {
+      const req = {
+        result: db,
+        error: null,
+        onsuccess: null as ((e: unknown) => void) | null,
+        onerror: null,
+      };
+      setTimeout(() => req.onsuccess?.({ target: req }), 0);
+      return req as unknown as IDBOpenDBRequest;
+    },
+    store,
+  };
+}
+
 describe('ScreensService', () => {
   beforeEach(() => {
     storageMock.clear();
     vi.stubGlobal('localStorage', storageMock);
     TestBed.resetTestingModule();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    // Re-stub localStorage so the mock is available if something accesses it
+    // between afterEach and the next beforeEach.
+    vi.stubGlobal('localStorage', storageMock);
   });
 
   it('seeds one screen on the default face when nothing is stored', () => {
@@ -120,5 +177,40 @@ describe('ScreensService', () => {
     expect(s.injectorFor(7)).toBe(inj);
     s.unregisterInjector(7);
     expect(s.injectorFor(7)).toBeUndefined();
+  });
+
+  it('removeScreen deletes s<id>:image:* IDB keys for the removed screen only', async () => {
+    const idbMock = makeIdbMock();
+    vi.stubGlobal('indexedDB', idbMock);
+
+    // Seed keys: screen 2 (will be removed) and screen 1 (must survive).
+    idbMock.store['s2:image:p1'] = new Blob(['img'], { type: 'image/png' });
+    idbMock.store['s1:image:p1'] = new Blob(['img2'], { type: 'image/png' });
+
+    const s = make(); // seeds screen id=1
+    s.addScreen(); // adds screen id=2, activeIndex=1
+    const secondId = s.screens()[1].id; // 2
+
+    s.removeScreen(secondId);
+
+    // clearScreenImages is fire-and-forget (setTimeout chain); poll until done.
+    for (let i = 0; i < 100 && `s${secondId}:image:p1` in idbMock.store; i++) {
+      await new Promise<void>((r) => setTimeout(r, 5));
+    }
+
+    expect(idbMock.store[`s${secondId}:image:p1`]).toBeUndefined();
+    expect(idbMock.store['s1:image:p1']).toBeDefined();
+    // Synchronous state/localStorage changes must also have applied.
+    expect(s.screens().length).toBe(1);
+    expect(s.screens()[0].id).toBe(1);
+  });
+
+  it('removeScreen does not throw when indexedDB is undefined', () => {
+    vi.stubGlobal('indexedDB', undefined);
+    const s = make();
+    s.addScreen();
+    const secondId = s.screens()[1].id;
+    expect(() => s.removeScreen(secondId)).not.toThrow();
+    expect(s.screens().length).toBe(1);
   });
 });

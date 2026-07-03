@@ -85,4 +85,20 @@ describe('AppComponent', () => {
     expect(fixture.nativeElement.querySelector('.chevron.prev')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('.chevron.next')).toBeTruthy();
   });
+
+  it('renders face-picker previews using the active screen host injector (no NG0201)', () => {
+    // After the first detectChanges() the ScreenHostComponent is mounted and
+    // registers its element injector (which carries the scoped stores) with
+    // ScreensService.  activeInjector() must forward to that registered injector
+    // so the face previews can inject FullscreenConfigStore etc.  Using the
+    // private SCREEN_ID-only injector instead causes NG0201.
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges(); // mounts screen hosts; hosts register their injectors
+
+    fixture.componentInstance.openSheet();
+    expect(() => fixture.detectChanges()).not.toThrow();
+
+    // At least one face component rendered inside a preview viewport.
+    expect(fixture.nativeElement.querySelector('.preview-viewport *')).toBeTruthy();
+  });
 });

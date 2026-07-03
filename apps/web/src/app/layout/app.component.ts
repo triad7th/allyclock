@@ -104,7 +104,10 @@ export class AppComponent {
   );
 
   // Active screen's config injector, for the face picker previews.
-  readonly activeInjector = computed(() => this.injectorFor(this.activeScreen().id));
+  // Use the host injector registered by ScreenHostComponent (which provides the
+  // scoped stores). Do NOT use the private injectorFor — that creates a minimal
+  // SCREEN_ID-only injector that lacks the stores and causes NG0201.
+  readonly activeInjector = computed(() => this.screens.injectorFor(this.activeScreen().id));
 
   openSheet(): void {
     this.sheetOpen.set(true);

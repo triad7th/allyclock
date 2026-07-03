@@ -18,6 +18,10 @@ export const MAX_SCREENS = 5;
 
 const STORAGE_KEY = 'allyclock.screens';
 const LEGACY_FACE_KEY = 'allyclock.face';
+// IDB coordinates shared with the schedule face's image store. Declared here so
+// core/ can clean up screen images without importing from features/.
+const IDB_DB_NAME = 'allyclock-schedule';
+const IDB_STORE_NAME = 'assets';
 // Legacy single-config keys migrated into Screen 1 (see the migration table).
 const LEGACY_CONFIG_KEYS: readonly [legacy: string, scoped: string][] = [
   ['allyclock.fullscreen.config', 'allyclock.screen.1.fullscreen.config'],
@@ -59,6 +63,7 @@ export class ScreensService {
     const screens = st.screens.filter((s) => s.id !== id);
     const activeIndex = Math.min(st.activeIndex, screens.length - 1);
     this.clearScreenStorage(id);
+    this.clearScreenImages(id);
     this.commit({ ...st, screens, activeIndex });
   }
 
@@ -155,7 +160,28 @@ export class ScreensService {
     } catch {
       // localStorage unavailable — nothing to clear
     }
-    // Schedule image blobs (IndexedDB) for this screen are cleaned lazily by the
-    // scoped ScheduleStoreService; localStorage cleanup above is the sync part.
+    // IndexedDB image blobs (s<id>:image:*) are deleted separately by clearScreenImages.
+  }
+
+  // Delete this screen's schedule image blobs (keys prefixed `s<id>:image:`).
+  // Fire-and-forget; guarded so a missing IndexedDB/object store is a no-op.
+  private clearScreenImages(id: number): void {
+    if (typeof indexedDB === 'undefined') return;
+    const prefix = `s${id}:image:`;
+    const req = indexedDB.open(IDB_DB_NAME);
+    req.onsuccess = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(IDB_STORE_NAME)) { db.close(); return; }
+      const tx = db.transaction(IDB_STORE_NAME, 'readwrite');
+      const store = tx.objectStore(IDB_STORE_NAME);
+      const keysReq = store.getAllKeys();
+      keysReq.onsuccess = () => {
+        for (const key of keysReq.result) {
+          if (typeof key === 'string' && key.startsWith(prefix)) store.delete(key);
+        }
+      };
+      tx.oncomplete = () => db.close();
+    };
+    req.onerror = () => {};
   }
 }
