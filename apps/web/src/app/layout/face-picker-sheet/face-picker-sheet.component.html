@@ -9,7 +9,10 @@
       >
         <span class="preview" aria-hidden="true">
           <span class="preview-viewport">
-            <ng-container [ngComponentOutlet]="face.component" />
+            <ng-container
+              [ngComponentOutlet]="face.component"
+              [ngComponentOutletInjector]="previewInjector()"
+            />
           </span>
         </span>
         <span class="name">{{ face.displayName }}</span>

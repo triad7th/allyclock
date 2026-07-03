@@ -1,27 +1,23 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { SCREEN_ID } from '@core/screens/screen-id';
-import { FullscreenConfigStore } from '@features/faces/fullscreen/fullscreen-config-store.service';
-import { WorldCardsConfigStore } from '@features/faces/world-cards/world-cards-config-store.service';
-import { ScheduleStoreService } from '@features/faces/schedule/schedule-store.service';
 import { AppComponent } from './app.component';
-import { FaceConfigService } from '@core/face-config.service';
-import { FACE_TRANSITION_MS } from '@core/animation-timing';
+import { ScreensService } from '@core/screens/screens.service';
 
-const mockStorage: Record<string, string> = {};
-
+const mem: Record<string, string> = {};
 const storageMock = {
-  getItem: (key: string) => mockStorage[key] ?? null,
-  setItem: (key: string, value: string) => {
-    mockStorage[key] = value;
+  getItem: (k: string) => mem[k] ?? null,
+  setItem: (k: string, v: string) => {
+    mem[k] = v;
   },
-  removeItem: (key: string) => {
-    delete mockStorage[key];
+  removeItem: (k: string) => {
+    delete mem[k];
   },
   clear: () => {
-    for (const key of Object.keys(mockStorage)) {
-      delete mockStorage[key];
-    }
+    for (const k of Object.keys(mem)) delete mem[k];
+  },
+  key: (i: number) => Object.keys(mem)[i] ?? null,
+  get length() {
+    return Object.keys(mem).length;
   },
 };
 
@@ -29,108 +25,43 @@ describe('AppComponent', () => {
   beforeEach(async () => {
     storageMock.clear();
     vi.stubGlobal('localStorage', storageMock);
-    await TestBed.configureTestingModule({
-      imports: [AppComponent],
-      providers: [
-        { provide: SCREEN_ID, useValue: 1 },
-        FullscreenConfigStore,
-        WorldCardsConfigStore,
-        ScheduleStoreService,
-      ],
-    }).compileComponents();
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({ imports: [AppComponent] }).compileComponents();
   });
 
-  afterEach(() => {
-    storageMock.clear();
-    vi.unstubAllGlobals();
-  });
-
-  it('renders the fullscreen face by default', () => {
+  it('renders one screen host for the single seeded screen', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('app-fullscreen-face')).toBeTruthy();
-    expect(el.querySelector('app-world-cards-face')).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('app-screen-host').length).toBe(1);
   });
 
-  it('shows the configure button and no sheet initially', () => {
+  it('mounts a 3-window (active +/- 1) when there are many screens', () => {
+    const screens = TestBed.inject(ScreensService);
+    for (let i = 0; i < 4; i++) screens.addScreen(); // 5 screens, active index 4
+    screens.setActiveIndex(2);
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('app-configure-button')).toBeTruthy();
-    expect(el.querySelector('app-face-picker-sheet')).toBeNull();
+    // indices 1,2,3 mounted
+    expect(fixture.componentInstance.mountedScreens().map((m) => m.index)).toEqual([1, 2, 3]);
   });
 
-  it('switches face via the picker and persists the choice', () => {
-    vi.useFakeTimers();
+  it('ArrowRight/ArrowLeft move the active index', () => {
+    const screens = TestBed.inject(ScreensService);
+    screens.addScreen(); // 2 screens; addScreen activated index 1
+    screens.setActiveIndex(0);
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-
-    (el.querySelector('button.configure') as HTMLButtonElement).click();
-    fixture.detectChanges();
-    expect(el.querySelector('app-face-picker-sheet')).toBeTruthy();
-
-    const options = el.querySelectorAll('button.face-option');
-    (options[1] as HTMLButtonElement).click();
-    // The sheet plays its slide-out before the face actually switches.
-    vi.advanceTimersByTime(300);
-    fixture.detectChanges();
-
-    expect(el.querySelector('app-world-cards-face')).toBeTruthy();
-    expect(el.querySelector('app-face-picker-sheet')).toBeNull();
-    expect(localStorage.getItem('allyclock.face')).toBe('world-cards');
-    vi.useRealTimers();
+    fixture.componentInstance.onKeydown(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+    expect(screens.activeIndex()).toBe(1);
+    fixture.componentInstance.onKeydown(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
+    expect(screens.activeIndex()).toBe(0);
   });
 
-  it('crossfades the old and new face during a switch', () => {
-    vi.useFakeTimers();
+  it('selecting a face sets it on the active screen', () => {
+    const screens = TestBed.inject(ScreensService);
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-
-    (el.querySelector('button.configure') as HTMLButtonElement).click();
-    fixture.detectChanges();
-
-    const options = el.querySelectorAll('button.face-option');
-    (options[1] as HTMLButtonElement).click();
-    // The sheet plays its slide-out before faceSelect fires and the crossfade begins.
-    vi.advanceTimersByTime(300);
-    fixture.detectChanges();
-
-    // Mid-crossfade: both faces are stacked, exactly one layer is leaving.
-    const layers = el.querySelectorAll('.face-layer');
-    expect(layers.length).toBe(2);
-    expect(el.querySelectorAll('.face-layer.leaving').length).toBe(1);
-    expect(el.querySelector('app-fullscreen-face')).toBeTruthy();
-    expect(el.querySelector('app-world-cards-face')).toBeTruthy();
-
-    // After the transition completes, only the incoming face remains.
-    vi.advanceTimersByTime(FACE_TRANSITION_MS);
-    fixture.detectChanges();
-    const settled = el.querySelectorAll('.face-layer');
-    expect(settled.length).toBe(1);
-    expect(settled[0].querySelector('app-world-cards-face')).toBeTruthy();
-    expect(el.querySelector('app-fullscreen-face')).toBeNull();
-    vi.useRealTimers();
-  });
-
-  it('hides the controls bar while a face config panel is open', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-    const bar = el.querySelector('.controls-bar') as HTMLElement;
-    expect(bar.classList.contains('hidden')).toBe(false);
-
-    TestBed.inject(FaceConfigService).open.set(true);
-    fixture.detectChanges();
-    expect(bar.classList.contains('hidden')).toBe(true);
-  });
-
-  it('restores the persisted face on startup', () => {
-    localStorage.setItem('allyclock.face', 'world-cards');
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('app-world-cards-face')).toBeTruthy();
+    fixture.componentInstance.selectFace('world-cards');
+    expect(screens.activeScreen().faceId).toBe('world-cards');
   });
 });

@@ -1,21 +1,29 @@
-import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  HostListener,
+  inject,
+  Injector,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { FACES, FaceDescriptor } from '@features/faces/face-registry';
-import { FacePreferenceService } from '@features/faces/face-preference.service';
+import { ScreenConfig, ScreensService } from '@core/screens/screens.service';
+import { SCREEN_ID } from '@core/screens/screen-id';
+import { ScreenHostComponent } from './screen-host/screen-host.component';
 import { ConfigureButtonComponent } from './configure-button/configure-button.component';
 import { AdjustButtonComponent } from './adjust-button/adjust-button.component';
 import { FacePickerSheetComponent } from './face-picker-sheet/face-picker-sheet.component';
 import { TimeMachineComponent } from './time-machine/time-machine.component';
 import { FaceConfigService } from '@core/face-config.service';
 import { FaceOverlayComponent } from './face-overlay/face-overlay.component';
-import { FACE_TRANSITION_MS } from '@core/animation-timing';
+import { snapIndex } from './screen-strip/swipe-snap';
 
-// One stacked face during a crossfade. The leaving face fades out while the
-// incoming face fades in; NgComponentOutlet renders one component per layer.
-interface FaceLayer {
-  key: number;
-  face: FaceDescriptor;
-  leaving: boolean;
+interface MountedScreen {
+  screen: ScreenConfig;
+  index: number;
+  injector: Injector;
 }
 
 @Component({
@@ -32,62 +40,152 @@ interface FaceLayer {
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  private readonly preference = inject(FacePreferenceService);
+  protected readonly screens = inject(ScreensService);
   protected readonly faceConfig = inject(FaceConfigService);
+  private readonly rootInjector = inject(Injector);
   private readonly configureButton = viewChild.required(ConfigureButtonComponent);
 
+  protected readonly ScreenHostComponent = ScreenHostComponent;
+
   readonly sheetOpen = signal(false);
-  readonly activeFaceId = this.preference.activeFaceId;
-  readonly activeFace = computed(
-    () => FACES.find((face) => face.id === this.activeFaceId()) ?? FACES[0],
+  readonly screenSheetOpen = signal(false);
+
+  // Horizontal drag distance in px (0 at rest). Set during a pointer swipe.
+  readonly dragPx = signal(0);
+  readonly animating = signal(false);
+
+  readonly activeIndex = this.screens.activeIndex;
+  readonly activeScreen = this.screens.activeScreen;
+  readonly activeFace = computed<FaceDescriptor>(
+    () => FACES.find((f) => f.id === this.activeScreen().faceId) ?? FACES[0],
   );
 
-  private nextKey = 1;
-  private transitionTimer?: ReturnType<typeof setTimeout>;
-
-  // Apple port: this two-layer crossfade maps to a SwiftUI `.transition(.opacity)`
-  // keyed by face id, animated with `withAnimation(.easeInOut(duration:))`.
-  readonly layers = signal<FaceLayer[]>([{ key: 0, face: this.activeFace(), leaving: false }]);
-
-  constructor() {
-    inject(DestroyRef).onDestroy(() => clearTimeout(this.transitionTimer));
+  // Cache one outlet injector per screen id (carries SCREEN_ID for scoped stores).
+  private readonly injectorCache = new Map<number, Injector>();
+  private injectorFor(id: number): Injector {
+    let inj = this.injectorCache.get(id);
+    if (!inj) {
+      inj = Injector.create({
+        providers: [{ provide: SCREEN_ID, useValue: id }],
+        parent: this.rootInjector,
+      });
+      this.injectorCache.set(id, inj);
+    }
+    return inj;
   }
+
+  // Which screens to mount: all while the screen sheet is open (previews need
+  // live injectors), otherwise a 3-window around the active index so off-screen
+  // faces stop their timers.
+  readonly mountedScreens = computed<MountedScreen[]>(() => {
+    const list = this.screens.screens();
+    const active = this.activeIndex();
+    const all = this.screenSheetOpen();
+    return list
+      .map((screen, index) => ({ screen, index, injector: this.injectorFor(screen.id) }))
+      .filter((m) => all || Math.abs(m.index - active) <= 1);
+  });
+
+  // Strip transform: each cell sits at its true index (left: index*100vw); the
+  // strip shifts so the active screen is centered, plus the live drag offset.
+  readonly stripTransform = computed(
+    () => `translateX(calc(${-this.activeIndex()} * 100vw + ${this.dragPx()}px))`,
+  );
+
+  // Active screen's config injector, for the face picker previews.
+  readonly activeInjector = computed(() => this.injectorFor(this.activeScreen().id));
 
   openSheet(): void {
     this.sheetOpen.set(true);
   }
-
-  // The Fullscreen "Adjust" (size) panel: mark it open and hide the controls bar.
+  closeSheet(): void {
+    this.sheetOpen.set(false);
+    this.configureButton().focusButton();
+  }
   openAdjust(): void {
     this.faceConfig.adjustOpen.set(true);
     this.faceConfig.open.set(true);
   }
 
-  closeSheet(): void {
-    this.sheetOpen.set(false);
-    this.configureButton().focusButton();
+  openScreenSheet(): void {
+    this.screenSheetOpen.set(true);
+  }
+  closeScreenSheet(): void {
+    this.screenSheetOpen.set(false);
   }
 
   selectFace(id: string): void {
-    const changed = id !== this.activeFaceId();
-    this.preference.setFace(id);
+    this.screens.setFace(this.activeScreen().id, id);
     this.closeSheet();
-    if (changed) {
-      this.crossfadeTo(this.activeFace());
-    }
   }
 
-  private crossfadeTo(face: FaceDescriptor): void {
-    const key = this.nextKey++;
-    this.layers.update((ls) => [
-      ...ls.map((l) => ({ ...l, leaving: true })),
-      { key, face, leaving: false },
-    ]);
-    // Clearing the prior timer makes rapid switches converge on the latest face.
-    clearTimeout(this.transitionTimer);
-    this.transitionTimer = setTimeout(
-      () => this.layers.set([{ key, face, leaving: false }]),
-      FACE_TRANSITION_MS,
+  // --- Navigation ---------------------------------------------------------
+  goTo(index: number): void {
+    this.animating.set(true);
+    this.screens.setActiveIndex(index);
+    this.dragPx.set(0);
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  onKeydown(event: KeyboardEvent): void {
+    if (this.faceConfig.open() || this.sheetOpen() || this.screenSheetOpen()) return;
+    if (event.key === 'ArrowRight') this.goTo(this.activeIndex() + 1);
+    else if (event.key === 'ArrowLeft') this.goTo(this.activeIndex() - 1);
+  }
+
+  // --- Pointer swipe ------------------------------------------------------
+  private pointerId: number | null = null;
+  private startX = 0;
+  private startY = 0;
+  private lastX = 0;
+  private lastT = 0;
+  private velocity = 0;
+  private capturing = false;
+
+  onPointerDown(event: PointerEvent): void {
+    if (this.faceConfig.open() || this.sheetOpen() || this.screenSheetOpen()) return;
+    this.pointerId = event.pointerId;
+    this.startX = this.lastX = event.clientX;
+    this.startY = event.clientY;
+    this.lastT = event.timeStamp;
+    this.velocity = 0;
+    this.capturing = false;
+    this.animating.set(false);
+  }
+
+  onPointerMove(event: PointerEvent): void {
+    if (this.pointerId !== event.pointerId) return;
+    const dx = event.clientX - this.startX;
+    const dy = event.clientY - this.startY;
+    // Only capture once horizontal intent is clear (don't hijack vertical scroll).
+    if (!this.capturing) {
+      if (Math.abs(dx) < 10 || Math.abs(dx) <= Math.abs(dy)) return;
+      this.capturing = true;
+      (event.target as Element).setPointerCapture?.(event.pointerId);
+    }
+    const dt = event.timeStamp - this.lastT || 1;
+    this.velocity = (event.clientX - this.lastX) / dt;
+    this.lastX = event.clientX;
+    this.lastT = event.timeStamp;
+    this.dragPx.set(dx);
+  }
+
+  onPointerUp(event: PointerEvent): void {
+    if (this.pointerId !== event.pointerId) return;
+    this.pointerId = null;
+    if (!this.capturing) {
+      this.dragPx.set(0);
+      return;
+    }
+    this.capturing = false;
+    const width = window.innerWidth || 1;
+    const target = snapIndex(
+      this.activeIndex(),
+      this.dragPx(),
+      this.velocity,
+      width,
+      this.screens.screens().length,
     );
+    this.goTo(target);
   }
 }

@@ -1,5 +1,5 @@
 import { NgComponentOutlet } from '@angular/common';
-import { Component, input, output, viewChild } from '@angular/core';
+import { Component, Injector, input, output, viewChild } from '@angular/core';
 import { FACES } from '@features/faces/face-registry';
 import { SheetComponent } from '@shared/ui/sheet/sheet.component';
 
@@ -12,6 +12,7 @@ import { SheetComponent } from '@shared/ui/sheet/sheet.component';
 export class FacePickerSheetComponent {
   readonly faces = FACES;
   readonly activeFaceId = input.required<string>();
+  readonly previewInjector = input<Injector | undefined>(undefined);
   readonly faceSelect = output<string>();
   readonly faceClose = output<void>();
 

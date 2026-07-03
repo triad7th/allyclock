@@ -1,11 +1,25 @@
-<main class="face-host">
-  @for (layer of layers(); track layer.key) {
-    <div class="face-layer" [class.leaving]="layer.leaving">
-      <ng-container [ngComponentOutlet]="layer.face.component" />
+<main
+  class="screens-strip"
+  [class.animating]="animating()"
+  [style.transform]="stripTransform()"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointercancel)="onPointerUp($event)"
+>
+  @for (m of mountedScreens(); track m.screen.id) {
+    <div class="screen-cell" [style.left]="'calc(' + m.index + ' * 100vw)'">
+      <ng-container
+        [ngComponentOutlet]="ScreenHostComponent"
+        [ngComponentOutletInputs]="{ screen: m.screen }"
+        [ngComponentOutletInjector]="m.injector"
+      />
     </div>
   }
 </main>
+
 <app-face-overlay [sheetOpen]="sheetOpen()" />
+
 <div class="controls-bar" [class.hidden]="faceConfig.open()">
   <app-configure-button [pinned]="sheetOpen()" (open)="openSheet()" />
   @if (activeFace().configComponent) {
@@ -13,9 +27,11 @@
   }
   <app-time-machine />
 </div>
+
 @if (sheetOpen()) {
   <app-face-picker-sheet
-    [activeFaceId]="activeFaceId()"
+    [activeFaceId]="activeScreen().faceId"
+    [previewInjector]="activeInjector()"
     (faceSelect)="selectFace($event)"
     (faceClose)="closeSheet()"
   />
