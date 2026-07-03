@@ -5,6 +5,8 @@ import { WorldCardsFaceComponent } from './world-cards/world-cards-face.componen
 import { WorldCardsConfigComponent } from './world-cards/world-cards-config/world-cards-config.component';
 import { ScheduleFaceComponent } from './schedule/schedule-face.component';
 
+export { DEFAULT_FACE_ID } from '@core/screens/default-face-id';
+
 export interface FaceDescriptor {
   id: string;
   displayName: string;
@@ -31,4 +33,3 @@ export const FACES: FaceDescriptor[] = [
   { id: 'schedule', displayName: 'Daily Schedule', component: ScheduleFaceComponent },
 ];
 
-export const DEFAULT_FACE_ID = 'fullscreen';
