@@ -28,6 +28,33 @@
   <app-time-machine />
 </div>
 
+@if (showPrev()) {
+  <button
+    appAutoHide
+    #ahPrev="autoHide"
+    type="button"
+    class="chevron prev"
+    [class.hidden]="!ahPrev.visible() || faceConfig.open()"
+    (click)="goTo(activeIndex() - 1)"
+    aria-label="Previous screen"
+  >
+    <app-icon name="chevron.left" />
+  </button>
+}
+@if (showNext()) {
+  <button
+    appAutoHide
+    #ahNext="autoHide"
+    type="button"
+    class="chevron next"
+    [class.hidden]="!ahNext.visible() || faceConfig.open()"
+    (click)="goTo(activeIndex() + 1)"
+    aria-label="Next screen"
+  >
+    <app-icon name="chevron.right" />
+  </button>
+}
+
 @if (sheetOpen()) {
   <app-face-picker-sheet
     [activeFaceId]="activeScreen().faceId"

@@ -19,6 +19,8 @@ import { TimeMachineComponent } from './time-machine/time-machine.component';
 import { FaceConfigService } from '@core/face-config.service';
 import { FaceOverlayComponent } from './face-overlay/face-overlay.component';
 import { snapIndex } from './screen-strip/swipe-snap';
+import { IconComponent } from '@shared/ui/icon/icon.component';
+import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 
 interface MountedScreen {
   screen: ScreenConfig;
@@ -35,6 +37,8 @@ interface MountedScreen {
     FacePickerSheetComponent,
     TimeMachineComponent,
     FaceOverlayComponent,
+    IconComponent,
+    AutoHideDirective,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -59,6 +63,9 @@ export class AppComponent {
   readonly activeFace = computed<FaceDescriptor>(
     () => FACES.find((f) => f.id === this.activeScreen().faceId) ?? FACES[0],
   );
+
+  readonly showPrev = computed(() => this.activeIndex() > 0);
+  readonly showNext = computed(() => this.activeIndex() < this.screens.screens().length - 1);
 
   // Cache one outlet injector per screen id (carries SCREEN_ID for scoped stores).
   private readonly injectorCache = new Map<number, Injector>();

@@ -64,4 +64,25 @@ describe('AppComponent', () => {
     fixture.componentInstance.selectFace('world-cards');
     expect(screens.activeScreen().faceId).toBe('world-cards');
   });
+
+  it('shows only the next chevron at the first of several screens', () => {
+    const screens = TestBed.inject(ScreensService);
+    screens.addScreen();
+    screens.setActiveIndex(0);
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.chevron.next')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('.chevron.prev')).toBeNull();
+  });
+
+  it('shows both chevrons in the middle', () => {
+    const screens = TestBed.inject(ScreensService);
+    screens.addScreen();
+    screens.addScreen();
+    screens.setActiveIndex(1);
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.chevron.prev')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('.chevron.next')).toBeTruthy();
+  });
 });
