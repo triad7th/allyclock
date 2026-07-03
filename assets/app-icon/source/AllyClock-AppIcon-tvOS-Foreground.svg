@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="480" viewBox="0 0 800 480">
+  <g transform="translate(400 232) scale(0.444162) translate(-512 -495)">
+    <circle cx="512" cy="520" r="394" fill="#17343A" opacity="0.45"/>
+    <circle cx="512" cy="495" r="394" fill="#10171A"/>
+    <circle cx="512" cy="495" r="353" fill="#F5F0E5" stroke="#B58A4E" stroke-width="21"/>
+    <g fill="none" stroke="#22262A" stroke-width="28" stroke-linecap="round">
+      <path d="M512 190V255"/>
+      <path d="M817 495H752"/>
+      <path d="M512 800V735"/>
+      <path d="M207 495H272"/>
+    </g>
+    <g fill="none" stroke="#7E7B74" stroke-width="13" stroke-linecap="round">
+      <path d="M512 184V226" transform="rotate(30 512 495)"/>
+      <path d="M512 184V226" transform="rotate(60 512 495)"/>
+      <path d="M512 184V226" transform="rotate(120 512 495)"/>
+      <path d="M512 184V226" transform="rotate(210 512 495)"/>
+      <path d="M512 184V226" transform="rotate(240 512 495)"/>
+      <path d="M512 184V226" transform="rotate(300 512 495)"/>
+      <path d="M512 184V226" transform="rotate(330 512 495)"/>
+    </g>
+    <g fill="none" stroke="#22262A" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M512 495L387 376" stroke-width="48"/>
+      <path d="M512 495L681 354" stroke-width="40"/>
+    </g>
+    <path d="M512 495L691 716" fill="none" stroke="#C85F50" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="512" cy="495" r="42" fill="#C85F50" stroke="#22262A" stroke-width="14"/>
+  </g>
+</svg>
