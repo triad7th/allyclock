@@ -56,3 +56,20 @@ describe('IconComponent', () => {
     expect(svg!.querySelector('path')).toBeNull();
   });
 });
+
+describe('IconComponent icon set', () => {
+  function render(name: string): SVGPathElement | null {
+    const fixture = TestBed.createComponent(IconComponent);
+    fixture.componentRef.setInput('name', name as SfSymbol);
+    fixture.detectChanges();
+    return fixture.nativeElement.querySelector('path');
+  }
+
+  it('renders a non-empty path for the new screen/nav icons', () => {
+    for (const name of ['chevron.left', 'chevron.right', 'clock.arrow.circlepath', 'clock']) {
+      const path = render(name);
+      expect(path, name).toBeTruthy();
+      expect(path!.getAttribute('d')!.length, name).toBeGreaterThan(0);
+    }
+  });
+});
