@@ -44,36 +44,48 @@
   pointer-events: none;
 }
 
+// 44px circular overlay button, matching the configure/gear buttons — a
+// transparent chevron vanishes over light faces (e.g. a white schedule image).
 .chevron {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 44px;
+  height: 44px;
   padding: 0;
-  border: none;
-  border-radius: 999px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(30, 30, 30, 0.85);
+  color: #eee;
   cursor: pointer;
-  transition: opacity 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.12s ease,
+    background 0.2s ease;
+
+  &:hover {
+    background: rgba(45, 45, 45, 0.9);
+  }
+  &:active {
+    transform: translateY(-50%) scale(0.93);
+  }
 
   &.prev {
-    left: 0.25rem;
+    left: 0.75rem;
   }
   &.next {
-    right: 0.25rem;
+    right: 0.75rem;
   }
   &.hidden {
     opacity: 0;
     pointer-events: none;
   }
   app-icon {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 }

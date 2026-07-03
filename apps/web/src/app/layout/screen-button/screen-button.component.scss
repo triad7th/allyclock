@@ -9,13 +9,25 @@
   width: 2.75rem;
   height: 2.75rem;
   padding: 0;
-  border: none;
+  // Dark circular overlay button, matching the gear/configure/chevron buttons —
+  // a translucent-white button vanishes over light faces (e.g. the white
+  // Daily Schedule image), which is exactly where this button lives.
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
+  background: rgba(30, 30, 30, 0.85);
+  color: #eee;
   cursor: pointer;
-  transition: opacity 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.12s ease,
+    background 0.2s ease;
 
+  &:hover {
+    background: rgba(45, 45, 45, 0.9);
+  }
+  &:active {
+    transform: scale(0.93);
+  }
   &.hidden {
     opacity: 0;
     pointer-events: none;
