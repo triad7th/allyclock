@@ -12,11 +12,7 @@ describe('buildDefaultFields', () => {
   it('seeds unit sizes and the US/UK/KR cards on every band', () => {
     for (const fields of Object.values(buildDefaultFields())) {
       expect(fields.sizes).toEqual({ time: 1, date: 1 });
-      expect(fields.cards.map((c) => c.zone)).toEqual([
-        'America/Los_Angeles',
-        'UTC',
-        'Asia/Seoul',
-      ]);
+      expect(fields.cards.map((c) => c.zone)).toEqual(['America/Los_Angeles', 'UTC', 'Asia/Seoul']);
       expect(fields.cards[0].lineBreak).toBe(true);
       expect(fields.cards[1].lineBreak).toBe(false);
     }

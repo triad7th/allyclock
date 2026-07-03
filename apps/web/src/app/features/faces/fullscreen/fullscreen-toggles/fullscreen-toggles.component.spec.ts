@@ -7,9 +7,15 @@ import { SHEET_ANIMATION_MS } from '@core/animation-timing';
 const mem: Record<string, string> = {};
 const storageMock = {
   getItem: (k: string) => mem[k] ?? null,
-  setItem: (k: string, v: string) => { mem[k] = v; },
-  removeItem: (k: string) => { delete mem[k]; },
-  clear: () => { for (const k of Object.keys(mem)) delete mem[k]; },
+  setItem: (k: string, v: string) => {
+    mem[k] = v;
+  },
+  removeItem: (k: string) => {
+    delete mem[k];
+  },
+  clear: () => {
+    for (const k of Object.keys(mem)) delete mem[k];
+  },
 };
 
 describe('FullscreenTogglesComponent', () => {
@@ -45,7 +51,9 @@ describe('FullscreenTogglesComponent', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();
     const before = store.sample().sections.weekday.visible;
-    (fixture.nativeElement.querySelector('[data-knob="weekday-visible"]') as HTMLButtonElement).click();
+    (
+      fixture.nativeElement.querySelector('[data-knob="weekday-visible"]') as HTMLButtonElement
+    ).click();
     fixture.detectChanges();
     for (const fields of Object.values(store.state().byBand)) {
       expect(fields.sections.weekday.visible).toBe(!before);
@@ -67,7 +75,9 @@ describe('FullscreenTogglesComponent', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();
     const before = store.sample().zoneVisible;
-    (fixture.nativeElement.querySelector('[data-knob="zone-visible"]') as HTMLButtonElement).click();
+    (
+      fixture.nativeElement.querySelector('[data-knob="zone-visible"]') as HTMLButtonElement
+    ).click();
     fixture.detectChanges();
     for (const fields of Object.values(store.state().byBand)) {
       expect(fields.zoneVisible).toBe(!before);
@@ -78,7 +88,9 @@ describe('FullscreenTogglesComponent', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();
     const before = store.sample().secondsVisible;
-    (fixture.nativeElement.querySelector('[data-knob="seconds-visible"]') as HTMLButtonElement).click();
+    (
+      fixture.nativeElement.querySelector('[data-knob="seconds-visible"]') as HTMLButtonElement
+    ).click();
     fixture.detectChanges();
     for (const fields of Object.values(store.state().byBand)) {
       expect(fields.secondsVisible).toBe(!before);
@@ -89,7 +101,9 @@ describe('FullscreenTogglesComponent', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();
     const before = store.sample().flagVisible;
-    (fixture.nativeElement.querySelector('[data-knob="flag-visible"]') as HTMLButtonElement).click();
+    (
+      fixture.nativeElement.querySelector('[data-knob="flag-visible"]') as HTMLButtonElement
+    ).click();
     fixture.detectChanges();
     for (const fields of Object.values(store.state().byBand)) {
       expect(fields.flagVisible).toBe(!before);
@@ -99,7 +113,9 @@ describe('FullscreenTogglesComponent', () => {
   it('renders the Bar segmented control with the active mode marked', () => {
     const fixture = TestBed.createComponent(FullscreenTogglesComponent);
     fixture.detectChanges();
-    const on = fixture.nativeElement.querySelector('[data-knob="bar-mode"] [aria-checked="true"]') as HTMLElement;
+    const on = fixture.nativeElement.querySelector(
+      '[data-knob="bar-mode"] [aria-checked="true"]',
+    ) as HTMLElement;
     expect(on.getAttribute('data-mode')).toBe('progress'); // default
   });
 

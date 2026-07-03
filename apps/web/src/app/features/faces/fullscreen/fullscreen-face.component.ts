@@ -22,7 +22,13 @@ import { varsFor } from './fullscreen-style';
 @Component({
   selector: 'app-fullscreen-face',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AutoHideDirective, FullscreenConfigComponent, FullscreenTogglesComponent, IconComponent, FlagComponent],
+  imports: [
+    AutoHideDirective,
+    FullscreenConfigComponent,
+    FullscreenTogglesComponent,
+    IconComponent,
+    FlagComponent,
+  ],
   hostDirectives: [ContainerSizeDirective],
   templateUrl: './fullscreen-face.component.html',
   styleUrl: './fullscreen-face.component.scss',

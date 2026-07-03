@@ -270,11 +270,7 @@ input[type='range'] {
   &::-webkit-slider-runnable-track {
     height: 4px;
     border-radius: 999px;
-    background: linear-gradient(
-      to right,
-      t.$tint var(--fill, 0%),
-      t.$track var(--fill, 0%)
-    );
+    background: linear-gradient(to right, t.$tint var(--fill, 0%), t.$track var(--fill, 0%));
   }
 
   &::-webkit-slider-thumb {
@@ -330,7 +326,9 @@ input[type='range'] {
   padding: 0.4rem 0;
   border-radius: 7px;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 
   &.on {
     background: t.$tint;

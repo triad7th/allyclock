@@ -22,7 +22,9 @@ describe('WorldCardsSettingsComponent', () => {
   beforeEach(async () => {
     storageMock.clear();
     vi.stubGlobal('localStorage', storageMock);
-    await TestBed.configureTestingModule({ imports: [WorldCardsSettingsComponent] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [WorldCardsSettingsComponent],
+    }).compileComponents();
     store = TestBed.inject(WorldCardsConfigStore);
   });
 
@@ -38,11 +40,19 @@ describe('WorldCardsSettingsComponent', () => {
   it('removes a card and hides the remove control at the last card', () => {
     const fixture = TestBed.createComponent(WorldCardsSettingsComponent);
     fixture.detectChanges();
-    (fixture.nativeElement.querySelector('.city-row [data-knob="card-remove"]') as HTMLButtonElement).click();
+    (
+      fixture.nativeElement.querySelector(
+        '.city-row [data-knob="card-remove"]',
+      ) as HTMLButtonElement
+    ).click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelectorAll('.city-row')).toHaveLength(2);
     // Down to one card: the remove controls disappear (last-card guard).
-    (fixture.nativeElement.querySelector('.city-row [data-knob="card-remove"]') as HTMLButtonElement).click();
+    (
+      fixture.nativeElement.querySelector(
+        '.city-row [data-knob="card-remove"]',
+      ) as HTMLButtonElement
+    ).click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelectorAll('.city-row')).toHaveLength(1);
     expect(fixture.nativeElement.querySelector('[data-knob="card-remove"]')).toBeNull();
@@ -65,7 +75,9 @@ describe('WorldCardsSettingsComponent', () => {
     const fixture = TestBed.createComponent(WorldCardsSettingsComponent);
     fixture.detectChanges();
     const firstId = store.sample().cards[0].id;
-    (fixture.nativeElement.querySelector('.city-row [data-knob="card-zone"]') as HTMLButtonElement).click();
+    (
+      fixture.nativeElement.querySelector('.city-row [data-knob="card-zone"]') as HTMLButtonElement
+    ).click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('app-zone-picker')).toBeTruthy();
     fixture.componentInstance.pickZone('Asia/Tokyo');

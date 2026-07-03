@@ -105,7 +105,9 @@ export class ScheduleFaceComponent implements OnInit, OnDestroy {
     if (!active.hasImage) {
       this.imageUrl.set(DEFAULT_IMAGE_SRC);
     } else {
-      this.store.loadPresetImage(active.id).then((url) => this.imageUrl.set(url ?? DEFAULT_IMAGE_SRC));
+      this.store
+        .loadPresetImage(active.id)
+        .then((url) => this.imageUrl.set(url ?? DEFAULT_IMAGE_SRC));
     }
   }
 }

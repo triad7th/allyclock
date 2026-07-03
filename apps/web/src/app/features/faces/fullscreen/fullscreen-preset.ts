@@ -6,16 +6,16 @@ export interface SectionStyle {
   // control can be revived later. (time/month/day stay true.)
   visible: boolean;
   sizeScale: number; // 0.5–2.0, default 1.0
-  weight: number;    // 100–700
-  opacity: number;   // 0.2–1.0
+  weight: number; // 100–700
+  opacity: number; // 0.2–1.0
 }
 
 export type BarMode = 'off' | 'divider' | 'progress';
 
 export interface BarStyle {
-  mode: BarMode;     // 'off' subsumes the former visible:false
+  mode: BarMode; // 'off' subsumes the former visible:false
   sizeScale: number; // unchanged
-  opacity: number;   // unchanged — drives divider line alpha
+  opacity: number; // unchanged — drives divider line alpha
 }
 
 // Responsive base for a section group, used as `min(cqw·1cqw, cqh·1cqh)`.
@@ -45,10 +45,10 @@ export interface FullscreenFields {
   bases: {
     time: SectionBase;
     date: SectionBase; // shared by weekday/month/day/gmt
-    bar: SectionBase;  // bar width base
+    bar: SectionBase; // bar width base
   };
   gaps: {
-    timeToBar: number;        // scale on a cq gap base, default 1.0
+    timeToBar: number; // scale on a cq gap base, default 1.0
     barToDate: number;
     betweenDateParts: number;
   };

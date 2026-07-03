@@ -10,7 +10,13 @@ describe('IconButtonComponent', () => {
     }).compileComponents();
   });
 
-  function create(inputs: { icon?: string; variant?: 'secondary' | 'primary' | 'destructive'; label?: string } = {}) {
+  function create(
+    inputs: {
+      icon?: string;
+      variant?: 'secondary' | 'primary' | 'destructive';
+      label?: string;
+    } = {},
+  ) {
     const fixture = TestBed.createComponent(IconButtonComponent);
     fixture.componentRef.setInput('icon', inputs.icon ?? 'plus');
     if (inputs.variant !== undefined) fixture.componentRef.setInput('variant', inputs.variant);
@@ -71,7 +77,9 @@ describe('IconButtonComponent', () => {
 
     const fixture = TestBed.createComponent(HostComponent);
     fixture.detectChanges();
-    const button = (fixture.nativeElement as HTMLElement).querySelector('button.icon-button') as HTMLButtonElement;
+    const button = (fixture.nativeElement as HTMLElement).querySelector(
+      'button.icon-button',
+    ) as HTMLButtonElement;
     button.click();
     expect(fixture.componentInstance.clicked).toBe(1);
   });

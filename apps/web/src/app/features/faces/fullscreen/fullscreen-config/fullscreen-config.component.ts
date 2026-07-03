@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  viewChild,
+} from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FullscreenConfigStore } from '../fullscreen-config-store.service';
 import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
@@ -28,8 +36,12 @@ export class FullscreenConfigComponent {
   readonly editingBand = computed(() => this.registry.resolveForRatio(this.ratio()));
   readonly editingFields = computed(() => this.store.config(this.editingBand().id));
 
-  close(): void { this.sheet()?.close(); }
-  onSheetClosed(): void { this.closed.emit(); }
+  close(): void {
+    this.sheet()?.close();
+  }
+  onSheetClosed(): void {
+    this.closed.emit();
+  }
 
   /** Compute --fill % for a slider given its current value and range. */
   fillPct(value: number, min: number, max: number): string {

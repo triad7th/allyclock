@@ -8,9 +8,15 @@ import { type FullscreenFields, type SectionKey, type BarMode } from './fullscre
 export class FullscreenConfigStore extends BandConfigStore<FullscreenFields> {
   private readonly registry = inject(DimensionRegistry);
 
-  protected storageKey(): string { return 'allyclock.fullscreen.config'; }
-  protected version(): number { return 5; }
-  protected buildDefaults(): Record<string, FullscreenFields> { return buildDefaultFields(); }
+  protected storageKey(): string {
+    return 'allyclock.fullscreen.config';
+  }
+  protected version(): number {
+    return 5;
+  }
+  protected buildDefaults(): Record<string, FullscreenFields> {
+    return buildDefaultFields();
+  }
 
   constructor() {
     super();
@@ -28,7 +34,11 @@ export class FullscreenConfigStore extends BandConfigStore<FullscreenFields> {
     return Object.values(this.state().byBand)[0];
   }
 
-  updateSection(bandId: string, key: SectionKey, partial: Partial<FullscreenFields['sections'][SectionKey]>): void {
+  updateSection(
+    bandId: string,
+    key: SectionKey,
+    partial: Partial<FullscreenFields['sections'][SectionKey]>,
+  ): void {
     this.patch(bandId, (f) => ({
       ...f,
       sections: { ...f.sections, [key]: { ...f.sections[key], ...partial } },
@@ -46,7 +56,10 @@ export class FullscreenConfigStore extends BandConfigStore<FullscreenFields> {
   // Dimension-agnostic visibility: write the value to EVERY band. The per-band
   // field is preserved so per-band control can be revived later.
   setSectionVisibleAll(key: SectionKey, visible: boolean): void {
-    this.patchAll((f) => ({ ...f, sections: { ...f.sections, [key]: { ...f.sections[key], visible } } }));
+    this.patchAll((f) => ({
+      ...f,
+      sections: { ...f.sections, [key]: { ...f.sections[key], visible } },
+    }));
   }
 
   setBarModeAll(mode: BarMode): void {
@@ -72,14 +85,22 @@ export class FullscreenConfigStore extends BandConfigStore<FullscreenFields> {
   // Field-level migration: fill new fields (secondsVisible, bar.mode) from the
   // band's default while keeping persisted tuning; translate a legacy
   // bar.visible boolean into the new bar.mode.
-  protected override mergeBand(defaults: FullscreenFields, persisted: FullscreenFields): FullscreenFields {
+  protected override mergeBand(
+    defaults: FullscreenFields,
+    persisted: FullscreenFields,
+  ): FullscreenFields {
     const legacy = persisted.bar as Partial<FullscreenFields['bar']> & { visible?: boolean };
     const mode: BarMode =
-      legacy.mode ?? (legacy.visible === false ? 'off' : legacy.visible === true ? 'divider' : defaults.bar.mode);
+      legacy.mode ??
+      (legacy.visible === false ? 'off' : legacy.visible === true ? 'divider' : defaults.bar.mode);
     return {
       ...defaults,
       ...persisted,
-      bar: { mode, sizeScale: legacy.sizeScale ?? defaults.bar.sizeScale, opacity: legacy.opacity ?? defaults.bar.opacity },
+      bar: {
+        mode,
+        sizeScale: legacy.sizeScale ?? defaults.bar.sizeScale,
+        opacity: legacy.opacity ?? defaults.bar.opacity,
+      },
       secondsVisible: persisted.secondsVisible ?? defaults.secondsVisible,
       zoneVisible: persisted.zoneVisible ?? defaults.zoneVisible,
       flagVisible: persisted.flagVisible ?? defaults.flagVisible,

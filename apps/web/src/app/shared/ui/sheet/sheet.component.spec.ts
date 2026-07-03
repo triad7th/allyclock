@@ -15,11 +15,15 @@ describe('SheetComponent', () => {
     vi.useRealTimers();
   });
 
-  function createSheet(inputs: { backdrop?: boolean; fullHeight?: boolean; sheetLabel?: string } = {}) {
+  function createSheet(
+    inputs: { backdrop?: boolean; fullHeight?: boolean; sheetLabel?: string } = {},
+  ) {
     const fixture = TestBed.createComponent(SheetComponent);
     if (inputs.backdrop !== undefined) fixture.componentRef.setInput('backdrop', inputs.backdrop);
-    if (inputs.fullHeight !== undefined) fixture.componentRef.setInput('fullHeight', inputs.fullHeight);
-    if (inputs.sheetLabel !== undefined) fixture.componentRef.setInput('sheetLabel', inputs.sheetLabel);
+    if (inputs.fullHeight !== undefined)
+      fixture.componentRef.setInput('fullHeight', inputs.fullHeight);
+    if (inputs.sheetLabel !== undefined)
+      fixture.componentRef.setInput('sheetLabel', inputs.sheetLabel);
     fixture.detectChanges();
     return fixture;
   }
@@ -59,9 +63,11 @@ describe('SheetComponent', () => {
 
     fixture.componentInstance.close();
     fixture.detectChanges();
-    expect((fixture.nativeElement.querySelector('.sheet-overlay') as HTMLElement).classList.contains('closing')).toBe(
-      true,
-    );
+    expect(
+      (fixture.nativeElement.querySelector('.sheet-overlay') as HTMLElement).classList.contains(
+        'closing',
+      ),
+    ).toBe(true);
     expect(closed).toBe(false);
 
     vi.advanceTimersByTime(SHEET_ANIMATION_MS - 1);

@@ -68,7 +68,8 @@ export abstract class BandConfigStore<T> {
     const defaults = this.buildDefaults();
     const byBand: Record<string, T> = {};
     for (const id of Object.keys(defaults)) {
-      byBand[id] = id in state.byBand ? this.mergeBand(defaults[id], state.byBand[id]) : defaults[id];
+      byBand[id] =
+        id in state.byBand ? this.mergeBand(defaults[id], state.byBand[id]) : defaults[id];
     }
     // Carry any persisted band ids not in defaults (forward-compat), untouched.
     for (const id of Object.keys(state.byBand)) {

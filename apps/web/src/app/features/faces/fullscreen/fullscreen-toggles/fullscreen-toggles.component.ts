@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, output, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FullscreenConfigStore } from '../fullscreen-config-store.service';
 import { type BarMode } from '../fullscreen-preset';
 import { SheetComponent } from '@shared/ui/sheet/sheet.component';
@@ -18,7 +26,13 @@ import { FlagComponent } from '@shared/ui/flag/flag.component';
 @Component({
   selector: 'app-fullscreen-toggles',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, ZonePickerComponent, FlagComponent],
+  imports: [
+    SheetComponent,
+    NavHeaderComponent,
+    IconButtonComponent,
+    ZonePickerComponent,
+    FlagComponent,
+  ],
   templateUrl: './fullscreen-toggles.component.html',
   styleUrl: './fullscreen-toggles.component.scss',
 })
@@ -54,8 +68,12 @@ export class FullscreenTogglesComponent {
   // Zone id -> ISO country code for the selector flag (null -> globe fallback).
   readonly countryFor = countryCodeForZone;
 
-  openZonePicker(): void { this.zonePickerOpen.set(true); }
-  closeZonePicker(): void { this.zonePickerOpen.set(false); }
+  openZonePicker(): void {
+    this.zonePickerOpen.set(true);
+  }
+  closeZonePicker(): void {
+    this.zonePickerOpen.set(false);
+  }
   pickZone(id: string): void {
     this.store.setTimeZoneAll(id);
     this.zonePickerOpen.set(false);

@@ -1,10 +1,10 @@
 // A single ratio band (the app-wide "dimension preset"). Bands are contiguous,
 // sorted by minRatio ascending; the top band uses Infinity for maxRatio.
 export interface DimensionBand {
-  id: string;        // 'phone' … 'super'
-  name: string;      // 'PHONE' … 'SUPER' (shown in the overlay label)
-  minRatio: number;  // inclusive (ratio = width / height)
-  maxRatio: number;  // exclusive; top band uses Infinity
+  id: string; // 'phone' … 'super'
+  name: string; // 'PHONE' … 'SUPER' (shown in the overlay label)
+  minRatio: number; // inclusive (ratio = width / height)
+  maxRatio: number; // exclusive; top band uses Infinity
 }
 
 export interface DimensionRegistryState {

@@ -4,7 +4,9 @@
     <div class="time">
       <span class="digits">{{ big().digits }}</span>
       <span class="flank">
-        @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
+        @if (big().ampm; as ampm) {
+          <span class="ampm">{{ ampm }}</span>
+        }
         <span class="seconds">{{ big().seconds }}</span>
       </span>
     </div>

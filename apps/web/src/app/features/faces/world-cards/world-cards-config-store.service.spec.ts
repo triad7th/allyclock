@@ -27,9 +27,16 @@ describe('WorldCardsConfigStore', () => {
   });
 
   it('seeds fields for every band id and persists them', () => {
-    expect(Object.keys(store.state().byBand).sort()).toEqual(
-      ['lap', 'mini', 'pad', 'phone', 'super', 'tall', 'ultra', 'wide'],
-    );
+    expect(Object.keys(store.state().byBand).sort()).toEqual([
+      'lap',
+      'mini',
+      'pad',
+      'phone',
+      'super',
+      'tall',
+      'ultra',
+      'wide',
+    ]);
     expect(JSON.parse(mem['allyclock.world-cards.config']).byBand.lap).toBeDefined();
   });
 

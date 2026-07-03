@@ -26,7 +26,7 @@
   margin-bottom: var(--gap-time-bar, 0.5rem);
 }
 .flank {
-  align-self: stretch;          // take the digits' full height
+  align-self: stretch; // take the digits' full height
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -36,14 +36,14 @@
   font-weight: 300;
   letter-spacing: 0.18em;
   opacity: 0.85;
-  margin-top: 0.55em;           // load-bearing optical nudge (keep)
+  margin-top: 0.55em; // load-bearing optical nudge (keep)
 }
 .seconds {
-  margin-top: auto;             // bottom-anchor, with or without AM/PM
-  font-size: 0.10em;
+  margin-top: auto; // bottom-anchor, with or without AM/PM
+  font-size: 0.1em;
   font-weight: 300;
   letter-spacing: 0.05em;
-  opacity: 0.28;                // whisper
+  opacity: 0.28; // whisper
 }
 .bar {
   // Length proportional to the time font size, using LAP's time:bar ratio.

@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { bigTime, compactOffset, dateTZ, dateParts, gmtOffset, precise, zoneCity } from './clock-formatter';
+import {
+  bigTime,
+  compactOffset,
+  dateTZ,
+  dateParts,
+  gmtOffset,
+  precise,
+  zoneCity,
+} from './clock-formatter';
 
 // 2026-06-11T03:09:05.270Z = 8:09:05 PM June 10 in Los Angeles (PDT), 12:09 PM in Seoul.
 const date = new Date('2026-06-11T03:09:05.270Z');

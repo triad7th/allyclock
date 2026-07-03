@@ -5,9 +5,15 @@ import { FullscreenConfigStore } from './fullscreen-config-store.service';
 const mem: Record<string, string> = {};
 const storageMock = {
   getItem: (k: string) => mem[k] ?? null,
-  setItem: (k: string, v: string) => { mem[k] = v; },
-  removeItem: (k: string) => { delete mem[k]; },
-  clear: () => { for (const k of Object.keys(mem)) delete mem[k]; },
+  setItem: (k: string, v: string) => {
+    mem[k] = v;
+  },
+  removeItem: (k: string) => {
+    delete mem[k];
+  },
+  clear: () => {
+    for (const k of Object.keys(mem)) delete mem[k];
+  },
 };
 
 describe('FullscreenConfigStore', () => {
@@ -20,9 +26,16 @@ describe('FullscreenConfigStore', () => {
   });
 
   it('seeds fields for all eight band ids and persists them', () => {
-    expect(Object.keys(store.state().byBand).sort()).toEqual(
-      ['lap', 'mini', 'pad', 'phone', 'super', 'tall', 'ultra', 'wide'],
-    );
+    expect(Object.keys(store.state().byBand).sort()).toEqual([
+      'lap',
+      'mini',
+      'pad',
+      'phone',
+      'super',
+      'tall',
+      'ultra',
+      'wide',
+    ]);
     expect(JSON.parse(mem['allyclock.fullscreen.config']).byBand.mini).toBeDefined();
   });
 
@@ -36,7 +49,9 @@ describe('FullscreenConfigStore', () => {
     store.updateSection('phone', 'time', { sizeScale: 1.5 });
     expect(store.config('phone').sections.time.sizeScale).toBe(1.5);
     expect(store.config('mini').sections.time.sizeScale).toBe(1); // other bands untouched
-    expect(JSON.parse(mem['allyclock.fullscreen.config']).byBand.phone.sections.time.sizeScale).toBe(1.5);
+    expect(
+      JSON.parse(mem['allyclock.fullscreen.config']).byBand.phone.sections.time.sizeScale,
+    ).toBe(1.5);
   });
 
   it('updateBar and updateGap mutate the right band', () => {
@@ -87,12 +102,18 @@ describe('FullscreenConfigStore', () => {
       byBand: {
         mini: {
           bar: { visible: true, sizeScale: 1, opacity: 0.5 },
-          sections: { time: { visible: true, sizeScale: 1.4, weight: 200, opacity: 1 },
+          sections: {
+            time: { visible: true, sizeScale: 1.4, weight: 200, opacity: 1 },
             weekday: { visible: true, sizeScale: 1, weight: 300, opacity: 0.6 },
             month: { visible: true, sizeScale: 1, weight: 300, opacity: 0.6 },
             day: { visible: true, sizeScale: 1, weight: 300, opacity: 0.6 },
-            gmt: { visible: true, sizeScale: 1, weight: 300, opacity: 0.6 } },
-          bases: { time: { cqw: 120, cqh: 68 }, date: { cqw: 8, cqh: 5 }, bar: { cqw: 120, cqh: 56 } },
+            gmt: { visible: true, sizeScale: 1, weight: 300, opacity: 0.6 },
+          },
+          bases: {
+            time: { cqw: 120, cqh: 68 },
+            date: { cqw: 8, cqh: 5 },
+            bar: { cqw: 120, cqh: 56 },
+          },
           gaps: { timeToBar: 1, barToDate: 1, betweenDateParts: 1 },
         },
       },
@@ -102,12 +123,12 @@ describe('FullscreenConfigStore', () => {
     TestBed.configureTestingModule({});
     const fresh = TestBed.inject(FullscreenConfigStore);
     const mini = fresh.config('mini');
-    expect(mini.bar.mode).toBe('divider');           // visible:true → divider
+    expect(mini.bar.mode).toBe('divider'); // visible:true → divider
     expect((mini.bar as { visible?: boolean }).visible).toBeUndefined(); // legacy key dropped
-    expect(mini.bar.opacity).toBe(0.5);              // tuning preserved
-    expect(mini.sections.time.sizeScale).toBe(1.4);  // tuning preserved
-    expect(mini.secondsVisible).toBe(true);          // new field filled
-    expect(mini.flagVisible).toBe(false);            // new field filled from defaults
+    expect(mini.bar.opacity).toBe(0.5); // tuning preserved
+    expect(mini.sections.time.sizeScale).toBe(1.4); // tuning preserved
+    expect(mini.secondsVisible).toBe(true); // new field filled
+    expect(mini.flagVisible).toBe(false); // new field filled from defaults
   });
 
   it('sample() returns a representative band fields object', () => {

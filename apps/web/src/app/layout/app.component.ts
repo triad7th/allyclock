@@ -47,9 +47,7 @@ export class AppComponent {
 
   // Apple port: this two-layer crossfade maps to a SwiftUI `.transition(.opacity)`
   // keyed by face id, animated with `withAnimation(.easeInOut(duration:))`.
-  readonly layers = signal<FaceLayer[]>([
-    { key: 0, face: this.activeFace(), leaving: false },
-  ]);
+  readonly layers = signal<FaceLayer[]>([{ key: 0, face: this.activeFace(), leaving: false }]);
 
   constructor() {
     inject(DestroyRef).onDestroy(() => clearTimeout(this.transitionTimer));

@@ -66,7 +66,13 @@
 
       <div class="image-stage" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
         <div class="overlay-icons">
-          <button type="button" class="ov-btn" (click)="startRename()" aria-label="Rename preset" title="Rename preset">
+          <button
+            type="button"
+            class="ov-btn"
+            (click)="startRename()"
+            aria-label="Rename preset"
+            title="Rename preset"
+          >
             <app-icon name="pencil" />
           </button>
           @if (showImageStage()) {
@@ -74,10 +80,22 @@
               <app-icon name="photo" />
               <input type="file" accept="image/*" (change)="onFileSelected($event)" />
             </label>
-            <button type="button" class="ov-btn" (click)="addMarker()" aria-label="Add segment" title="Add segment">
+            <button
+              type="button"
+              class="ov-btn"
+              (click)="addMarker()"
+              aria-label="Add segment"
+              title="Add segment"
+            >
               <app-icon name="plus" />
             </button>
-            <button type="button" class="ov-btn" (click)="duplicateActive()" aria-label="Duplicate preset" title="Duplicate preset">
+            <button
+              type="button"
+              class="ov-btn"
+              (click)="duplicateActive()"
+              aria-label="Duplicate preset"
+              title="Duplicate preset"
+            >
               <app-icon name="square.on.square" />
             </button>
           }
@@ -110,7 +128,9 @@
                     [value]="draftZones()[$index].from"
                     (change)="updateZoneFrom($index, $any($event.target).value)"
                   />
-                  <span class="zone-end"><app-icon name="arrow.right" />{{ zoneEndTimes()[$index] }}</span>
+                  <span class="zone-end"
+                    ><app-icon name="arrow.right" />{{ zoneEndTimes()[$index] }}</span
+                  >
                 </div>
               </div>
             }

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  viewChild,
+} from '@angular/core';
 import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 import { ContainerSizeDirective } from '@shared/ui/container-size/container-size.directive';
 import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';

@@ -2,13 +2,19 @@
   <div class="time">
     <span class="digits">{{ big().digits }}</span>
     <span class="flank">
-      @if (big().ampm; as ampm) { <span class="ampm">{{ ampm }}</span> }
-      @if (activeFields().secondsVisible) { <span class="seconds">{{ big().seconds }}</span> }
+      @if (big().ampm; as ampm) {
+        <span class="ampm">{{ ampm }}</span>
+      }
+      @if (activeFields().secondsVisible) {
+        <span class="seconds">{{ big().seconds }}</span>
+      }
     </span>
   </div>
 
   @switch (activeFields().bar.mode) {
-    @case ('divider') { <div class="bar divider"></div> }
+    @case ('divider') {
+      <div class="bar divider"></div>
+    }
     @case ('progress') {
       <div class="bar progress" [style.--minute-progress]="minuteProgress()">
         <span class="fill"></span>

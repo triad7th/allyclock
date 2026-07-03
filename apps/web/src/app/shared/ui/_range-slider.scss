@@ -16,11 +16,7 @@ input[type='range'].knobs-slider {
   &::-webkit-slider-runnable-track {
     height: 4px;
     border-radius: 999px;
-    background: linear-gradient(
-      to right,
-      t.$tint var(--fill, 0%),
-      t.$track var(--fill, 0%)
-    );
+    background: linear-gradient(to right, t.$tint var(--fill, 0%), t.$track var(--fill, 0%));
   }
 
   &::-webkit-slider-thumb {

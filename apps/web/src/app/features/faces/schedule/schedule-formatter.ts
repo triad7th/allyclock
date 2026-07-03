@@ -18,7 +18,8 @@ function nowMinutesInZone(date: Date, timeZone: string): number {
     hourCycle: 'h23',
     timeZone,
   }).formatToParts(date);
-  const get = (t: Intl.DateTimeFormatPartTypes) => Number(parts.find((p) => p.type === t)?.value ?? 0);
+  const get = (t: Intl.DateTimeFormatPartTypes) =>
+    Number(parts.find((p) => p.type === t)?.value ?? 0);
   return get('hour') * 60 + get('minute') + get('second') / 60;
 }
 

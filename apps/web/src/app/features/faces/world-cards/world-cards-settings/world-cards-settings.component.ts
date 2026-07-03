@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, output, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { WorldCardsConfigStore } from '../world-cards-config-store.service';
 import { MIN_CARDS, MAX_CARDS } from '../world-cards-config';
 import { SheetComponent } from '@shared/ui/sheet/sheet.component';
@@ -19,7 +27,14 @@ import { FlagComponent } from '@shared/ui/flag/flag.component';
 @Component({
   selector: 'app-world-cards-settings',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, IconComponent, ZonePickerComponent, FlagComponent],
+  imports: [
+    SheetComponent,
+    NavHeaderComponent,
+    IconButtonComponent,
+    IconComponent,
+    ZonePickerComponent,
+    FlagComponent,
+  ],
   templateUrl: './world-cards-settings.component.html',
   styleUrl: './world-cards-settings.component.scss',
 })

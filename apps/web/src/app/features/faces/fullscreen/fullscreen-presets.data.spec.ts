@@ -5,9 +5,16 @@ import { BUILT_IN_BANDS } from '@core/dimensions/dimension-band';
 describe('buildDefaultFields', () => {
   it('returns one FullscreenFields per band id (the eight bands)', () => {
     const f = buildDefaultFields();
-    expect(Object.keys(f).sort()).toEqual(
-      ['lap', 'mini', 'pad', 'phone', 'super', 'tall', 'ultra', 'wide'],
-    );
+    expect(Object.keys(f).sort()).toEqual([
+      'lap',
+      'mini',
+      'pad',
+      'phone',
+      'super',
+      'tall',
+      'ultra',
+      'wide',
+    ]);
   });
 
   it('has exactly one entry per registry band id (guards against drift)', () => {

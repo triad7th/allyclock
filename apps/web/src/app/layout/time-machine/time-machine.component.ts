@@ -69,13 +69,15 @@ export class TimeMachineComponent {
   readonly zoneChangeMode = signal<'move' | 'freeze'>('move');
 
   readonly activeZoneLabel = computed(
-    () => this.zoneOptions.find((z) => z.id === this.clock.timeZone())?.label ?? this.clock.timeZone(),
+    () =>
+      this.zoneOptions.find((z) => z.id === this.clock.timeZone())?.label ?? this.clock.timeZone(),
   );
 
   // The draft as a WallClock (TM zone). Falls back to "now" if the field is
   // mid-edit/invalid.
   private readonly wall = computed<WallClock>(
-    () => inputToWallClock(this.draft()) ?? wallClockInZone(this.clock.now(), this.clock.timeZone()),
+    () =>
+      inputToWallClock(this.draft()) ?? wallClockInZone(this.clock.now(), this.clock.timeZone()),
   );
 
   readonly dayOfYear = computed(() => dayOfYearOf(this.wall()));
@@ -119,19 +121,29 @@ export class TimeMachineComponent {
     const dayNum = Number(value);
     // Recompute month/day for the chosen day-of-year, same year/time.
     const date = new Date(Date.UTC(w.year, 0, dayNum));
-    this.scrubTo(instantFromWallClock(
-      { year: w.year, month: date.getUTCMonth() + 1, day: date.getUTCDate(), hour: w.hour, minute: w.minute },
-      this.clock.timeZone(),
-    ));
+    this.scrubTo(
+      instantFromWallClock(
+        {
+          year: w.year,
+          month: date.getUTCMonth() + 1,
+          day: date.getUTCDate(),
+          hour: w.hour,
+          minute: w.minute,
+        },
+        this.clock.timeZone(),
+      ),
+    );
   }
 
   onTimeSlider(value: string): void {
     const w = this.wall();
     const minutes = Number(value);
-    this.scrubTo(instantFromWallClock(
-      { ...w, hour: Math.floor(minutes / 60), minute: minutes % 60 },
-      this.clock.timeZone(),
-    ));
+    this.scrubTo(
+      instantFromWallClock(
+        { ...w, hour: Math.floor(minutes / 60), minute: minutes % 60 },
+        this.clock.timeZone(),
+      ),
+    );
   }
 
   onDateTime(value: string): void {

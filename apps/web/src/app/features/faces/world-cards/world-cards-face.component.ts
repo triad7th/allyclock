@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { ContainerSizeDirective } from '@shared/ui/container-size/container-size.directive';
 import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
 import { IconComponent } from '@shared/ui/icon/icon.component';

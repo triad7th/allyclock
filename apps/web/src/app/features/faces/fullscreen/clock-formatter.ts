@@ -79,12 +79,25 @@ export function zoneCity(timeZone: string, abbreviate: boolean): string {
   return label.toUpperCase();
 }
 
-export interface DateParts { weekday: string; month: string; day: string; gmt: string; }
+export interface DateParts {
+  weekday: string;
+  month: string;
+  day: string;
+  gmt: string;
+}
 
 export function dateParts(date: Date, locale: string, timeZone: string): DateParts {
   const parts = new Intl.DateTimeFormat(locale, {
-    weekday: 'short', month: 'short', day: 'numeric', timeZone,
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    timeZone,
   }).formatToParts(date);
   const get = (t: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === t)?.value ?? '';
-  return { weekday: get('weekday'), month: get('month'), day: get('day'), gmt: compactOffset(date, timeZone) };
+  return {
+    weekday: get('weekday'),
+    month: get('month'),
+    day: get('day'),
+    gmt: compactOffset(date, timeZone),
+  };
 }

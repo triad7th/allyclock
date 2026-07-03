@@ -22,7 +22,9 @@ describe('WorldCardsFaceComponent', () => {
   beforeEach(async () => {
     storageMock.clear();
     vi.stubGlobal('localStorage', storageMock);
-    await TestBed.configureTestingModule({ imports: [WorldCardsFaceComponent] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [WorldCardsFaceComponent],
+    }).compileComponents();
   });
 
   it('default cards produce 2 rows: first row 1 card, second row 2 cards', () => {

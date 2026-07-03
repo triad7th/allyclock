@@ -6,9 +6,15 @@ import { ClockService } from '@core/clock.service';
 const mem: Record<string, string> = {};
 const storageMock = {
   getItem: (k: string) => mem[k] ?? null,
-  setItem: (k: string, v: string) => { mem[k] = v; },
-  removeItem: (k: string) => { delete mem[k]; },
-  clear: () => { for (const k of Object.keys(mem)) delete mem[k]; },
+  setItem: (k: string, v: string) => {
+    mem[k] = v;
+  },
+  removeItem: (k: string) => {
+    delete mem[k];
+  },
+  clear: () => {
+    for (const k of Object.keys(mem)) delete mem[k];
+  },
 };
 
 function sizedFixture(w: number, h: number) {

@@ -230,7 +230,6 @@ export class ScheduleStoreService {
     preset.hasImage = hasImage;
     this.saveState(state);
   }
-
 }
 
 function newId(): string {

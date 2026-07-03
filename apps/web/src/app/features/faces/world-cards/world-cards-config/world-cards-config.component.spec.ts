@@ -22,7 +22,9 @@ describe('WorldCardsConfigComponent', () => {
   beforeEach(async () => {
     storageMock.clear();
     vi.stubGlobal('localStorage', storageMock);
-    await TestBed.configureTestingModule({ imports: [WorldCardsConfigComponent] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [WorldCardsConfigComponent],
+    }).compileComponents();
     store = TestBed.inject(WorldCardsConfigStore);
   });
 
@@ -35,7 +37,9 @@ describe('WorldCardsConfigComponent', () => {
 
   it('the Time slider writes the size to the resolved band; Date slider exists; no Precision slider', () => {
     const fixture = mount(1.6); // 1.6 → lap band
-    const slider = fixture.nativeElement.querySelector('[data-knob="time-size"]') as HTMLInputElement;
+    const slider = fixture.nativeElement.querySelector(
+      '[data-knob="time-size"]',
+    ) as HTMLInputElement;
     slider.value = '1.5';
     slider.dispatchEvent(new Event('input'));
     fixture.detectChanges();

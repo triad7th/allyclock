@@ -5,121 +5,125 @@
     </app-nav-header>
 
     @if (!zonePickerOpen()) {
-    <!-- ── Toggles panel ───────────────────────────────────────────────── -->
-    <div class="knobs-panel">
-
-      <!-- Seconds + Weekday -->
-      <div class="knobs-section">
-        <div class="knobs-pair">
-          <div class="knobs-cell">
-            <span class="knobs-section-label">Seconds</span>
-            <button
-              type="button"
-              class="knobs-toggle"
-              [class.on]="showSeconds()"
-              data-knob="seconds-visible"
-              (click)="toggleSeconds()"
-              [attr.aria-label]="showSeconds() ? 'Hide Seconds' : 'Show Seconds'"
-            >
-              <span class="knobs-toggle-thumb"></span>
-            </button>
-          </div>
-          <div class="knobs-cell">
-            <span class="knobs-section-label">Weekday</span>
-            <button
-              type="button"
-              class="knobs-toggle"
-              [class.on]="showWeekday()"
-              data-knob="weekday-visible"
-              (click)="toggleWeekday()"
-              [attr.aria-label]="showWeekday() ? 'Hide Weekday' : 'Show Weekday'"
-            >
-              <span class="knobs-toggle-thumb"></span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Zone + GMT + Flag -->
-      <div class="knobs-section">
-        <div class="knobs-pair">
-          <div class="knobs-cell">
-            <span class="knobs-section-label">Zone</span>
-            <button
-              type="button"
-              class="knobs-toggle"
-              [class.on]="showZone()"
-              data-knob="zone-visible"
-              (click)="toggleZone()"
-              [attr.aria-label]="showZone() ? 'Hide Time Zone' : 'Show Time Zone'"
-            >
-              <span class="knobs-toggle-thumb"></span>
-            </button>
-          </div>
-          <div class="knobs-cell">
-            <span class="knobs-section-label">GMT</span>
-            <button
-              type="button"
-              class="knobs-toggle"
-              [class.on]="showGmt()"
-              data-knob="gmt-visible"
-              (click)="toggleGmt()"
-              [attr.aria-label]="showGmt() ? 'Hide GMT' : 'Show GMT'"
-            >
-              <span class="knobs-toggle-thumb"></span>
-            </button>
-          </div>
-          <div class="knobs-cell">
-            <span class="knobs-section-label">Flag</span>
-            <button
-              type="button"
-              class="knobs-toggle"
-              [class.on]="showFlag()"
-              data-knob="flag-visible"
-              (click)="toggleFlag()"
-              [attr.aria-label]="showFlag() ? 'Hide Flag' : 'Show Flag'"
-            >
-              <span class="knobs-toggle-thumb"></span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bar -->
-      <div class="knobs-section">
-        <div class="knobs-segment-row">
-          <span class="knobs-section-label">Bar</span>
-          <div class="knobs-segment" role="radiogroup" data-knob="bar-mode" aria-label="Bar mode">
-            @for (m of barModes; track m.mode) {
+      <!-- ── Toggles panel ───────────────────────────────────────────────── -->
+      <div class="knobs-panel">
+        <!-- Seconds + Weekday -->
+        <div class="knobs-section">
+          <div class="knobs-pair">
+            <div class="knobs-cell">
+              <span class="knobs-section-label">Seconds</span>
               <button
                 type="button"
-                role="radio"
-                class="knobs-segment-btn"
-                [class.on]="barMode() === m.mode"
-                [attr.data-mode]="m.mode"
-                [attr.aria-checked]="barMode() === m.mode"
-                (click)="setBarMode(m.mode)"
-              >{{ m.label }}</button>
-            }
+                class="knobs-toggle"
+                [class.on]="showSeconds()"
+                data-knob="seconds-visible"
+                (click)="toggleSeconds()"
+                [attr.aria-label]="showSeconds() ? 'Hide Seconds' : 'Show Seconds'"
+              >
+                <span class="knobs-toggle-thumb"></span>
+              </button>
+            </div>
+            <div class="knobs-cell">
+              <span class="knobs-section-label">Weekday</span>
+              <button
+                type="button"
+                class="knobs-toggle"
+                [class.on]="showWeekday()"
+                data-knob="weekday-visible"
+                (click)="toggleWeekday()"
+                [attr.aria-label]="showWeekday() ? 'Hide Weekday' : 'Show Weekday'"
+              >
+                <span class="knobs-toggle-thumb"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone + GMT + Flag -->
+        <div class="knobs-section">
+          <div class="knobs-pair">
+            <div class="knobs-cell">
+              <span class="knobs-section-label">Zone</span>
+              <button
+                type="button"
+                class="knobs-toggle"
+                [class.on]="showZone()"
+                data-knob="zone-visible"
+                (click)="toggleZone()"
+                [attr.aria-label]="showZone() ? 'Hide Time Zone' : 'Show Time Zone'"
+              >
+                <span class="knobs-toggle-thumb"></span>
+              </button>
+            </div>
+            <div class="knobs-cell">
+              <span class="knobs-section-label">GMT</span>
+              <button
+                type="button"
+                class="knobs-toggle"
+                [class.on]="showGmt()"
+                data-knob="gmt-visible"
+                (click)="toggleGmt()"
+                [attr.aria-label]="showGmt() ? 'Hide GMT' : 'Show GMT'"
+              >
+                <span class="knobs-toggle-thumb"></span>
+              </button>
+            </div>
+            <div class="knobs-cell">
+              <span class="knobs-section-label">Flag</span>
+              <button
+                type="button"
+                class="knobs-toggle"
+                [class.on]="showFlag()"
+                data-knob="flag-visible"
+                (click)="toggleFlag()"
+                [attr.aria-label]="showFlag() ? 'Hide Flag' : 'Show Flag'"
+              >
+                <span class="knobs-toggle-thumb"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bar -->
+        <div class="knobs-section">
+          <div class="knobs-segment-row">
+            <span class="knobs-section-label">Bar</span>
+            <div class="knobs-segment" role="radiogroup" data-knob="bar-mode" aria-label="Bar mode">
+              @for (m of barModes; track m.mode) {
+                <button
+                  type="button"
+                  role="radio"
+                  class="knobs-segment-btn"
+                  [class.on]="barMode() === m.mode"
+                  [attr.data-mode]="m.mode"
+                  [attr.aria-checked]="barMode() === m.mode"
+                  (click)="setBarMode(m.mode)"
+                >
+                  {{ m.label }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Time Zone (label row + full-width value row, like the Time Machine) -->
+        <div class="knobs-section">
+          <div class="knobs-tz-field">
+            <span class="knobs-section-label">Time Zone</span>
+            <button type="button" class="knobs-tz" data-knob="time-zone" (click)="openZonePicker()">
+              <app-flag class="knobs-tz-flag" [countryCode]="countryFor(faceZone())" />
+              <span class="knobs-tz-label">{{ faceZoneLabel() }}</span>
+            </button>
           </div>
         </div>
       </div>
-
-      <!-- Time Zone (label row + full-width value row, like the Time Machine) -->
-      <div class="knobs-section">
-        <div class="knobs-tz-field">
-          <span class="knobs-section-label">Time Zone</span>
-          <button type="button" class="knobs-tz" data-knob="time-zone" (click)="openZonePicker()">
-            <app-flag class="knobs-tz-flag" [countryCode]="countryFor(faceZone())" />
-            <span class="knobs-tz-label">{{ faceZoneLabel() }}</span>
-          </button>
-        </div>
-      </div>
-
-    </div>
     } @else {
       <div class="knobs-zonepicker">
-        <app-zone-picker [options]="zoneOptions" [selectedId]="faceZone()" (picked)="pickZone($event)" />
+        <app-zone-picker
+          [options]="zoneOptions"
+          [selectedId]="faceZone()"
+          (picked)="pickZone($event)"
+        />
         <button type="button" class="knobs-tz-back" (click)="closeZonePicker()">Cancel</button>
       </div>
     }

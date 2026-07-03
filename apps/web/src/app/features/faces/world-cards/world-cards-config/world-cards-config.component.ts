@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  viewChild,
+} from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { WorldCardsConfigStore } from '../world-cards-config-store.service';
 import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';

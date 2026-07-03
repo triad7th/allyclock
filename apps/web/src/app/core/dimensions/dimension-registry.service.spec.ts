@@ -6,9 +6,15 @@ import { BUILT_IN_BANDS, DIMENSIONS_KEY } from './dimension-band';
 const mem: Record<string, string> = {};
 const storageMock = {
   getItem: (k: string) => mem[k] ?? null,
-  setItem: (k: string, v: string) => { mem[k] = v; },
-  removeItem: (k: string) => { delete mem[k]; },
-  clear: () => { for (const k of Object.keys(mem)) delete mem[k]; },
+  setItem: (k: string, v: string) => {
+    mem[k] = v;
+  },
+  removeItem: (k: string) => {
+    delete mem[k];
+  },
+  clear: () => {
+    for (const k of Object.keys(mem)) delete mem[k];
+  },
 };
 
 describe('DimensionRegistry', () => {
@@ -32,9 +38,16 @@ describe('DimensionRegistry', () => {
     for (let i = 1; i < bands.length; i++) {
       expect(bands[i].minRatio).toBe(bands[i - 1].maxRatio);
     }
-    expect(bands.map((b) => b.name)).toEqual(
-      ['PHONE', 'TALL', 'PAD', 'LAP', 'WIDE', 'MINI', 'ULTRA', 'SUPER'],
-    );
+    expect(bands.map((b) => b.name)).toEqual([
+      'PHONE',
+      'TALL',
+      'PAD',
+      'LAP',
+      'WIDE',
+      'MINI',
+      'ULTRA',
+      'SUPER',
+    ]);
     for (const b of BUILT_IN_BANDS) expect(b.name.length).toBeLessThanOrEqual(5);
   });
 
@@ -67,7 +80,10 @@ describe('DimensionRegistry', () => {
   });
 
   it('reseeds stale older-version persisted state', () => {
-    mem[DIMENSIONS_KEY] = JSON.stringify({ version: 0, bands: [{ id: 'x', name: 'X', minRatio: 0, maxRatio: 99 }] });
+    mem[DIMENSIONS_KEY] = JSON.stringify({
+      version: 0,
+      bands: [{ id: 'x', name: 'X', minRatio: 0, maxRatio: 99 }],
+    });
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({});
     const fresh = TestBed.inject(DimensionRegistry);

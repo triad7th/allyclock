@@ -17,7 +17,12 @@
           </div>
           @for (card of cards(); track card.id) {
             <div class="city-row" [attr.data-card]="card.id">
-              <button type="button" class="city-zone" data-knob="card-zone" (click)="openZonePicker(card.id)">
+              <button
+                type="button"
+                class="city-zone"
+                data-knob="card-zone"
+                (click)="openZonePicker(card.id)"
+              >
                 <app-flag class="city-flag" [countryCode]="countryFor(card.zone)" />
                 <span class="city-name">{{ cityLabel(card.zone) }}</span>
               </button>
@@ -32,18 +37,35 @@
                 <span class="knobs-toggle-thumb"></span>
               </button>
               @if (canRemove()) {
-                <app-icon-button class="city-remove" icon="trash" variant="destructive" label="Remove" data-knob="card-remove" (click)="remove(card.id)" />
+                <app-icon-button
+                  class="city-remove"
+                  icon="trash"
+                  variant="destructive"
+                  label="Remove"
+                  data-knob="card-remove"
+                  (click)="remove(card.id)"
+                />
               }
             </div>
           }
-          <button type="button" class="add-city" data-knob="add-card" (click)="add()" [disabled]="!canAdd()">
+          <button
+            type="button"
+            class="add-city"
+            data-knob="add-card"
+            (click)="add()"
+            [disabled]="!canAdd()"
+          >
             <app-icon name="plus" /> Add City
           </button>
         </div>
       </div>
     } @else {
       <div class="knobs-zonepicker">
-        <app-zone-picker [options]="zoneOptions" [selectedId]="selectedZone()" (picked)="pickZone($event)" />
+        <app-zone-picker
+          [options]="zoneOptions"
+          [selectedId]="selectedZone()"
+          (picked)="pickZone($event)"
+        />
         <button type="button" class="knobs-tz-back" (click)="closeZonePicker()">Cancel</button>
       </div>
     }

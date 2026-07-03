@@ -27,7 +27,10 @@
   flex-direction: column;
   align-items: flex-end;
   color: #fff;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 // Big time: digits + a left-aligned flank (AM/PM near the cap, seconds
@@ -65,7 +68,7 @@
   margin-top: auto;
   // Right-align the seconds under AM/PM (right edges flush).
   align-self: flex-end;
-  padding-bottom: 0.1em; 
+  padding-bottom: 0.1em;
 }
 
 .date {

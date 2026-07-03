@@ -190,13 +190,17 @@ describe('ScheduleConfigComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.drop-zone')).toBeNull();
     expect(fixture.nativeElement.querySelector('.marker-preview-container')).toBeTruthy();
-    expect(fixture.nativeElement.querySelector('.ov-btn[aria-label="Duplicate preset"]')).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector('.ov-btn[aria-label="Duplicate preset"]'),
+    ).toBeTruthy();
   });
 
   it('clicking the duplicate button calls store.duplicatePreset', async () => {
     const fixture = TestBed.createComponent(ScheduleConfigComponent);
     fixture.detectChanges();
-    (fixture.nativeElement.querySelector('.ov-btn[aria-label="Duplicate preset"]') as HTMLElement).click();
+    (
+      fixture.nativeElement.querySelector('.ov-btn[aria-label="Duplicate preset"]') as HTMLElement
+    ).click();
     await fixture.whenStable();
     expect(mockStore.duplicatePreset).toHaveBeenCalled();
   });

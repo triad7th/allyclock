@@ -7,9 +7,15 @@ import { SHEET_ANIMATION_MS } from '@core/animation-timing';
 const mem: Record<string, string> = {};
 const storageMock = {
   getItem: (k: string) => mem[k] ?? null,
-  setItem: (k: string, v: string) => { mem[k] = v; },
-  removeItem: (k: string) => { delete mem[k]; },
-  clear: () => { for (const k of Object.keys(mem)) delete mem[k]; },
+  setItem: (k: string, v: string) => {
+    mem[k] = v;
+  },
+  removeItem: (k: string) => {
+    delete mem[k];
+  },
+  clear: () => {
+    for (const k of Object.keys(mem)) delete mem[k];
+  },
 };
 
 function make(ratio: number) {
@@ -25,7 +31,9 @@ describe('FullscreenConfigComponent', () => {
   beforeEach(async () => {
     storageMock.clear();
     vi.stubGlobal('localStorage', storageMock);
-    await TestBed.configureTestingModule({ imports: [FullscreenConfigComponent] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [FullscreenConfigComponent],
+    }).compileComponents();
     store = TestBed.inject(FullscreenConfigStore);
   });
 
@@ -35,7 +43,9 @@ describe('FullscreenConfigComponent', () => {
       const fixture = make(2.1);
       let closed = false;
       fixture.componentInstance.closed.subscribe(() => (closed = true));
-      (fixture.nativeElement.querySelector('button[aria-label="Close"]') as HTMLButtonElement).click();
+      (
+        fixture.nativeElement.querySelector('button[aria-label="Close"]') as HTMLButtonElement
+      ).click();
       vi.advanceTimersByTime(SHEET_ANIMATION_MS);
       expect(closed).toBe(true);
     } finally {
@@ -57,7 +67,9 @@ describe('FullscreenConfigComponent', () => {
 
   it('moving the Time size slider updates that band sections.time.sizeScale', () => {
     const fixture = make(2.1);
-    const slider = fixture.nativeElement.querySelector('[data-knob="time-size"]') as HTMLInputElement;
+    const slider = fixture.nativeElement.querySelector(
+      '[data-knob="time-size"]',
+    ) as HTMLInputElement;
     slider.value = '1.5';
     slider.dispatchEvent(new Event('input'));
     fixture.detectChanges();
@@ -66,7 +78,9 @@ describe('FullscreenConfigComponent', () => {
 
   it('moving the Date size slider sets sizeScale on all four date parts of the band', () => {
     const fixture = make(2.1);
-    const slider = fixture.nativeElement.querySelector('[data-knob="date-size"]') as HTMLInputElement;
+    const slider = fixture.nativeElement.querySelector(
+      '[data-knob="date-size"]',
+    ) as HTMLInputElement;
     slider.value = '1.3';
     slider.dispatchEvent(new Event('input'));
     fixture.detectChanges();

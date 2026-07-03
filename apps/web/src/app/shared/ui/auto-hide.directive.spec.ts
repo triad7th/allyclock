@@ -7,7 +7,12 @@ import { AUTO_HIDE_MS } from '@core/animation-timing';
 @Component({
   selector: 'test-host',
   imports: [AutoHideDirective],
-  template: `<div appAutoHide #ah="autoHide" [revealBlocked]="blocked()" [holdVisible]="hold()"></div>`,
+  template: `<div
+    appAutoHide
+    #ah="autoHide"
+    [revealBlocked]="blocked()"
+    [holdVisible]="hold()"
+  ></div>`,
 })
 class HostComponent {
   blocked = signal(false);
