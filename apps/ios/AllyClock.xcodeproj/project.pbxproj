@@ -36,6 +36,7 @@
 		AC0000000000000000000116 /* FlagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000115 /* FlagView.swift */; };
 		AC0000000000000000000118 /* FontWeightMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000117 /* FontWeightMap.swift */; };
 		AC0000000000000000000121 /* FlagResolutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000120 /* FlagResolutionTests.swift */; };
+		AC0000000000000000000131 /* FullscreenFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000130 /* FullscreenFaceView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		AC0000000000000000000115 /* FlagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000117 /* FontWeightMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontWeightMap.swift; sourceTree = "<group>"; };
 		AC0000000000000000000120 /* FlagResolutionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagResolutionTests.swift; sourceTree = "<group>"; };
+		AC0000000000000000000130 /* FullscreenFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenFaceView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 				AC0000000000000000000087 /* Views */,
 				AC0000000000000000000082 /* Time */,
 				AC0000000000000000000112 /* Shared */,
+				AC0000000000000000000132 /* Faces */,
 			);
 			path = AllyClock;
 			sourceTree = "<group>";
@@ -162,6 +165,14 @@
 				AC0000000000000000000117 /* FontWeightMap.swift */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000132 /* Faces */ = {
+			isa = PBXGroup;
+			children = (
+				AC0000000000000000000130 /* FullscreenFaceView.swift */,
+			);
+			path = Faces;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,6 +291,7 @@
 				AC0000000000000000000114 /* SFIcon.swift in Sources */,
 				AC0000000000000000000116 /* FlagView.swift in Sources */,
 				AC0000000000000000000118 /* FontWeightMap.swift in Sources */,
+				AC0000000000000000000131 /* FullscreenFaceView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
