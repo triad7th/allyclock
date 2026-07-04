@@ -21,24 +21,40 @@ struct FullscreenFaceView: View {
         .statusBarHidden()
     }
 
+    // Progressive shrink factors. `ViewThatFits` picks the largest whose time and
+    // date rows both fit the host width — so a wide 5-glyph time ("11:03") on iPad
+    // shrinks to keep the AM/PM + seconds flank on screen instead of overflowing.
+    // At most ratios the first (1.0) fits and nothing shrinks.
+    private static let fitFactors: [Double] = [1.0, 0.94, 0.88, 0.82, 0.76, 0.7, 0.64, 0.58, 0.52, 0.46, 0.4]
+
     @ViewBuilder
     private func content(_ f: FullscreenFields, _ size: CGSize, _ now: Date) -> some View {
         let zone = f.timeZone.isEmpty ? TimeZone.current : (TimeZone(identifier: f.timeZone) ?? .current)
         let big = TimeFormatting.bigTime(now, locale: .current, timeZone: zone)
         let parts = TimeFormatting.dateParts(now, locale: .current, timeZone: zone)
-        let timeSize = fullscreenFontSize(f.bases.time, sizeScale: f.sections.time.sizeScale,
-                                          width: size.width, height: size.height)
-        let dateBase = f.bases.date
-        let gapUnit = min(size.width * 0.02, size.height * 0.03)
-
-        VStack(spacing: 0) {
-            timeRow(big, f, timeSize)
-            bar(f, timeSize, now)
-                .padding(.top, f.gaps.timeToBar * gapUnit)
-                .padding(.bottom, f.gaps.barToDate * gapUnit)
-            dateRow(parts, f, dateBase, size, now, zone)
+        ViewThatFits(in: .horizontal) {
+            ForEach(Self.fitFactors, id: \.self) { fit in
+                clock(f, size, now, big, parts, zone, fit: fit)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func clock(_ f: FullscreenFields, _ size: CGSize, _ now: Date,
+                       _ big: TimeFormatting.BigTime, _ parts: TimeFormatting.DateParts,
+                       _ zone: TimeZone, fit: Double) -> some View {
+        let timeSize = fullscreenFontSize(f.bases.time, sizeScale: f.sections.time.sizeScale,
+                                          width: size.width, height: size.height) * fit
+        let gapUnit = min(size.width * 0.02, size.height * 0.03) * fit
+        return VStack(spacing: 0) {
+            timeRow(big, f, timeSize)
+            bar(f, timeSize, now)
+                // The cap-band digits sit tight to their baseline; add a
+                // time-proportional lead so the bar has clear breathing room.
+                .padding(.top, f.gaps.timeToBar * gapUnit + timeSize * 0.14)
+                .padding(.bottom, f.gaps.barToDate * gapUnit)
+            dateRow(parts, f, f.bases.date, size, now, zone, fit: fit)
+        }
     }
 
     private func timeRow(_ big: TimeFormatting.BigTime, _ f: FullscreenFields, _ timeSize: CGFloat) -> some View {
@@ -88,9 +104,10 @@ struct FullscreenFaceView: View {
     }
 
     private func dateRow(_ parts: TimeFormatting.DateParts, _ f: FullscreenFields,
-                         _ base: SectionBase, _ size: CGSize, _ now: Date, _ zone: TimeZone) -> some View {
+                         _ base: SectionBase, _ size: CGSize, _ now: Date, _ zone: TimeZone,
+                         fit: Double) -> some View {
         func partSize(_ scale: Double) -> CGFloat {
-            fullscreenFontSize(base, sizeScale: scale, width: size.width, height: size.height)
+            fullscreenFontSize(base, sizeScale: scale, width: size.width, height: size.height) * fit
         }
         let gap = f.gaps.betweenDateParts * partSize(1) * 0.5
         return HStack(alignment: .firstTextBaseline, spacing: gap) {
