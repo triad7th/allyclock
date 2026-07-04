@@ -1,5 +1,28 @@
 import SwiftUI
 
+/// Circular Liquid Glass icon button. The ONE component for all round glass
+/// buttons (controls bar, sheet close) so the press animation — the glass
+/// lift and scale — is identical everywhere. Its own GlassEffectContainer
+/// keeps the pressed glass a perfect circle instead of blending with an
+/// enclosing panel's rounded-rectangle glass.
+struct GlassIconButton: View {
+    let icon: String
+    let label: String
+    let action: () -> Void
+
+    var body: some View {
+        GlassEffectContainer {
+            Button(action: action) {
+                SFIcon(icon).frame(width: 20, height: 20).padding(12)
+            }
+            .buttonStyle(.glass)
+            .buttonBorderShape(.circle)
+        }
+        .foregroundStyle(Color(white: 0.93))
+        .accessibilityLabel(label)
+    }
+}
+
 /// Bottom panel matching the web's sheet component: hugs its content height,
 /// Liquid Glass background so the face stays visible behind, centered grab
 /// bar, title header with a large-target close button, and a backdrop that
@@ -38,17 +61,9 @@ struct GlassSheet<Content: View>: View {
                         .font(.headline)
                         .foregroundStyle(Color(white: 0.95))
                     HStack {
-                        Button(action: onClose) {
-                            SFIcon("xmark")
-                                .frame(width: 14, height: 14)
-                                .padding(14)
-                        }
-                        .buttonStyle(.glass)
-                        .buttonBorderShape(.circle)
-                        .foregroundStyle(Color(white: 0.9))
-                        // Full 44pt+ hit target — the toolbar X was ~16pt and
-                        // needed several taps.
-                        .contentShape(Circle())
+                        // Same component as the controls-bar buttons — same
+                        // 44pt target, same circular glass press animation.
+                        GlassIconButton(icon: "xmark", label: "Close", action: onClose)
                         Spacer()
                     }
                 }
