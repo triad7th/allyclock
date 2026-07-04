@@ -9,21 +9,22 @@ This directory contains the native SwiftUI iOS app for AllyClock.
 - Xcode project: `AllyClock.xcodeproj`
 - App target: `AllyClock`
 - Test target: `AllyClockTests`
-- Minimum deployment target: iOS 16.0 for iPhone 8 support
-- Device family: iPhone and iPad
+- Minimum deployment target: iOS 26.0 (latest iOS only — no legacy support)
+- Device family: iPhone and iPad, landscape-only (`UIRequiresFullScreen`)
+- Pure clock logic lives in the local Swift package `packages/AllyClockCore`; this app is the SwiftUI rendering layer over it.
 
 ## Commands
 
 Build for simulator:
 
 ```sh
-xcodebuild -project AllyClock.xcodeproj -scheme AllyClock -destination 'platform=iOS Simulator,name=iPhone 16' build
+xcodebuild -project AllyClock.xcodeproj -scheme AllyClock -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
 Run unit tests:
 
 ```sh
-xcodebuild -project AllyClock.xcodeproj -scheme AllyClock -destination 'platform=iOS Simulator,name=iPhone 16' test
+xcodebuild -project AllyClock.xcodeproj -scheme AllyClock -destination 'platform=iOS Simulator,name=iPhone 17' test
 ```
 
 Lint and format:
@@ -36,6 +37,6 @@ swiftformat AllyClock AllyClockTests
 ## Conventions
 
 - Keep SwiftUI views small and focused.
-- Guard APIs newer than iOS 16 with `if #available(...)`.
-- Do not raise the deployment target without confirming iPhone 8 support is no longer required.
-- Keep product logic out of the scaffold until shared clock requirements are designed.
+- Use modern SwiftUI freely — Liquid Glass (`glassEffect`, `.buttonStyle(.glass)`), `UnevenRoundedRectangle`, Swift concurrency. No `if #available(...)` guards for older iOS.
+- Sheets are content-hugging `GlassSheet` bottom panels (see `Shared/GlassSheet.swift`), not full-screen system sheets; they apply live and accept on any dismissal (X/backdrop) — no confirm/cancel.
+- Layout debugging: launch with `-layoutDebug` (or `.environment(\.layoutDebug, true)` in a preview) to draw border guidelines and centering-delta panels; see `Shared/LayoutDebug.swift`.

@@ -9,7 +9,7 @@ AllyClock is a multi-app repository for clock experiences across platforms.
 Current layout:
 
 - `apps/web` contains the Angular 21 Web app.
-- `apps/ios` contains the native SwiftUI iOS app (minimum target iOS 16.0 for iPhone 8 support).
+- `apps/ios` contains the native SwiftUI iOS app (targets the latest iOS; modern SwiftUI — including Liquid Glass — is used freely, with no legacy-OS availability guards).
 - `.github/workflows/allyclock.yml` builds and deploys the Web app to Netlify. iOS CI is intentionally not added yet.
 - `.claude/skills` contains the canonical repository-local skills. Each `<name>/SKILL.md` is shared with Codex through a symlink (see "Agent Harness" below).
 - `.agents/skills` is the Codex-facing view of the same skills. Each `<name>/SKILL.md` symlinks back to `.claude/skills/<name>/SKILL.md`; `<name>/agents/openai.yaml` is the Codex interface metadata.

@@ -8,7 +8,7 @@ struct RootFaceView: View {
     @State private var pickerOpen = false
     @State private var adjustOpen = false
     @State private var chromeVisible = true
-    @State private var hideTask: DispatchWorkItem?
+    @State private var hideTask: Task<Void, Never>?
 
     private let fullscreenStore: FullscreenConfigStore
     private let worldCardsStore: WorldCardsConfigStore
@@ -24,45 +24,80 @@ struct RootFaceView: View {
     }
 
     var body: some View {
-        // ClockView's proven full-bleed pattern: the ZStack ignores the safe area
-        // so the face centers in the FULL screen (safeAreaInset would reserve the
-        // bar's height and nudge the face up), and the controls overlay the very
+        // Full-bleed pattern: the ZStack ignores the safe area so the face
+        // centers in the FULL screen (safeAreaInset would reserve the bar's
+        // height and nudge the face up), and the controls overlay the very
         // bottom edge like the web's controls-bar. Home indicator hidden.
-        ZStack(alignment: .bottom) {
-            switch face {
-            case .fullscreen: FullscreenFaceView(store: fullscreenStore)
-            case .worldCards: WorldCardsFaceView(store: worldCardsStore)
-            }
+        // Outer GeometryReader reads the window's safe-area insets BEFORE the
+        // ZStack ignores them — the glass sheets span the full width, so their
+        // headers must clear the Dynamic Island / rounded corners themselves.
+        GeometryReader { outer in
+            let hInset = max(outer.safeAreaInsets.leading, outer.safeAreaInsets.trailing)
+            ZStack(alignment: .bottom) {
+                switch face {
+                case .fullscreen: FullscreenFaceView(store: fullscreenStore)
+                case .worldCards: WorldCardsFaceView(store: worldCardsStore)
+                }
 
-            controlsBar
-                .debugFrame("controls", .cyan)
-                .padding(.bottom, 16)
-                .opacity(chromeVisible ? 1 : 0)
-                .animation(.easeInOut(duration: 0.3), value: chromeVisible)
+                controlsBar
+                    .debugFrame("controls", .cyan)
+                    .padding(.bottom, 16)
+                    .opacity(chromeVisible && !sheetOpen ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.3), value: chromeVisible)
+
+                // Web-style glass sheets: content-hugging bottom panels over the
+                // face, not full-screen system sheets (which iPhone landscape
+                // forces full-screen anyway).
+                if pickerOpen {
+                    GlassSheet(title: "Faces", hInset: hInset, onClose: { close($pickerOpen) }) {
+                        FacePickerView(
+                            selection: Binding(get: { face }, set: { selectedRaw = $0.rawValue }),
+                            fullscreenStore: fullscreenStore,
+                            worldCardsStore: worldCardsStore,
+                            onSelect: { close($pickerOpen) }
+                        )
+                    }
+                    .zIndex(1)
+                }
+                if adjustOpen {
+                    GlassSheet(title: "Adjust", hInset: hInset, onClose: { close($adjustOpen) }) {
+                        AdjustSheetView(face: face)
+                    }
+                    .zIndex(1)
+                }
+            }
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea()
         .layoutDebugPanel()
+        // The app is inherently dark (near-black faces); declare it so system
+        // surfaces — Liquid Glass sheets, buttons — render in dark appearance
+        // like the web's dark glass panels.
+        .preferredColorScheme(.dark)
         .persistentSystemOverlays(.hidden)
         .contentShape(Rectangle())
         .onTapGesture { revealChrome() }
-        .onAppear { scheduleHide() }
-        .sheet(isPresented: $pickerOpen) {
-            FacePickerView(
-                selection: Binding(get: { face }, set: { selectedRaw = $0.rawValue }),
-                fullscreenStore: fullscreenStore,
-                worldCardsStore: worldCardsStore
-            )
+        .onAppear {
+            scheduleHide()
+            // Test hook: open the picker on launch for UI verification.
+            if ProcessInfo.processInfo.arguments.contains("-openPicker") { pickerOpen = true }
         }
-        .sheet(isPresented: $adjustOpen) { AdjustSheetView(face: face) }
+    }
+
+    private var sheetOpen: Bool {
+        pickerOpen || adjustOpen
+    }
+
+    private func close(_ flag: Binding<Bool>) {
+        withAnimation(.easeOut(duration: 0.25)) { flag.wrappedValue = false }
     }
 
     private var controlsBar: some View {
         HStack(spacing: 16) {
-            chromeButton("clock", label: "Choose clock face") { pickerOpen = true
-                revealChrome()
+            chromeButton("clock", label: "Choose clock face") {
+                withAnimation(.easeOut(duration: 0.25)) { pickerOpen = true }
             }
-            chromeButton("slider.horizontal.3", label: "Adjust layout") { adjustOpen = true
-                revealChrome()
+            chromeButton("slider.horizontal.3", label: "Adjust layout") {
+                withAnimation(.easeOut(duration: 0.25)) { adjustOpen = true }
             }
         }
     }
@@ -73,9 +108,9 @@ struct RootFaceView: View {
         Button(action: action) {
             SFIcon(icon).frame(width: 20, height: 20).padding(12)
         }
+        .buttonStyle(.glass)
+        .buttonBorderShape(.circle)
         .foregroundStyle(Color(white: 0.93))
-        .background(Circle().fill(Color(white: 0.12, opacity: 0.85)))
-        .overlay(Circle().stroke(Color.white.opacity(0.2)))
         .accessibilityLabel(label)
     }
 
@@ -86,9 +121,11 @@ struct RootFaceView: View {
 
     private func scheduleHide() {
         hideTask?.cancel()
-        let task = DispatchWorkItem { chromeVisible = false }
-        hideTask = task
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: task)
+        hideTask = Task {
+            try? await Task.sleep(for: .seconds(3))
+            guard !Task.isCancelled else { return }
+            chromeVisible = false
+        }
     }
 }
 

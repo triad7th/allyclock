@@ -7,35 +7,25 @@ import SwiftUI
 /// controls bar and names what each face will expose.
 struct AdjustSheetView: View {
     let face: FaceKind
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text(face.displayName)
-                        .font(.title3.weight(.semibold))
-                    Text("Live layout editing for this face is coming next.")
+        VStack(alignment: .leading, spacing: 12) {
+            Text(face.displayName)
+                .font(.subheadline.weight(.semibold))
+            Text("Live layout editing for this face is coming next.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(plannedControls, id: \.self) { item in
+                    Label(item, systemImage: "slider.horizontal.3")
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
-                    VStack(alignment: .leading, spacing: 10) {
-                        ForEach(plannedControls, id: \.self) { item in
-                            Label(item, systemImage: "slider.horizontal.3")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    .padding(.top, 4)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(24)
-            }
-            .navigationTitle("Adjust")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button { dismiss() } label: { SFIcon("xmark").frame(width: 16, height: 16) }
                 }
             }
+            .padding(.top, 2)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 24)
     }
 
     private var plannedControls: [String] {

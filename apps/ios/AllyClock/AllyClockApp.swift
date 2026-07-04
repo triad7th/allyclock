@@ -7,12 +7,10 @@ struct AllyClockApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .onAppear {
-                    updateIdleTimer(for: scenePhase)
-                }
+            RootFaceView()
+                .onAppear { updateIdleTimer(for: scenePhase) }
         }
-        .onChange(of: scenePhase) { newPhase in
+        .onChange(of: scenePhase) { _, newPhase in
             updateIdleTimer(for: newPhase)
         }
     }
