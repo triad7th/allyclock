@@ -33,11 +33,13 @@ struct RootFaceView: View {
             }
 
             controlsBar
+                .debugFrame("controls", .cyan)
                 .padding(.bottom, 16)
                 .opacity(chromeVisible ? 1 : 0)
                 .animation(.easeInOut(duration: 0.3), value: chromeVisible)
         }
         .ignoresSafeArea()
+        .layoutDebugPanel()
         .persistentSystemOverlays(.hidden)
         .contentShape(Rectangle())
         .onTapGesture { revealChrome() }
@@ -97,4 +99,9 @@ struct RootFaceView: View {
 
 #Preview("iPad Pro 11\" landscape") {
     RootFaceView().frame(width: 1210, height: 834)
+}
+
+#Preview("DEBUG iPhone 16 Pro landscape") {
+    let _ = LayoutDebug.forceEnabled = true
+    RootFaceView().frame(width: 852, height: 393)
 }

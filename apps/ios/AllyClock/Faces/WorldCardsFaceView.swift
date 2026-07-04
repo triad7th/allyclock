@@ -18,10 +18,12 @@ struct WorldCardsFaceView: View {
             ViewThatFits(in: .horizontal) {
                 ForEach(Self.fits, id: \.self) { fit in
                     cards(rows, f, fit: fit)
+                        .debugFrame("cards", .yellow)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.horizontal, 24)
+            .debugFrame("host", .white)
         }
         .background(bg).ignoresSafeArea()
         .dynamicTypeSize(.medium)

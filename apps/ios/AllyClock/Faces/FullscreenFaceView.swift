@@ -14,6 +14,9 @@ struct FullscreenFaceView: View {
             TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { ctx in
                 content(f, size, ctx.date)
             }
+            .debugFrame("host", .white)
+            .debugNumbers(["ratio": String(format: "%.3f", ratio),
+                           "size": "\(Int(size.width))×\(Int(size.height))"])
         }
         .background(bg).ignoresSafeArea()
         .foregroundStyle(fg)
@@ -46,31 +49,47 @@ struct FullscreenFaceView: View {
         let timeSize = fullscreenFontSize(f.bases.time, sizeScale: f.sections.time.sizeScale,
                                           width: size.width, height: size.height) * fit
         let gapUnit = min(size.width * 0.02, size.height * 0.03) * fit
+        // Web-exact gaps: timeToBar/barToDate × gapUnit, nothing extra. The
+        // breathing room below the digits comes from the 0.9t time row itself
+        // (web line-height 0.9), not from padding.
+        let padTimeBar = f.gaps.timeToBar * gapUnit
+        let padBarDate = f.gaps.barToDate * gapUnit
         return VStack(spacing: 0) {
             timeRow(big, f, timeSize)
+                .debugFrame("timeRow", .red)
             bar(f, timeSize, now)
-                // The cap-band digits sit tight to their baseline; add a
-                // time-proportional lead so the bar has clear breathing room.
-                .padding(.top, f.gaps.timeToBar * gapUnit + timeSize * 0.14)
-                .padding(.bottom, f.gaps.barToDate * gapUnit)
+                .debugFrame("bar", .green)
+                .padding(.top, padTimeBar)
+                .padding(.bottom, padBarDate)
             dateRow(parts, f, f.bases.date, size, now, zone, fit: fit)
+                .debugFrame("dateRow", .blue)
         }
+        .debugFrame("clock", .yellow)
+        .debugNumbers(["fit": String(format: "%.2f", fit),
+                       "timeSize": String(format: "%.1f", timeSize),
+                       "row(0.9t)": String(format: "%.1f", timeSize * 0.9),
+                       "capBand(0.72t)": String(format: "%.1f", timeSize * 0.72),
+                       "gapUnit": String(format: "%.1f", gapUnit),
+                       "padTimeBar": String(format: "%.1f", padTimeBar),
+                       "padBarDate": String(format: "%.1f", padBarDate)])
     }
 
     private func timeRow(_ big: TimeFormatting.BigTime, _ f: FullscreenFields, _ timeSize: CGFloat) -> some View {
-        // The digits' numeral cap band (~0.72 of the font). The web ties the AM/PM
-        // + seconds flank to this band (line-height 0.9 + flank align-self:stretch),
-        // NOT the SwiftUI Text line box — whose tall ascent gap would float AM/PM
-        // far above the glyphs at large sizes. Constrain both to `band` so the
-        // flank hugs the digits: AM/PM at the cap top, seconds on the baseline.
+        // Web-exact time row: line-height 0.9 → a 0.9t row with the glyphs
+        // centered in it (NOT the SwiftUI Text line box, whose tall ascent gap
+        // floats AM/PM away at large sizes). The flank is the digit cap band
+        // (~0.72t) centered on the row, so AM/PM hugs the cap top and seconds
+        // sits near the baseline — matching the web's align-self: stretch flank.
+        let row = timeSize * 0.9
         let band = timeSize * 0.72
         return HStack(alignment: .center, spacing: timeSize * 0.04) {
             Text(big.digits)
                 .font(.system(size: timeSize, weight: AllyClock.fontWeight(f.sections.time.weight)))
                 .monospacedDigit()
                 .fixedSize()
-                .frame(height: band, alignment: .center)
+                .frame(height: row, alignment: .center)
                 .opacity(f.sections.time.opacity)
+                .debugFrame("digits", .orange)
             VStack(alignment: .leading, spacing: 0) {
                 if let ampm = big.ampm {
                     Text(ampm).font(.system(size: timeSize * 0.15, weight: .light)).opacity(0.85)
@@ -81,6 +100,7 @@ struct FullscreenFaceView: View {
                 }
             }
             .frame(height: band, alignment: .top)
+            .debugFrame("flank", .purple)
         }
     }
 
@@ -148,5 +168,6 @@ struct FullscreenFaceView: View {
 }
 
 #Preview("Fullscreen") {
-    FullscreenFaceView(store: FullscreenConfigStore(registry: DimensionRegistry())).frame(width: 852, height: 393)
+  FullscreenFaceView(store: FullscreenConfigStore(registry: DimensionRegistry())).frame(width: 852, height: 393)
+    
 }

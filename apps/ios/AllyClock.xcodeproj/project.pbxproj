@@ -35,6 +35,7 @@
 		AC0000000000000000000114 /* SFIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000113 /* SFIcon.swift */; };
 		AC0000000000000000000116 /* FlagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000115 /* FlagView.swift */; };
 		AC0000000000000000000118 /* FontWeightMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000117 /* FontWeightMap.swift */; };
+		AC0000000000000000000152 /* LayoutDebug.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000151 /* LayoutDebug.swift */; };
 		AC0000000000000000000121 /* FlagResolutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000120 /* FlagResolutionTests.swift */; };
 		AC0000000000000000000131 /* FullscreenFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000130 /* FullscreenFaceView.swift */; };
 		AC0000000000000000000134 /* WorldCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000133 /* WorldCardView.swift */; };
@@ -73,6 +74,7 @@
 		AC0000000000000000000113 /* SFIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFIcon.swift; sourceTree = "<group>"; };
 		AC0000000000000000000115 /* FlagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000117 /* FontWeightMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontWeightMap.swift; sourceTree = "<group>"; };
+		AC0000000000000000000151 /* LayoutDebug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutDebug.swift; sourceTree = "<group>"; };
 		AC0000000000000000000120 /* FlagResolutionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagResolutionTests.swift; sourceTree = "<group>"; };
 		AC0000000000000000000130 /* FullscreenFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenFaceView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000133 /* WorldCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCardView.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 				AC0000000000000000000113 /* SFIcon.swift */,
 				AC0000000000000000000115 /* FlagView.swift */,
 				AC0000000000000000000117 /* FontWeightMap.swift */,
+				AC0000000000000000000151 /* LayoutDebug.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				AC0000000000000000000114 /* SFIcon.swift in Sources */,
 				AC0000000000000000000116 /* FlagView.swift in Sources */,
 				AC0000000000000000000118 /* FontWeightMap.swift in Sources */,
+				AC0000000000000000000152 /* LayoutDebug.swift in Sources */,
 				AC0000000000000000000131 /* FullscreenFaceView.swift in Sources */,
 				AC0000000000000000000134 /* WorldCardView.swift in Sources */,
 				AC0000000000000000000136 /* WorldCardsFaceView.swift in Sources */,
