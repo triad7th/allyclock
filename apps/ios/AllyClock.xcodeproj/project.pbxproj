@@ -43,6 +43,7 @@
 		AC0000000000000000000142 /* FacePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000141 /* FacePickerView.swift */; };
 		AC0000000000000000000144 /* RootFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000143 /* RootFaceView.swift */; };
 		AC0000000000000000000146 /* FacePreviewGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000145 /* FacePreviewGrid.swift */; };
+		AC0000000000000000000150 /* AdjustSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000149 /* AdjustSheetView.swift */; };
 		AC0000000000000000000148 /* FaceKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000147 /* FaceKindTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +81,7 @@
 		AC0000000000000000000141 /* FacePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacePickerView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000143 /* RootFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootFaceView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000145 /* FacePreviewGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacePreviewGrid.swift; sourceTree = "<group>"; };
+		AC0000000000000000000149 /* AdjustSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustSheetView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000147 /* FaceKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceKindTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -200,6 +202,7 @@
 				AC0000000000000000000141 /* FacePickerView.swift */,
 				AC0000000000000000000143 /* RootFaceView.swift */,
 				AC0000000000000000000145 /* FacePreviewGrid.swift */,
+				AC0000000000000000000149 /* AdjustSheetView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -327,6 +330,7 @@
 				AC0000000000000000000142 /* FacePickerView.swift in Sources */,
 				AC0000000000000000000144 /* RootFaceView.swift in Sources */,
 				AC0000000000000000000146 /* FacePreviewGrid.swift in Sources */,
+				AC0000000000000000000150 /* AdjustSheetView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
