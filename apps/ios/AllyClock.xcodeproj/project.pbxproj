@@ -39,6 +39,11 @@
 		AC0000000000000000000131 /* FullscreenFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000130 /* FullscreenFaceView.swift */; };
 		AC0000000000000000000134 /* WorldCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000133 /* WorldCardView.swift */; };
 		AC0000000000000000000136 /* WorldCardsFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000135 /* WorldCardsFaceView.swift */; };
+		AC0000000000000000000138 /* FaceKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000137 /* FaceKind.swift */; };
+		AC0000000000000000000142 /* FacePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000141 /* FacePickerView.swift */; };
+		AC0000000000000000000144 /* RootFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000143 /* RootFaceView.swift */; };
+		AC0000000000000000000146 /* FacePreviewGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000145 /* FacePreviewGrid.swift */; };
+		AC0000000000000000000148 /* FaceKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000147 /* FaceKindTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +76,11 @@
 		AC0000000000000000000130 /* FullscreenFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenFaceView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000133 /* WorldCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCardView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000135 /* WorldCardsFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCardsFaceView.swift; sourceTree = "<group>"; };
+		AC0000000000000000000137 /* FaceKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceKind.swift; sourceTree = "<group>"; };
+		AC0000000000000000000141 /* FacePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacePickerView.swift; sourceTree = "<group>"; };
+		AC0000000000000000000143 /* RootFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootFaceView.swift; sourceTree = "<group>"; };
+		AC0000000000000000000145 /* FacePreviewGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacePreviewGrid.swift; sourceTree = "<group>"; };
+		AC0000000000000000000147 /* FaceKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceKindTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +131,7 @@
 				AC0000000000000000000082 /* Time */,
 				AC0000000000000000000112 /* Shared */,
 				AC0000000000000000000132 /* Faces */,
+				AC0000000000000000000140 /* App */,
 			);
 			path = AllyClock;
 			sourceTree = "<group>";
@@ -157,6 +168,7 @@
 			children = (
 				AC0000000000000000000050 /* AllyClockTests.swift */,
 				AC0000000000000000000120 /* FlagResolutionTests.swift */,
+				AC0000000000000000000147 /* FaceKindTests.swift */,
 			);
 			path = AllyClockTests;
 			sourceTree = "<group>";
@@ -177,8 +189,19 @@
 				AC0000000000000000000130 /* FullscreenFaceView.swift */,
 				AC0000000000000000000133 /* WorldCardView.swift */,
 				AC0000000000000000000135 /* WorldCardsFaceView.swift */,
+				AC0000000000000000000137 /* FaceKind.swift */,
 			);
 			path = Faces;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000140 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				AC0000000000000000000141 /* FacePickerView.swift */,
+				AC0000000000000000000143 /* RootFaceView.swift */,
+				AC0000000000000000000145 /* FacePreviewGrid.swift */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -300,6 +323,10 @@
 				AC0000000000000000000131 /* FullscreenFaceView.swift in Sources */,
 				AC0000000000000000000134 /* WorldCardView.swift in Sources */,
 				AC0000000000000000000136 /* WorldCardsFaceView.swift in Sources */,
+				AC0000000000000000000138 /* FaceKind.swift in Sources */,
+				AC0000000000000000000142 /* FacePickerView.swift in Sources */,
+				AC0000000000000000000144 /* RootFaceView.swift in Sources */,
+				AC0000000000000000000146 /* FacePreviewGrid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,6 +336,7 @@
 			files = (
 				AC0000000000000000000052 /* AllyClockTests.swift in Sources */,
 				AC0000000000000000000121 /* FlagResolutionTests.swift in Sources */,
+				AC0000000000000000000148 /* FaceKindTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
