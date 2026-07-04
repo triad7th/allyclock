@@ -22,22 +22,22 @@ struct RootFaceView: View {
     private var face: FaceKind { FaceKind(rawValue: selectedRaw) ?? .fullscreen }
 
     var body: some View {
-        ZStack {
+        // ClockView's proven full-bleed pattern: the ZStack ignores the safe area
+        // so the face centers in the FULL screen (safeAreaInset would reserve the
+        // bar's height and nudge the face up), and the controls overlay the very
+        // bottom edge like the web's controls-bar. Home indicator hidden.
+        ZStack(alignment: .bottom) {
             switch face {
             case .fullscreen: FullscreenFaceView(store: fullscreenStore)
             case .worldCards: WorldCardsFaceView(store: worldCardsStore)
             }
-        }
-        // The face fills the screen (its own ignoresSafeArea) and centers in the
-        // FULL height. `safeAreaInset` seats the controls just above the home
-        // indicator in BOTH orientations (adaptive inset) — the face draws
-        // behind them. Hide the home indicator for a clean clock.
-        .safeAreaInset(edge: .bottom, spacing: 0) {
+
             controlsBar
-                .padding(.bottom, 8)
+                .padding(.bottom, 16)
                 .opacity(chromeVisible ? 1 : 0)
                 .animation(.easeInOut(duration: 0.3), value: chromeVisible)
         }
+        .ignoresSafeArea()
         .persistentSystemOverlays(.hidden)
         .contentShape(Rectangle())
         .onTapGesture { revealChrome() }
@@ -79,4 +79,22 @@ struct RootFaceView: View {
         hideTask = task
         DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: task)
     }
+}
+
+// Fixed-frame previews at representative device sizes (ClockView's preview
+// pattern) so centering is verifiable straight from the canvas.
+#Preview("iPhone 16 Pro portrait") {
+    RootFaceView().frame(width: 393, height: 852)
+}
+
+#Preview("iPhone 16 Pro landscape") {
+    RootFaceView().frame(width: 852, height: 393)
+}
+
+#Preview("iPhone 16 Pro Max landscape") {
+    RootFaceView().frame(width: 956, height: 440)
+}
+
+#Preview("iPad Pro 11\" landscape") {
+    RootFaceView().frame(width: 1210, height: 834)
 }
