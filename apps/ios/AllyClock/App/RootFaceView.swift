@@ -5,6 +5,7 @@ import SwiftUI
 /// (Configure + Adjust), mirroring the web app shell.
 struct RootFaceView: View {
     @AppStorage("allyclock.selectedFace") private var selectedRaw = FaceKind.fullscreen.rawValue
+    @Environment(\.verticalSizeClass) private var vSize
     @State private var pickerOpen = false
     @State private var adjustOpen = false
     @State private var chromeVisible = true
@@ -48,25 +49,42 @@ struct RootFaceView: View {
                 // Web-style glass sheets: content-hugging bottom panels over the
                 // face, not full-screen system sheets (which iPhone landscape
                 // forces full-screen anyway).
-                if pickerOpen {
-                    GlassSheet(title: "Faces", hInset: hInset, onClose: { close($pickerOpen) }) {
-                        FacePickerView(
-                            selection: Binding(get: { face }, set: { selectedRaw = $0.rawValue }),
-                            fullscreenStore: fullscreenStore,
-                            worldCardsStore: worldCardsStore,
-                            onSelect: { close($pickerOpen) }
-                        )
+                if !useSystemSheet {
+                    if pickerOpen {
+                        GlassSheet(title: "Faces", hInset: hInset, onClose: { close($pickerOpen) }) {
+                            FacePickerView(
+                                selection: Binding(get: { face }, set: { selectedRaw = $0.rawValue }),
+                                fullscreenStore: fullscreenStore,
+                                worldCardsStore: worldCardsStore,
+                                onSelect: { close($pickerOpen) }
+                            )
+                        }
+                        .zIndex(1)
                     }
-                    .zIndex(1)
-                }
-                if adjustOpen {
-                    GlassSheet(title: "Adjust", hInset: hInset, onClose: { close($adjustOpen) }) {
-                        AdjustSheetView(face: face)
+                    if adjustOpen {
+                        GlassSheet(title: "Adjust", hInset: hInset, onClose: { close($adjustOpen) }) {
+                            AdjustSheetView(face: face)
+                        }
+                        .zIndex(1)
                     }
-                    .zIndex(1)
                 }
             }
             .ignoresSafeArea()
+        }
+        // Regular vertical size class (iPad): the stock system sheet — the
+        // default iOS 26 floating Liquid Glass panel.
+        .sheet(isPresented: useSystemSheet ? $pickerOpen : .constant(false)) {
+            systemSheetContent(title: "Faces") {
+                FacePickerView(
+                    selection: Binding(get: { face }, set: { selectedRaw = $0.rawValue }),
+                    fullscreenStore: fullscreenStore,
+                    worldCardsStore: worldCardsStore,
+                    onSelect: { pickerOpen = false }
+                )
+            }
+        }
+        .sheet(isPresented: useSystemSheet ? $adjustOpen : .constant(false)) {
+            systemSheetContent(title: "Adjust") { AdjustSheetView(face: face) }
         }
         .layoutDebugPanel()
         // The app is inherently dark (near-black faces); declare it so system
@@ -85,6 +103,25 @@ struct RootFaceView: View {
 
     private var sheetOpen: Bool {
         pickerOpen || adjustOpen
+    }
+
+    /// Hybrid presentation: the system's floating Liquid Glass sheet where it
+    /// actually floats (regular vertical size class — iPad), the custom bottom
+    /// GlassSheet where the system would go full-screen (compact height —
+    /// iPhone landscape).
+    private var useSystemSheet: Bool { vSize == .regular }
+
+    @ViewBuilder
+    private func systemSheetContent(title: String,
+                                    @ViewBuilder content: () -> some View) -> some View
+    {
+        VStack(spacing: 12) {
+            Text(title).font(.headline)
+            content()
+        }
+        .padding(.top, 20)
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
     }
 
     private func close(_ flag: Binding<Bool>) {
