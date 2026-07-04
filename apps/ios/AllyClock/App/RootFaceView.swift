@@ -102,6 +102,7 @@ struct RootFaceView: View {
 }
 
 #Preview("DEBUG iPhone 16 Pro landscape") {
-    let _ = LayoutDebug.forceEnabled = true
-    RootFaceView().frame(width: 852, height: 393)
+    RootFaceView()
+        .frame(width: 852, height: 393)
+        .environment(\.layoutDebug, true)
 }

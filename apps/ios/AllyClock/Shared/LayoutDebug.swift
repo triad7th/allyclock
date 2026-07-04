@@ -2,13 +2,21 @@ import SwiftUI
 
 /// Layout debug mode: draws border guidelines around the important layout
 /// elements and overlays the critical numbers (element frames, gaps, and
-/// centering deltas). Enable with the `-layoutDebug` launch argument
-/// (Scheme ▸ Run ▸ Arguments, or `simctl launch … -layoutDebug`), or set
-/// `LayoutDebug.forceEnabled = true` in a preview.
-enum LayoutDebug {
-    static let launchFlag = ProcessInfo.processInfo.arguments.contains("-layoutDebug")
-    nonisolated(unsafe) static var forceEnabled = false
-    static var enabled: Bool { launchFlag || forceEnabled }
+/// centering deltas).
+///
+/// Enable with the `-layoutDebug` launch argument (Scheme ▸ Run ▸ Arguments,
+/// or `simctl launch … -layoutDebug`), or per-preview with
+/// `.environment(\.layoutDebug, true)` — environment-scoped, so it never
+/// leaks into other previews.
+private struct LayoutDebugKey: EnvironmentKey {
+    static let defaultValue = ProcessInfo.processInfo.arguments.contains("-layoutDebug")
+}
+
+extension EnvironmentValues {
+    var layoutDebug: Bool {
+        get { self[LayoutDebugKey.self] }
+        set { self[LayoutDebugKey.self] = newValue }
+    }
 }
 
 /// Frames of tagged elements in the global coordinate space.
@@ -30,10 +38,30 @@ struct DebugNumbersKey: PreferenceKey {
 extension View {
     /// Border guideline + size tag for one layout element; reports its global
     /// frame to the debug panel.
-    @ViewBuilder
     func debugFrame(_ label: String, _ color: Color) -> some View {
-        if LayoutDebug.enabled {
-            overlay(
+        modifier(DebugFrameModifier(label: label, color: color))
+    }
+
+    /// Merge scalar layout numbers into the debug panel.
+    func debugNumbers(_ numbers: [String: String]) -> some View {
+        modifier(DebugNumbersModifier(numbers: numbers))
+    }
+
+    /// Overlay the two debug panels (frames + deltas top-leading, scalar
+    /// numbers top-trailing). Apply at the root that should aggregate them.
+    func layoutDebugPanel() -> some View {
+        modifier(LayoutDebugPanelModifier())
+    }
+}
+
+private struct DebugFrameModifier: ViewModifier {
+    @Environment(\.layoutDebug) private var enabled
+    let label: String
+    let color: Color
+
+    func body(content: Content) -> some View {
+        if enabled {
+            content.overlay(
                 GeometryReader { g in
                     let f = g.frame(in: .global)
                     Rectangle().strokeBorder(color.opacity(0.9), lineWidth: 1)
@@ -50,37 +78,42 @@ extension View {
                 .allowsHitTesting(false)
             )
         } else {
-            self
+            content
         }
     }
+}
 
-    /// Merge scalar layout numbers into the debug panel.
-    @ViewBuilder
-    func debugNumbers(_ numbers: [String: String]) -> some View {
-        if LayoutDebug.enabled {
-            transformPreference(DebugNumbersKey.self) { $0.merge(numbers) { $1 } }
+private struct DebugNumbersModifier: ViewModifier {
+    @Environment(\.layoutDebug) private var enabled
+    let numbers: [String: String]
+
+    func body(content: Content) -> some View {
+        if enabled {
+            content.transformPreference(DebugNumbersKey.self) { $0.merge(numbers) { $1 } }
         } else {
-            self
+            content
         }
     }
+}
 
-    /// Overlay the two debug panels (frames + deltas top-leading, scalar
-    /// numbers top-trailing). Apply at the root that should aggregate them.
-    @ViewBuilder
-    func layoutDebugPanel() -> some View {
-        if LayoutDebug.enabled {
-            overlayPreferenceValue(DebugFramesKey.self) { frames in
-                DebugFramesPanel(frames: frames)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                    .allowsHitTesting(false)
-            }
-            .overlayPreferenceValue(DebugNumbersKey.self) { numbers in
-                DebugNumbersPanel(numbers: numbers)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                    .allowsHitTesting(false)
-            }
+private struct LayoutDebugPanelModifier: ViewModifier {
+    @Environment(\.layoutDebug) private var enabled
+
+    func body(content: Content) -> some View {
+        if enabled {
+            content
+                .overlayPreferenceValue(DebugFramesKey.self) { frames in
+                    DebugFramesPanel(frames: frames)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .allowsHitTesting(false)
+                }
+                .overlayPreferenceValue(DebugNumbersKey.self) { numbers in
+                    DebugNumbersPanel(numbers: numbers)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                        .allowsHitTesting(false)
+                }
         } else {
-            self
+            content
         }
     }
 }
