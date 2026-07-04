@@ -21,6 +21,8 @@ struct WorldCardView: View {
                         Text(big.digits)
                             .font(.system(size: 72 * timeScale, weight: AllyClock.fontWeight(250)))
                             .monospacedDigit()
+                            .lineLimit(1)
+                            .fixedSize()
                         VStack(alignment: .leading, spacing: 0) {
                             if let ampm = big.ampm {
                                 Text(ampm).font(.system(size: 17 * timeScale, weight: .light))
@@ -30,10 +32,12 @@ struct WorldCardView: View {
                             Text(big.seconds).font(.system(size: 17 * timeScale, weight: .light))
                                 .opacity(0.32)
                         }
+                        // Bound the flank to the digit height so its Spacer stays
+                        // within the glyphs and doesn't make the row greedy.
+                        .frame(height: 72 * timeScale * 0.72)
                     }
                     dateLine(now, tz)
                 }
-                .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .padding(.vertical, 16)
             .overlay(alignment: .bottom) { Rectangle().fill(fg).frame(height: 1) }

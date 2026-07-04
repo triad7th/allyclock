@@ -11,7 +11,13 @@ struct FlagView: View {
     let zone: String
     var body: some View {
         if let flag = FlagResolution.emoji(forZone: zone) {
-            Text(flag)
+            // A `Text` emoji renders at its font size, not the frame — size the
+            // font to the host box so the flag fills it the way the globe does.
+            GeometryReader { g in
+                Text(flag)
+                    .font(.system(size: min(g.size.width, g.size.height)))
+                    .frame(width: g.size.width, height: g.size.height)
+            }
         } else {
             SFIcon("globe")
         }

@@ -56,6 +56,11 @@ struct FullscreenFaceView: View {
                     Text(big.seconds).font(.system(size: timeSize * 0.1, weight: .light)).opacity(0.28)
                 }
             }
+            // Bound the flank to the digit height so its Spacer distributes AM/PM
+            // (top) and seconds (bottom) across the glyphs — not the whole screen.
+            // Without this the Spacer makes the time row vertically greedy inside
+            // the filling VStack, pushing the date row to the bottom.
+            .frame(height: timeSize * 0.72)
         }
     }
 

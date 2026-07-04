@@ -5,22 +5,19 @@ struct WorldCardsFaceView: View {
     let store: WorldCardsConfigStore
     private let bg = Color(red: 0x05 / 255, green: 0x05 / 255, blue: 0x05 / 255)
 
+    /// Progressive shrink factors. `ViewThatFits` picks the first (largest) that
+    /// fits the host width, so a wide two-card row shrinks to fit a narrow phone
+    /// instead of overflowing — while a single-card row stays full size.
+    private static let fits: [Double] = [1.0, 0.85, 0.72, 0.6, 0.5, 0.42, 0.35, 0.29]
+
     var body: some View {
         GeometryReader { geo in
             let ratio = geo.size.width / max(geo.size.height, 1)
             let f = store.fieldsFor(ratio)
             let rows = Self.rows(f.cards)
-            VStack(spacing: 0) {
-                ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                    HStack(spacing: 32) {
-                        ForEach(row, id: \.id) { card in
-                            WorldCardView(
-                                zone: card.zone,
-                                timeScale: f.sizes.time,
-                                dateScale: f.sizes.date
-                            )
-                        }
-                    }
+            ViewThatFits(in: .horizontal) {
+                ForEach(Self.fits, id: \.self) { fit in
+                    cards(rows, f, fit: fit)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -29,6 +26,22 @@ struct WorldCardsFaceView: View {
         .background(bg).ignoresSafeArea()
         .dynamicTypeSize(.medium)
         .statusBarHidden()
+    }
+
+    private func cards(_ rows: [[WorldCardConfig]], _ f: WorldCardsFields, fit: Double) -> some View {
+        VStack(spacing: 0) {
+            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                HStack(spacing: 32 * fit) {
+                    ForEach(row, id: \.id) { card in
+                        WorldCardView(
+                            zone: card.zone,
+                            timeScale: f.sizes.time * fit,
+                            dateScale: f.sizes.date * fit
+                        )
+                    }
+                }
+            }
+        }
     }
 
     /// Split cards into rows: a card with `lineBreak == true` ends its row.
