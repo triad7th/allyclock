@@ -1,5 +1,5 @@
-import XCTest
 @testable import AllyClock
+import XCTest
 
 final class FaceKindTests: XCTestCase {
     func test_twoFacesInOrderWithNames() {
@@ -7,6 +7,7 @@ final class FaceKindTests: XCTestCase {
         XCTAssertEqual(FaceKind.fullscreen.displayName, "Fullscreen")
         XCTAssertEqual(FaceKind.worldCards.displayName, "World Cards")
     }
+
     func test_rawValuesStableForPersistence() {
         XCTAssertEqual(FaceKind.fullscreen.rawValue, "fullscreen")
         XCTAssertEqual(FaceKind.worldCards.rawValue, "world-cards")

@@ -1,5 +1,5 @@
-import SwiftUI
 import AllyClockCore
+import SwiftUI
 
 /// Sheet listing the faces as cards with a live preview thumbnail, mirroring the
 /// web face-picker sheet. Applies on selection and on dismissal (the AllyClock

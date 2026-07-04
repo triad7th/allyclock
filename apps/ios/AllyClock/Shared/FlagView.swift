@@ -1,10 +1,12 @@
-import SwiftUI
 import AllyClockCore
+import SwiftUI
 
 /// Country flag for an IANA zone as a regional-indicator emoji, or a globe when
 /// the zone has no country (UTC, Etc/*, unknown).
 enum FlagResolution {
-    static func emoji(forZone zone: String) -> String? { ZoneCountry.flagEmoji(for: zone) }
+    static func emoji(forZone zone: String) -> String? {
+        ZoneCountry.flagEmoji(for: zone)
+    }
 }
 
 struct FlagView: View {

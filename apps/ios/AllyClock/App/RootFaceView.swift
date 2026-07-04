@@ -1,5 +1,5 @@
-import SwiftUI
 import AllyClockCore
+import SwiftUI
 
 /// App root: hosts the active face full-bleed with an auto-hiding controls bar
 /// (Configure + Adjust), mirroring the web app shell.
@@ -19,7 +19,9 @@ struct RootFaceView: View {
         worldCardsStore = WorldCardsConfigStore(registry: reg)
     }
 
-    private var face: FaceKind { FaceKind(rawValue: selectedRaw) ?? .fullscreen }
+    private var face: FaceKind {
+        FaceKind(rawValue: selectedRaw) ?? .fullscreen
+    }
 
     var body: some View {
         // ClockView's proven full-bleed pattern: the ZStack ignores the safe area
@@ -56,12 +58,18 @@ struct RootFaceView: View {
 
     private var controlsBar: some View {
         HStack(spacing: 16) {
-            chromeButton("clock", label: "Choose clock face") { pickerOpen = true; revealChrome() }
-            chromeButton("slider.horizontal.3", label: "Adjust layout") { adjustOpen = true; revealChrome() }
+            chromeButton("clock", label: "Choose clock face") { pickerOpen = true
+                revealChrome()
+            }
+            chromeButton("slider.horizontal.3", label: "Adjust layout") { adjustOpen = true
+                revealChrome()
+            }
         }
     }
 
-    private func chromeButton(_ icon: String, label: String, action: @escaping () -> Void) -> some View {
+    private func chromeButton(_ icon: String, label: String,
+                              action: @escaping () -> Void) -> some View
+    {
         Button(action: action) {
             SFIcon(icon).frame(width: 20, height: 20).padding(12)
         }
@@ -75,6 +83,7 @@ struct RootFaceView: View {
         chromeVisible = true
         scheduleHide()
     }
+
     private func scheduleHide() {
         hideTask?.cancel()
         let task = DispatchWorkItem { chromeVisible = false }

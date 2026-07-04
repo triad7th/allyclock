@@ -30,7 +30,9 @@ struct WorldCardsFaceView: View {
         .statusBarHidden()
     }
 
-    private func cards(_ rows: [[WorldCardConfig]], _ f: WorldCardsFields, fit: Double) -> some View {
+    private func cards(_ rows: [[WorldCardConfig]], _ f: WorldCardsFields,
+                       fit: Double) -> some View
+    {
         VStack(spacing: 0) {
             ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
                 HStack(spacing: 32 * fit) {

@@ -129,7 +129,10 @@ struct DebugFramesPanel: View {
             if let host = frames["host"] {
                 row("host", "\(Int(host.width))×\(Int(host.height)) mid y\(Int(host.midY))")
                 if let clock = frames["clock"] {
-                    row("clock", "\(Int(clock.width))×\(Int(clock.height)) y\(Int(clock.minY))–\(Int(clock.maxY))")
+                    row(
+                        "clock",
+                        "\(Int(clock.width))×\(Int(clock.height)) y\(Int(clock.minY))–\(Int(clock.maxY))"
+                    )
                     row("topGap", String(format: "%.1f", clock.minY - host.minY))
                     row("botGap", String(format: "%.1f", host.maxY - clock.maxY))
                     row("Δclock", String(format: "%+.1f", clock.midY - host.midY))

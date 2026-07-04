@@ -41,7 +41,13 @@ struct AdjustSheetView: View {
     private var plannedControls: [String] {
         switch face {
         case .fullscreen:
-            return ["Time size & weight", "Seconds & AM/PM", "Progress bar", "Weekday · zone · GMT · flag", "Time zone"]
+            return [
+                "Time size & weight",
+                "Seconds & AM/PM",
+                "Progress bar",
+                "Weekday · zone · GMT · flag",
+                "Time zone",
+            ]
         case .worldCards:
             return ["Add & remove cities", "Card size", "Row breaks", "Seconds & date detail"]
         }
