@@ -42,10 +42,18 @@ struct FullscreenFaceView: View {
     }
 
     private func timeRow(_ big: TimeFormatting.BigTime, _ f: FullscreenFields, _ timeSize: CGFloat) -> some View {
-        HStack(alignment: .top, spacing: timeSize * 0.04) {
+        // The digits' numeral cap band (~0.72 of the font). The web ties the AM/PM
+        // + seconds flank to this band (line-height 0.9 + flank align-self:stretch),
+        // NOT the SwiftUI Text line box — whose tall ascent gap would float AM/PM
+        // far above the glyphs at large sizes. Constrain both to `band` so the
+        // flank hugs the digits: AM/PM at the cap top, seconds on the baseline.
+        let band = timeSize * 0.72
+        return HStack(alignment: .center, spacing: timeSize * 0.04) {
             Text(big.digits)
                 .font(.system(size: timeSize, weight: AllyClock.fontWeight(f.sections.time.weight)))
                 .monospacedDigit()
+                .fixedSize()
+                .frame(height: band, alignment: .center)
                 .opacity(f.sections.time.opacity)
             VStack(alignment: .leading, spacing: 0) {
                 if let ampm = big.ampm {
@@ -56,11 +64,7 @@ struct FullscreenFaceView: View {
                     Text(big.seconds).font(.system(size: timeSize * 0.1, weight: .light)).opacity(0.28)
                 }
             }
-            // Bound the flank to the digit height so its Spacer distributes AM/PM
-            // (top) and seconds (bottom) across the glyphs — not the whole screen.
-            // Without this the Spacer makes the time row vertically greedy inside
-            // the filling VStack, pushing the date row to the bottom.
-            .frame(height: timeSize * 0.72)
+            .frame(height: band, alignment: .top)
         }
     }
 

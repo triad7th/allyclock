@@ -17,12 +17,17 @@ struct WorldCardView: View {
                     .frame(width: 92 * timeScale, height: 92 * timeScale)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                 VStack(alignment: .trailing, spacing: 3 * timeScale) {
-                    HStack(alignment: .top, spacing: 4 * timeScale) {
+                    HStack(alignment: .center, spacing: 4 * timeScale) {
+                        // Tie the flank to the digits' cap band (~0.72 of the font),
+                        // not the Text line box, so AM/PM hugs the cap top and
+                        // seconds sits on the baseline. Matches the web card.
+                        let band = 72 * timeScale * 0.72
                         Text(big.digits)
                             .font(.system(size: 72 * timeScale, weight: AllyClock.fontWeight(250)))
                             .monospacedDigit()
                             .lineLimit(1)
                             .fixedSize()
+                            .frame(height: band, alignment: .center)
                         VStack(alignment: .leading, spacing: 0) {
                             if let ampm = big.ampm {
                                 Text(ampm).font(.system(size: 17 * timeScale, weight: .light))
@@ -32,9 +37,7 @@ struct WorldCardView: View {
                             Text(big.seconds).font(.system(size: 17 * timeScale, weight: .light))
                                 .opacity(0.32)
                         }
-                        // Bound the flank to the digit height so its Spacer stays
-                        // within the glyphs and doesn't make the row greedy.
-                        .frame(height: 72 * timeScale * 0.72)
+                        .frame(height: band, alignment: .top)
                     }
                     dateLine(now, tz)
                 }
