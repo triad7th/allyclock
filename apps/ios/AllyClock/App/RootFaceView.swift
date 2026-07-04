@@ -22,17 +22,23 @@ struct RootFaceView: View {
     private var face: FaceKind { FaceKind(rawValue: selectedRaw) ?? .fullscreen }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
+        ZStack {
             switch face {
             case .fullscreen: FullscreenFaceView(store: fullscreenStore)
             case .worldCards: WorldCardsFaceView(store: worldCardsStore)
             }
-
+        }
+        // The face fills the screen (its own ignoresSafeArea) and centers in the
+        // FULL height. `safeAreaInset` seats the controls just above the home
+        // indicator in BOTH orientations (adaptive inset) — the face draws
+        // behind them. Hide the home indicator for a clean clock.
+        .safeAreaInset(edge: .bottom, spacing: 0) {
             controlsBar
                 .padding(.bottom, 8)
                 .opacity(chromeVisible ? 1 : 0)
                 .animation(.easeInOut(duration: 0.3), value: chromeVisible)
         }
+        .persistentSystemOverlays(.hidden)
         .contentShape(Rectangle())
         .onTapGesture { revealChrome() }
         .onAppear { scheduleHide() }
