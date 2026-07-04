@@ -29,7 +29,7 @@ struct RootFaceView: View {
             }
 
             controlsBar
-                .padding(.bottom, 24)
+                .padding(.bottom, 8)
                 .opacity(chromeVisible ? 1 : 0)
                 .animation(.easeInOut(duration: 0.3), value: chromeVisible)
         }
