@@ -32,7 +32,10 @@
 		AC0000000000000000000033 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000023 /* Preview Assets.xcassets */; };
 		AC0000000000000000000052 /* AllyClockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000050 /* AllyClockTests.swift */; };
 		AC0000000000000000000102 /* AllyClockCore in Frameworks */ = {isa = PBXBuildFile; productRef = AC0000000000000000000101 /* AllyClockCore */; };
-		AC0000000000000000000111 /* CoreBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000110 /* CoreBridge.swift */; };
+		AC0000000000000000000114 /* SFIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000113 /* SFIcon.swift */; };
+		AC0000000000000000000116 /* FlagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000115 /* FlagView.swift */; };
+		AC0000000000000000000118 /* FontWeightMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000117 /* FontWeightMap.swift */; };
+		AC0000000000000000000121 /* FlagResolutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000120 /* FlagResolutionTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,7 +61,10 @@
 		AC0000000000000000000024 /* AllyClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllyClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC0000000000000000000050 /* AllyClockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllyClockTests.swift; sourceTree = "<group>"; };
 		AC0000000000000000000051 /* AllyClockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AllyClockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AC0000000000000000000110 /* CoreBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreBridge.swift; sourceTree = "<group>"; };
+		AC0000000000000000000113 /* SFIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFIcon.swift; sourceTree = "<group>"; };
+		AC0000000000000000000115 /* FlagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagView.swift; sourceTree = "<group>"; };
+		AC0000000000000000000117 /* FontWeightMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontWeightMap.swift; sourceTree = "<group>"; };
+		AC0000000000000000000120 /* FlagResolutionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagResolutionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				AC0000000000000000000050 /* AllyClockTests.swift */,
+				AC0000000000000000000120 /* FlagResolutionTests.swift */,
 			);
 			path = AllyClockTests;
 			sourceTree = "<group>";
@@ -150,7 +157,9 @@
 		AC0000000000000000000112 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				AC0000000000000000000110 /* CoreBridge.swift */,
+				AC0000000000000000000113 /* SFIcon.swift */,
+				AC0000000000000000000115 /* FlagView.swift */,
+				AC0000000000000000000117 /* FontWeightMap.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -268,7 +277,9 @@
 				AC0000000000000000000085 /* BigTime.swift in Sources */,
 				AC0000000000000000000088 /* InfoLine.swift in Sources */,
 				AC0000000000000000000090 /* ClockView.swift in Sources */,
-				AC0000000000000000000111 /* CoreBridge.swift in Sources */,
+				AC0000000000000000000114 /* SFIcon.swift in Sources */,
+				AC0000000000000000000116 /* FlagView.swift in Sources */,
+				AC0000000000000000000118 /* FontWeightMap.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,6 +288,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC0000000000000000000052 /* AllyClockTests.swift in Sources */,
+				AC0000000000000000000121 /* FlagResolutionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,8 +436,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -456,8 +468,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
