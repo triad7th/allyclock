@@ -56,27 +56,28 @@ struct GlassSheet<Content: View>: View {
                     .frame(width: 40, height: 4)
                     .padding(.top, 8)
 
-                ZStack {
-                    Text(title)
-                        .font(.headline)
-                        .foregroundStyle(Color(white: 0.95))
-                    HStack {
-                        // Same component as the controls-bar buttons — same
-                        // 44pt target, same circular glass press animation.
-                        GlassIconButton(icon: "xmark", label: "Close", action: onClose)
-                        Spacer()
-                    }
-                }
-                .padding(.horizontal, max(12, hInset))
-                .padding(.top, 4)
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(Color(white: 0.95))
+                    .frame(minHeight: 44)
 
                 content()
                     .padding(.horizontal, hInset)
-                    .padding(.top, 12)
+                    .padding(.top, 4)
                     .padding(.bottom, 20)
             }
             .frame(maxWidth: .infinity)
             .glassEffect(.regular, in: panelShape)
+            // The X sits in an overlay applied AFTER glassEffect: glass nested
+            // inside another glass surface renders its pressed state as a
+            // rounded rectangle, not the circle. As a sibling of the panel's
+            // glass, the button presses as a perfect circle — identical to the
+            // controls-bar buttons.
+            .overlay(alignment: .topLeading) {
+                GlassIconButton(icon: "xmark", label: "Close", action: onClose)
+                    .padding(.leading, max(12, hInset))
+                    .padding(.top, 16)
+            }
             .transition(.move(edge: .bottom).combined(with: .opacity))
         }
     }
