@@ -10,9 +10,9 @@ struct FullscreenSettingsView: View {
     let store: FullscreenConfigStore
 
     @State private var zonePickerOpen = false
-    // Built once per presentation: "Follow System" + the IANA catalog (the
-    // web prepends the same synthetic '' entry; its label mentions the Time
-    // Machine, which iOS doesn't have).
+    /// Built once per presentation: "Follow System" + the IANA catalog (the
+    /// web prepends the same synthetic '' entry; its label mentions the Time
+    /// Machine, which iOS doesn't have).
     @State private var zoneOptions: [TimeZoneOption] =
         [TimeZoneOption(id: "", label: "Follow System", offset: -100_000)]
             + ZoneCatalog.buildOptions()

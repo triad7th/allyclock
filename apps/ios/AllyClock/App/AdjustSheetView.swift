@@ -48,17 +48,25 @@ struct FullscreenAdjustView: View {
     let registry: DimensionRegistry
     let ratio: Double
 
-    private var bandId: String { registry.resolveForRatio(ratio).id }
+    private var bandId: String {
+        registry.resolveForRatio(ratio).id
+    }
 
     var body: some View {
         let fields = store.config(bandId)
         VStack(spacing: 16) {
             sliderRow("Time", value: fields.sections.time.sizeScale) { value in
-                store.updateSection(bandId, .time) { var s = $0; s.sizeScale = value; return s }
+                store.updateSection(bandId, .time) { var s = $0
+                    s.sizeScale = value
+                    return s
+                }
             }
             sliderRow("Date", value: fields.sections.month.sizeScale) { value in
                 for key in SectionKey.dateKeys {
-                    store.updateSection(bandId, key) { var s = $0; s.sizeScale = value; return s }
+                    store.updateSection(bandId, key) { var s = $0
+                        s.sizeScale = value
+                        return s
+                    }
                 }
             }
         }

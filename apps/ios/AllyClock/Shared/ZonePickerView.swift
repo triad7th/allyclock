@@ -70,7 +70,7 @@ struct ZonePickerView: View {
             + ZoneCatalog.buildOptions(),
         selectedId: ""
     ) { _ in }
-    .padding(24)
-    .background(Color.black)
-    .preferredColorScheme(.dark)
+        .padding(24)
+        .background(Color.black)
+        .preferredColorScheme(.dark)
 }
