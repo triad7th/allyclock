@@ -10,11 +10,13 @@ struct AdjustSheetView: View {
     let fullscreenStore: FullscreenConfigStore
     let registry: DimensionRegistry
     let ratio: Double
+    let availableWidth: CGFloat
 
     var body: some View {
         switch face {
         case .fullscreen:
-            FullscreenAdjustView(store: fullscreenStore, registry: registry, ratio: ratio)
+            FullscreenAdjustView(store: fullscreenStore, registry: registry, ratio: ratio,
+                                 initialWidth: availableWidth)
         case .worldCards:
             VStack(alignment: .leading, spacing: 12) {
                 Text(face.displayName)
@@ -49,7 +51,18 @@ struct FullscreenAdjustView: View {
     let registry: DimensionRegistry
     let ratio: Double
 
-    @State private var width: CGFloat = 0
+    /// Seeded like FullscreenSettingsView's grid width: the first layout pass
+    /// must not run at width 0 (one-column snap during the sheet animation).
+    @State private var width: CGFloat
+
+    init(store: FullscreenConfigStore, registry: DimensionRegistry, ratio: Double,
+         initialWidth: CGFloat = 0)
+    {
+        self.store = store
+        self.registry = registry
+        self.ratio = ratio
+        _width = State(initialValue: initialWidth)
+    }
 
     private var bandId: String {
         registry.resolveForRatio(ratio).id

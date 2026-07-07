@@ -11,7 +11,18 @@ struct FullscreenSettingsView: View {
     let store: FullscreenConfigStore
 
     @State private var zonePickerOpen = false
-    @State private var width: CGFloat = 0
+    /// Grid width. Seeded from the host's known width so the FIRST layout
+    /// pass already uses the right column count — an unseeded 0 renders one
+    /// column (4 stacked cards, taller than a landscape screen) for a frame,
+    /// and inside the sheet-open animation that snap reads as the clock
+    /// jumping behind the glass. `onGeometryChange` keeps it exact after.
+    @State private var width: CGFloat
+
+    init(store: FullscreenConfigStore, initialWidth: CGFloat = 0) {
+        self.store = store
+        _width = State(initialValue: initialWidth)
+    }
+
     /// Built once per presentation: "Follow System" + the IANA catalog (the
     /// web prepends the same synthetic '' entry; its label mentions the Time
     /// Machine, which iOS doesn't have).

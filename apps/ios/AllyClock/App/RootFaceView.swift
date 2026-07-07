@@ -44,6 +44,10 @@ struct RootFaceView: View {
             let fullHeight = outer.size.height
                 + outer.safeAreaInsets.top + outer.safeAreaInsets.bottom
             let ratio = fullWidth / max(fullHeight, 1)
+            // Width the glass-sheet panels lay out in (the sheet pads by
+            // hInset per side) — seeds their grids so the first frame of the
+            // open animation already has the final column count.
+            let sheetWidth = fullWidth - 2 * hInset
             ZStack(alignment: .bottom) {
                 switch face {
                 case .fullscreen: FullscreenFaceView(store: fullscreenStore)
@@ -88,7 +92,8 @@ struct RootFaceView: View {
                                onClose: { close($adjustOpen) })
                     {
                         AdjustSheetView(face: face, fullscreenStore: fullscreenStore,
-                                        registry: registry, ratio: ratio)
+                                        registry: registry, ratio: ratio,
+                                        availableWidth: sheetWidth)
                     }
                     .zIndex(1)
                 }
@@ -96,7 +101,7 @@ struct RootFaceView: View {
                     GlassSheet(title: "Settings", hInset: hInset,
                                onClose: { close($settingsOpen) })
                     {
-                        FullscreenSettingsView(store: fullscreenStore)
+                        FullscreenSettingsView(store: fullscreenStore, initialWidth: sheetWidth)
                     }
                     .zIndex(1)
                 }
