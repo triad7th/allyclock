@@ -7,6 +7,7 @@ struct RootFaceView: View {
     @AppStorage("allyclock.selectedFace") private var selectedRaw = FaceKind.fullscreen.rawValue
     @State private var pickerOpen = false
     @State private var adjustOpen = false
+    @State private var settingsOpen = false
     @State private var chromeVisible = true
     @State private var hideTask: Task<Void, Never>?
 
@@ -55,6 +56,18 @@ struct RootFaceView: View {
                     .opacity(chromeVisible && !sheetOpen ? 1 : 0)
                     .animation(.easeInOut(duration: 0.3), value: chromeVisible)
 
+                if face == .fullscreen {
+                    GlassIconButton(icon: "gearshape", label: "Display options") {
+                        withAnimation(.easeOut(duration: 0.25)) { settingsOpen = true }
+                    }
+                    .debugFrame("gear", .mint)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                    .padding(.trailing, max(16, hInset))
+                    .padding(.bottom, 16)
+                    .opacity(chromeVisible && !sheetOpen ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.3), value: chromeVisible)
+                }
+
                 // Web-style glass sheets: content-hugging bottom panels over
                 // the face on every device (the stock system sheet was tried
                 // and rejected: full-screen cover on iPhone landscape, and the
@@ -79,6 +92,14 @@ struct RootFaceView: View {
                     }
                     .zIndex(1)
                 }
+                if settingsOpen {
+                    GlassSheet(title: "Settings", hInset: hInset,
+                               onClose: { close($settingsOpen) })
+                    {
+                        FullscreenSettingsView(store: fullscreenStore)
+                    }
+                    .zIndex(1)
+                }
             }
             .ignoresSafeArea()
         }
@@ -95,11 +116,12 @@ struct RootFaceView: View {
             // Test hook: open the picker on launch for UI verification.
             if ProcessInfo.processInfo.arguments.contains("-openPicker") { pickerOpen = true }
             if ProcessInfo.processInfo.arguments.contains("-openAdjust") { adjustOpen = true }
+            if ProcessInfo.processInfo.arguments.contains("-openSettings") { settingsOpen = true }
         }
     }
 
     private var sheetOpen: Bool {
-        pickerOpen || adjustOpen
+        pickerOpen || adjustOpen || settingsOpen
     }
 
     private func close(_ flag: Binding<Bool>) {

@@ -44,8 +44,10 @@ struct FullscreenFaceView: View {
 
     @ViewBuilder
     private func content(_ f: FullscreenFields, _ size: CGSize, _ now: Date) -> some View {
-        let zone = f.timeZone.isEmpty ? TimeZone
-            .current : (TimeZone(identifier: f.timeZone) ?? .current)
+        // ZoneCatalog.resolve also accepts fixed-offset ids ("+05:30") that
+        // TimeZone(identifier:) rejects; unknown ids fall back to the device.
+        let zone = f.timeZone.isEmpty ? TimeZone.current
+            : (ZoneCatalog.resolve(f.timeZone) ?? .current)
         let big = TimeFormatting.bigTime(now, locale: .current, timeZone: zone)
         let parts = TimeFormatting.dateParts(now, locale: .current, timeZone: zone)
         ViewThatFits(in: .horizontal) {
