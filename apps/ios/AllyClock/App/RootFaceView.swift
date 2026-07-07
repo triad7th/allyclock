@@ -101,7 +101,8 @@ struct RootFaceView: View {
                     GlassSheet(title: "Settings", hInset: hInset,
                                onClose: { close($settingsOpen) })
                     {
-                        FullscreenSettingsView(store: fullscreenStore, initialWidth: sheetWidth)
+                        FullscreenSettingsView(store: fullscreenStore, initialWidth: sheetWidth,
+                                               availableHeight: fullHeight)
                     }
                     .zIndex(1)
                 }

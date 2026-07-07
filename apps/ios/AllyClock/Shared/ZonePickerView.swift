@@ -4,11 +4,15 @@ import SwiftUI
 /// Searchable zone list: a search field over a scrollable, filtered list.
 /// Live-apply on tap (calls `onPick` immediately — no draft/commit). Hosts
 /// supply the options (incl. any synthetic leading entry like "Follow
-/// System") and the selected id, and place this inside their own sheet with
-/// a back/cancel control. Port of `zone-picker.component`.
+/// System"), the selected id, and a `listHeight` that fits their sheet on
+/// screen (a fixed height overflowed landscape iPhones — the enclosing
+/// GlassSheet hugs content, so the list must be bounded by the host).
+/// Port of `zone-picker.component`; the web's back/cancel control is
+/// dropped on iOS — the sheet's X is the cancel.
 struct ZonePickerView: View {
     let options: [TimeZoneOption]
     let selectedId: String
+    var listHeight: CGFloat = 280
     let onPick: (String) -> Void
 
     @State private var query = ""
@@ -38,7 +42,7 @@ struct ZonePickerView: View {
                     }
                 }
             }
-            .frame(height: 280)
+            .frame(height: listHeight)
         }
     }
 

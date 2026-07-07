@@ -18,9 +18,20 @@ struct FullscreenSettingsView: View {
     /// jumping behind the glass. `onGeometryChange` keeps it exact after.
     @State private var width: CGFloat
 
-    init(store: FullscreenConfigStore, initialWidth: CGFloat = 0) {
+    /// Screen height the hosting sheet can occupy; bounds the zone-picker
+    /// list so the panel never exceeds the screen (0 = preview fallback).
+    private let availableHeight: CGFloat
+
+    init(store: FullscreenConfigStore, initialWidth: CGFloat = 0, availableHeight: CGFloat = 0) {
         self.store = store
+        self.availableHeight = availableHeight
         _width = State(initialValue: initialWidth)
+    }
+
+    /// List height that keeps the whole panel (grabber + title + search +
+    /// list) on screen: sheet chrome is ~140pt around the list.
+    private var listHeight: CGFloat {
+        availableHeight > 0 ? max(160, min(320, availableHeight - 140)) : 280
     }
 
     /// Built once per presentation: "Follow System" + the IANA catalog (the
@@ -36,14 +47,13 @@ struct FullscreenSettingsView: View {
     var body: some View {
         let fields = store.sample()
         if zonePickerOpen {
-            VStack(spacing: 12) {
-                ZonePickerView(options: zoneOptions, selectedId: fields.timeZone) { id in
-                    store.setTimeZoneAll(id)
-                    zonePickerOpen = false
-                }
-                Button("Cancel") { zonePickerOpen = false }
-                    .font(.system(size: 15))
-                    .foregroundStyle(Knobs.tint)
+            // No Cancel control: the sheet's X is the cancel (web parity
+            // dropped by design); picking pops back to the toggles.
+            ZonePickerView(options: zoneOptions, selectedId: fields.timeZone,
+                           listHeight: listHeight)
+            { id in
+                store.setTimeZoneAll(id)
+                withAnimation(.easeOut(duration: 0.25)) { zonePickerOpen = false }
             }
             .padding(.horizontal, 24)
         } else {
@@ -90,7 +100,7 @@ struct FullscreenSettingsView: View {
                 KnobCard {
                     KnobLabel("Time Zone")
                     KnobField {
-                        zonePickerOpen = true
+                        withAnimation(.easeOut(duration: 0.25)) { zonePickerOpen = true }
                     } content: {
                         FlagView(zone: fields.timeZone)
                             .frame(width: 21, height: 21)
