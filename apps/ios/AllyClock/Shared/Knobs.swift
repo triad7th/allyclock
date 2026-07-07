@@ -102,6 +102,7 @@ struct KnobSegment<T: Hashable>: View {
                         )
                 }
                 .buttonStyle(.plain)
+                .accessibilityAddTraits(isOn ? .isSelected : [])
             }
         }
         .padding(2)
