@@ -8,9 +8,17 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'assets/app-icon/png/ios/AllyClock-AppIcon-1024.png'
 OUTPUT = ROOT / 'apps/web/public'
 
-PNG_SIZES = {
+# Browser-tab favicons crop in on the clock (body circle center 512,495 r 394,
+# shadow bottom y 914) so the face stays legible at 16 px. Touch/PWA icons keep
+# the full padded art because the OS applies its own mask around it.
+TAB_ICON_CROP = (92, 75, 932, 915)
+
+TAB_ICON_SIZES = {
     'favicon-16x16.png': (16, 16),
     'favicon-32x32.png': (32, 32),
+}
+
+FULL_ART_SIZES = {
     'apple-touch-icon.png': (180, 180),
     'icon-192.png': (192, 192),
     'icon-512.png': (512, 512),
@@ -53,16 +61,19 @@ def render_web_assets(source=SOURCE, output=OUTPUT):
 
     output.mkdir(parents=True, exist_ok=True)
 
-    for filename, size in PNG_SIZES.items():
-        resized = image.resize(size, Image.Resampling.LANCZOS)
-        resized.save(
-            output / filename,
-            format='PNG',
-            compress_level=9,
-            optimize=False,
-        )
+    tab_art = image.crop(TAB_ICON_CROP)
 
-    favicon = image.resize((48, 48), Image.Resampling.LANCZOS)
+    for art, sizes in ((tab_art, TAB_ICON_SIZES), (image, FULL_ART_SIZES)):
+        for filename, size in sizes.items():
+            resized = art.resize(size, Image.Resampling.LANCZOS)
+            resized.save(
+                output / filename,
+                format='PNG',
+                compress_level=9,
+                optimize=False,
+            )
+
+    favicon = tab_art.resize((48, 48), Image.Resampling.LANCZOS)
     favicon.save(
         output / 'favicon.ico',
         format='ICO',

@@ -33,7 +33,7 @@ Add the background and foreground PNGs as separate layers in the tvOS App Icon i
 
 ### Web favicons
 
-The canonical source for the Web favicon set is `png/ios/AllyClock-AppIcon-1024.png`. The renderer generates these files in `apps/web/public`:
+The canonical source for the Web favicon set is `png/ios/AllyClock-AppIcon-1024.png`. The browser-tab icons (`favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`) are cropped in on the clock so the face stays legible at tab size; the touch/PWA icons keep the full padded art because the OS applies its own mask. The renderer generates these files in `apps/web/public`:
 
 - `favicon.ico`
 - `favicon-16x16.png`

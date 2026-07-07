@@ -6,7 +6,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from render_web_favicons import render_web_assets
+from render_web_favicons import TAB_ICON_CROP, render_web_assets
 
 
 class RenderWebAssetsTests(unittest.TestCase):
@@ -48,6 +48,21 @@ class RenderWebAssetsTests(unittest.TestCase):
             [icon['sizes'] for icon in manifest['icons']],
             ['192x192', '512x512'],
         )
+
+    def test_tab_favicons_crop_to_clock_while_full_art_keeps_margins(self):
+        source_image = Image.new('RGB', (1024, 1024), '#294f58')
+        source_image.paste('#ffffff', TAB_ICON_CROP)
+        source_image.save(self.source)
+
+        render_web_assets(self.source, self.output)
+
+        for filename in ('favicon-16x16.png', 'favicon-32x32.png'):
+            with Image.open(self.output / filename) as favicon:
+                with self.subTest(filename=filename, corner='cropped'):
+                    self.assertEqual(favicon.getpixel((0, 0)), (255, 255, 255))
+
+        with Image.open(self.output / 'icon-512.png') as full_art:
+            self.assertEqual(full_art.getpixel((0, 0)), (41, 79, 88))
 
     def test_rejects_wrong_source_dimensions(self):
         Image.new('RGB', (512, 512), '#294f58').save(self.source)
