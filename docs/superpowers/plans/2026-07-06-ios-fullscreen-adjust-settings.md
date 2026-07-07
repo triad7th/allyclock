@@ -649,7 +649,7 @@ struct ZonePickerView: View {
 
 Run: `cd apps/ios && xcodebuild -project AllyClock.xcodeproj -scheme AllyClock -destination 'platform=iOS Simulator,name=iPhone 17' build`
 Expected: `** BUILD SUCCEEDED **`
-(New files under `apps/ios/AllyClock/` are picked up automatically — the target uses folder-synchronized groups. If the build can't find `ZonePickerView`, check `AllyClock.xcodeproj` membership.)
+(The project uses classic PBX groups — new files must be registered in `apps/ios/AllyClock.xcodeproj/project.pbxproj`: a `PBXFileReference`, a `PBXBuildFile`, a child entry in the `Shared` group, and a `Sources` build-phase entry, following the `AC00000000000000000001NN` id convention of the existing entries.)
 
 - [ ] **Step 3: Commit**
 
