@@ -8,12 +8,16 @@ import SwiftUI
 struct GlassIconButton: View {
     let icon: String
     let label: String
+    var size: CGFloat =
+        36 // visual diameter; web chrome buttons are 44px, X is 34px — iOS shrinks ~proportionally
     let action: () -> Void
 
     var body: some View {
         GlassEffectContainer {
             Button(action: action) {
-                SFIcon(icon).frame(width: 20, height: 20).padding(12)
+                SFIcon(icon)
+                    .frame(width: size * 0.5, height: size * 0.5)
+                    .padding(size * 0.25)
             }
             .buttonStyle(.glass)
             .buttonBorderShape(.circle)
@@ -74,7 +78,7 @@ struct GlassSheet<Content: View>: View {
             // glass, the button presses as a perfect circle — identical to the
             // controls-bar buttons.
             .overlay(alignment: .topLeading) {
-                GlassIconButton(icon: "xmark", label: "Close", action: onClose)
+                GlassIconButton(icon: "xmark", label: "Close", size: 28, action: onClose)
                     .padding(.leading, max(12, hInset))
                     .padding(.top, 16)
             }

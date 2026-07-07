@@ -32,6 +32,7 @@
 		AC0000000000000000000154 /* GlassSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000153 /* GlassSheet.swift */; };
 		AC0000000000000000000156 /* ZonePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000155 /* ZonePickerView.swift */; };
 		AC0000000000000000000158 /* FullscreenSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000157 /* FullscreenSettingsView.swift */; };
+		AC0000000000000000000160 /* Knobs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000159 /* Knobs.swift */; };
 		AC0000000000000000000121 /* FlagResolutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000120 /* FlagResolutionTests.swift */; };
 		AC0000000000000000000131 /* FullscreenFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000130 /* FullscreenFaceView.swift */; };
 		AC0000000000000000000134 /* WorldCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000133 /* WorldCardView.swift */; };
@@ -66,6 +67,7 @@
 		AC0000000000000000000153 /* GlassSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassSheet.swift; sourceTree = "<group>"; };
 		AC0000000000000000000155 /* ZonePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZonePickerView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000157 /* FullscreenSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenSettingsView.swift; sourceTree = "<group>"; };
+		AC0000000000000000000159 /* Knobs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Knobs.swift; sourceTree = "<group>"; };
 		AC0000000000000000000120 /* FlagResolutionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagResolutionTests.swift; sourceTree = "<group>"; };
 		AC0000000000000000000130 /* FullscreenFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenFaceView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000133 /* WorldCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCardView.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				AC0000000000000000000151 /* LayoutDebug.swift */,
 				AC0000000000000000000153 /* GlassSheet.swift */,
 				AC0000000000000000000155 /* ZonePickerView.swift */,
+				AC0000000000000000000159 /* Knobs.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 				AC0000000000000000000152 /* LayoutDebug.swift in Sources */,
 				AC0000000000000000000154 /* GlassSheet.swift in Sources */,
 				AC0000000000000000000156 /* ZonePickerView.swift in Sources */,
+				AC0000000000000000000160 /* Knobs.swift in Sources */,
 				AC0000000000000000000131 /* FullscreenFaceView.swift in Sources */,
 				AC0000000000000000000158 /* FullscreenSettingsView.swift in Sources */,
 				AC0000000000000000000134 /* WorldCardView.swift in Sources */,
