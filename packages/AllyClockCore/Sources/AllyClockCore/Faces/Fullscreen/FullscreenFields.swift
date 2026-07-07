@@ -32,7 +32,12 @@ public struct SectionBase: Codable, Equatable, Sendable {
     }
 }
 
-public enum SectionKey: CaseIterable { case time, weekday, month, day, gmt }
+public enum SectionKey: CaseIterable, Sendable { case time, weekday, month, day, gmt }
+
+public extension SectionKey {
+    /// Date-row sections the Date slider broadcasts to (web `DATE_SECTION_KEYS`).
+    static let dateKeys: [SectionKey] = [.weekday, .month, .day, .gmt]
+}
 
 public struct FullscreenSections: Codable, Equatable, Sendable {
     public var time, weekday, month, day, gmt: SectionStyle

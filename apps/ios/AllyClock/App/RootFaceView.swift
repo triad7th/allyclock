@@ -10,11 +10,13 @@ struct RootFaceView: View {
     @State private var chromeVisible = true
     @State private var hideTask: Task<Void, Never>?
 
+    private let registry: DimensionRegistry
     private let fullscreenStore: FullscreenConfigStore
     private let worldCardsStore: WorldCardsConfigStore
 
     init() {
         let reg = DimensionRegistry()
+        registry = reg
         fullscreenStore = FullscreenConfigStore(registry: reg)
         worldCardsStore = WorldCardsConfigStore(registry: reg)
     }
@@ -33,6 +35,14 @@ struct RootFaceView: View {
         // headers must clear the Dynamic Island / rounded corners themselves.
         GeometryReader { outer in
             let hInset = max(outer.safeAreaInsets.leading, outer.safeAreaInsets.trailing)
+            // Full-bleed ratio: `outer` reads the safe-area frame, but the face
+            // fills the whole screen (the ZStack ignores the safe area), so add
+            // the insets back to match the ratio the face itself resolves.
+            let fullWidth = outer.size.width
+                + outer.safeAreaInsets.leading + outer.safeAreaInsets.trailing
+            let fullHeight = outer.size.height
+                + outer.safeAreaInsets.top + outer.safeAreaInsets.bottom
+            let ratio = fullWidth / max(fullHeight, 1)
             ZStack(alignment: .bottom) {
                 switch face {
                 case .fullscreen: FullscreenFaceView(store: fullscreenStore)
@@ -61,8 +71,11 @@ struct RootFaceView: View {
                     .zIndex(1)
                 }
                 if adjustOpen {
-                    GlassSheet(title: "Adjust", hInset: hInset, onClose: { close($adjustOpen) }) {
-                        AdjustSheetView(face: face)
+                    GlassSheet(title: "Adjustment", hInset: hInset,
+                               onClose: { close($adjustOpen) })
+                    {
+                        AdjustSheetView(face: face, fullscreenStore: fullscreenStore,
+                                        registry: registry, ratio: ratio)
                     }
                     .zIndex(1)
                 }
@@ -81,6 +94,7 @@ struct RootFaceView: View {
             scheduleHide()
             // Test hook: open the picker on launch for UI verification.
             if ProcessInfo.processInfo.arguments.contains("-openPicker") { pickerOpen = true }
+            if ProcessInfo.processInfo.arguments.contains("-openAdjust") { adjustOpen = true }
         }
     }
 
