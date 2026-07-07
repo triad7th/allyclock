@@ -1,4 +1,5 @@
 import XCTest
+import Observation
 @testable import AllyClockCore
 
 private struct Fields: Codable, Equatable {
@@ -58,5 +59,29 @@ final class BandConfigStoreTests: XCTestCase {
         XCTAssertFalse(phone.visible)          // persisted tuning kept
         XCTAssertEqual(phone.label, "def")     // new field filled via mergeBand
         XCTAssertNotNil(store.config("super")) // default band added
+    }
+
+    func test_observationFiresOnPatch() {
+        let store = TestStore(defaults: freshDefaults())
+        let exp = expectation(description: "state change observed")
+        withObservationTracking {
+            _ = store.state.byBand.count
+        } onChange: {
+            exp.fulfill()
+        }
+        store.patch("phone") { var f = $0; f.scale = 1.1; return f }
+        wait(for: [exp], timeout: 1)
+    }
+
+    func test_observationFiresOnPatchAll() {
+        let store = TestStore(defaults: freshDefaults())
+        let exp = expectation(description: "state change observed")
+        withObservationTracking {
+            _ = store.state.version
+        } onChange: {
+            exp.fulfill()
+        }
+        store.patchAll { var f = $0; f.visible = false; return f }
+        wait(for: [exp], timeout: 1)
     }
 }

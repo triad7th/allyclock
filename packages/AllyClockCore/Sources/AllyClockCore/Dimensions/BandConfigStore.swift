@@ -1,4 +1,5 @@
 import Foundation
+import Observation
 
 public struct BandConfigState<T: Codable>: Codable {
     public var version: Int
@@ -11,6 +12,9 @@ public struct BandConfigState<T: Codable>: Codable {
 /// updates are shared. Port of `band-config-store.ts`. Persists to UserDefaults
 /// as JSON. Overridable hooks are pure (no subclass stored state), so calling
 /// them from `init` is safe.
+/// `@Observable`: SwiftUI views that read `state` (or `config`/`sample`)
+/// re-render when a patch commits — the analog of the web store's signals.
+@Observable
 open class BandConfigStore<T: Codable> {
     private let defaults: UserDefaults
     public private(set) var state: BandConfigState<T>

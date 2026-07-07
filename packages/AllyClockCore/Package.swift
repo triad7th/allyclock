@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
   name: "AllyClockCore",
-  platforms: [.iOS(.v16), .tvOS(.v16), .watchOS(.v9)],
+  platforms: [.iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macOS(.v14)],
   products: [
     .library(name: "AllyClockCore", targets: ["AllyClockCore"]),
   ],
