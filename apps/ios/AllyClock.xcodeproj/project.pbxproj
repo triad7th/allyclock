@@ -13,10 +13,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		AC0000000000000000000161 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		AC0000000000000000000101 /* AllyClockCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AllyClockCore;
+		};
+		AC0000000000000000000162 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC0000000000000000000161 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
 		};
 /* End XCSwiftPackageProductDependency section */
 
@@ -25,6 +41,8 @@
 		AC0000000000000000000032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000022 /* Assets.xcassets */; };
 		AC0000000000000000000033 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000023 /* Preview Assets.xcassets */; };
 		AC0000000000000000000102 /* AllyClockCore in Frameworks */ = {isa = PBXBuildFile; productRef = AC0000000000000000000101 /* AllyClockCore */; };
+		AC0000000000000000000163 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = AC0000000000000000000162 /* SnapshotTesting */; };
+		AC0000000000000000000165 /* FaceSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000164 /* FaceSnapshotTests.swift */; };
 		AC0000000000000000000114 /* SFIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000113 /* SFIcon.swift */; };
 		AC0000000000000000000116 /* FlagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000115 /* FlagView.swift */; };
 		AC0000000000000000000118 /* FontWeightMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000117 /* FontWeightMap.swift */; };
@@ -77,6 +95,7 @@
 		AC0000000000000000000143 /* RootFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootFaceView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000149 /* AdjustSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustSheetView.swift; sourceTree = "<group>"; };
 		AC0000000000000000000147 /* FaceKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceKindTests.swift; sourceTree = "<group>"; };
+		AC0000000000000000000164 /* FaceSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceSnapshotTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +111,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC0000000000000000000163 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,6 +162,7 @@
 			children = (
 				AC0000000000000000000120 /* FlagResolutionTests.swift */,
 				AC0000000000000000000147 /* FaceKindTests.swift */,
+				AC0000000000000000000164 /* FaceSnapshotTests.swift */,
 			);
 			path = AllyClockTests;
 			sourceTree = "<group>";
@@ -219,6 +240,9 @@
 				AC0000000000000000000060 /* PBXTargetDependency */,
 			);
 			name = AllyClockTests;
+			packageProductDependencies = (
+				AC0000000000000000000162 /* SnapshotTesting */,
+			);
 			productName = AllyClockTests;
 			productReference = AC0000000000000000000051 /* AllyClockTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -253,6 +277,7 @@
 			mainGroup = AC0000000000000000000002;
 			packageReferences = (
 				AC0000000000000000000100 /* XCLocalSwiftPackageReference "AllyClockCore" */,
+				AC0000000000000000000161 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			productRefGroup = AC0000000000000000000003 /* Products */;
 			projectDirPath = "";
@@ -313,6 +338,7 @@
 			files = (
 				AC0000000000000000000121 /* FlagResolutionTests.swift in Sources */,
 				AC0000000000000000000148 /* FaceKindTests.swift in Sources */,
+				AC0000000000000000000165 /* FaceSnapshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

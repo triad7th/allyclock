@@ -3,6 +3,9 @@ import SwiftUI
 
 struct FullscreenFaceView: View {
     let store: FullscreenConfigStore
+    /// Frozen render instant for snapshot tests and previews; nil = live
+    /// clock via TimelineView.
+    var now: Date?
     private let bg = Color(red: 0x05 / 255, green: 0x05 / 255, blue: 0x05 / 255)
     private let fg = Color(red: 0xFA / 255, green: 0xFA / 255, blue: 0xFA / 255)
 
@@ -11,8 +14,14 @@ struct FullscreenFaceView: View {
             let size = geo.size
             let ratio = size.width / max(size.height, 1)
             let f = store.fieldsFor(ratio)
-            TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { ctx in
-                content(f, size, ctx.date)
+            Group {
+                if let frozen = now {
+                    content(f, size, frozen)
+                } else {
+                    TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { ctx in
+                        content(f, size, ctx.date)
+                    }
+                }
             }
             .debugFrame("host", .white)
             .debugNumbers(["ratio": String(format: "%.3f", ratio),
