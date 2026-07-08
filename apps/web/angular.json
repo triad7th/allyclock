@@ -90,7 +90,6 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "runner": "vitest",
-            "runnerConfig": true,
             "tsConfig": "tsconfig.spec.json",
             "buildTarget": "allyclock:build:development"
           }
