@@ -24,24 +24,6 @@ struct FullscreenFaceView: View {
         .statusBarHidden()
     }
 
-    /// Progressive shrink factors. `ViewThatFits` picks the largest whose time and
-    /// date rows both fit the host width — so a wide 5-glyph time ("11:03") on iPad
-    /// shrinks to keep the AM/PM + seconds flank on screen instead of overflowing.
-    /// At most ratios the first (1.0) fits and nothing shrinks.
-    private static let fitFactors: [Double] = [
-        1.0,
-        0.94,
-        0.88,
-        0.82,
-        0.76,
-        0.7,
-        0.64,
-        0.58,
-        0.52,
-        0.46,
-        0.4,
-    ]
-
     @ViewBuilder
     private func content(_ f: FullscreenFields, _ size: CGSize, _ now: Date) -> some View {
         // ZoneCatalog.resolve also accepts fixed-offset ids ("+05:30") that
@@ -50,21 +32,24 @@ struct FullscreenFaceView: View {
             : (ZoneCatalog.resolve(f.timeZone) ?? .current)
         let big = TimeFormatting.bigTime(now, locale: .current, timeZone: zone)
         let parts = TimeFormatting.dateParts(now, locale: .current, timeZone: zone)
-        ViewThatFits(in: .horizontal) {
-            ForEach(Self.fitFactors, id: \.self) { fit in
-                clock(f, size, now, big, parts, zone, fit: fit)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Web-exact overflow: the clock renders at its configured size and the
+        // host clips the excess (web overflow: hidden) — a large user zoom is
+        // honored, never auto-shrunk to fit. The frame must be FIXED to the
+        // host size: a flexible (.infinity) frame grows to an oversized child,
+        // which GeometryReader then anchors top-leading — the fixed frame
+        // keeps the overflow centered and makes .clipped() cut at the host.
+        clock(f, size, now, big, parts, zone)
+            .frame(width: size.width, height: size.height)
+            .clipped()
     }
 
     private func clock(_ f: FullscreenFields, _ size: CGSize, _ now: Date,
                        _ big: TimeFormatting.BigTime, _ parts: TimeFormatting.DateParts,
-                       _ zone: TimeZone, fit: Double) -> some View
+                       _ zone: TimeZone) -> some View
     {
         let timeSize = fullscreenFontSize(f.bases.time, sizeScale: f.sections.time.sizeScale,
-                                          width: size.width, height: size.height) * fit
-        let gapUnit = min(size.width * 0.02, size.height * 0.03) * fit
+                                          width: size.width, height: size.height)
+        let gapUnit = min(size.width * 0.02, size.height * 0.03)
         // Web-exact gaps: timeToBar/barToDate × gapUnit, nothing extra. The
         // breathing room below the digits comes from the 0.9t time row itself
         // (web line-height 0.9), not from padding.
@@ -77,12 +62,11 @@ struct FullscreenFaceView: View {
                 .debugFrame("bar", .green)
                 .padding(.top, padTimeBar)
                 .padding(.bottom, padBarDate)
-            dateRow(parts, f, f.bases.date, size, now, zone, fit: fit)
+            dateRow(parts, f, f.bases.date, size, now, zone)
                 .debugFrame("dateRow", .blue)
         }
         .debugFrame("clock", .yellow)
-        .debugNumbers(["fit": String(format: "%.2f", fit),
-                       "timeSize": String(format: "%.1f", timeSize),
+        .debugNumbers(["timeSize": String(format: "%.1f", timeSize),
                        "row(0.9t)": String(format: "%.1f", timeSize * 0.9),
                        "capBand(0.72t)": String(format: "%.1f", timeSize * 0.72),
                        "gapUnit": String(format: "%.1f", gapUnit),
@@ -143,11 +127,11 @@ struct FullscreenFaceView: View {
     }
 
     private func dateRow(_ parts: TimeFormatting.DateParts, _ f: FullscreenFields,
-                         _ base: SectionBase, _ size: CGSize, _: Date, _ zone: TimeZone,
-                         fit: Double) -> some View
+                         _ base: SectionBase, _ size: CGSize, _: Date, _ zone: TimeZone)
+        -> some View
     {
         func partSize(_ scale: Double) -> CGFloat {
-            fullscreenFontSize(base, sizeScale: scale, width: size.width, height: size.height) * fit
+            fullscreenFontSize(base, sizeScale: scale, width: size.width, height: size.height)
         }
         let gap = f.gaps.betweenDateParts * partSize(1) * 0.5
         return HStack(alignment: .firstTextBaseline, spacing: gap) {
@@ -174,13 +158,20 @@ struct FullscreenFaceView: View {
                 .opacity(f.sections.day.opacity)
             if f.zoneVisible {
                 Text("·").opacity(0.4)
+                // Follows the Date knob via the month scale, like the web's
+                // .zone (the knob broadcasts one value to every date part).
                 Text(TimeFormatting.zoneCity(zone.identifier, abbreviate: f.flagVisible))
-                    .font(.system(size: partSize(1), weight: .light)).opacity(0.6)
+                    .font(.system(size: partSize(f.sections.month.sizeScale), weight: .light))
+                    .opacity(0.6)
             }
             if f.sections.gmt.visible {
                 Text("·").opacity(0.4)
-                HStack(spacing: partSize(1) * 0.12) {
-                    SFIcon("globe").frame(width: partSize(1) * 0.82, height: partSize(1) * 0.82)
+                // Globe + spacing ride the gmt scale, like the web's em-sized
+                // .gmt-globe (em is relative to the scaled .gmt font).
+                HStack(spacing: partSize(f.sections.gmt.sizeScale) * 0.12) {
+                    SFIcon("globe")
+                        .frame(width: partSize(f.sections.gmt.sizeScale) * 0.82,
+                               height: partSize(f.sections.gmt.sizeScale) * 0.82)
                     Text(parts.gmt)
                         .font(.system(
                             size: partSize(f.sections.gmt.sizeScale),
@@ -190,8 +181,11 @@ struct FullscreenFaceView: View {
                 .opacity(f.sections.gmt.opacity)
             }
             if f.flagVisible, ZoneCountry.country(for: zone.identifier) != nil {
+                // Follows the Date knob via the month scale, like the web's
+                // .date-flag.
                 FlagView(zone: zone.identifier)
-                    .frame(width: partSize(1) * 0.9, height: partSize(1) * 0.9)
+                    .frame(width: partSize(f.sections.month.sizeScale) * 0.9,
+                           height: partSize(f.sections.month.sizeScale) * 0.9)
             }
         }
         .textCase(.uppercase)
