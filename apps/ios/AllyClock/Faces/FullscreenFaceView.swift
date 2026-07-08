@@ -101,14 +101,19 @@ struct FullscreenFaceView: View {
                 .frame(height: row, alignment: .center)
                 .opacity(f.sections.time.opacity)
                 .debugFrame("digits", .orange)
+            // .fixedSize keeps AM/PM and seconds on one line when the digits
+            // overflow the host and squeeze the flank — web parity: the flank
+            // overflows and clips, it never wraps.
             VStack(alignment: .leading, spacing: 0) {
                 if let ampm = big.ampm {
                     Text(ampm).font(.system(size: timeSize * 0.15, weight: .light)).opacity(0.85)
+                        .fixedSize()
                 }
                 Spacer(minLength: 0)
                 if f.secondsVisible {
                     Text(big.seconds).font(.system(size: timeSize * 0.1, weight: .light))
                         .opacity(0.28)
+                        .fixedSize()
                 }
             }
             .frame(height: band, alignment: .top)
@@ -195,6 +200,15 @@ struct FullscreenFaceView: View {
                 FlagView(zone: zone.identifier)
                     .frame(width: partSize(f.sections.month.sizeScale) * 0.9,
                            height: partSize(f.sections.month.sizeScale) * 0.9)
+                    // Web's `.date-flag { align-self: center }`: the square sits
+                    // centered on the row, not baseline-aligned. In a
+                    // firstTextBaseline HStack an image pins its bottom to the
+                    // baseline, so the taller square rides up above the caps —
+                    // override the guide so the flag's CENTER lands on the
+                    // uppercase cap band (~0.35em above the baseline).
+                    .alignmentGuide(.firstTextBaseline) { d in
+                        d.height / 2 + partSize(f.sections.month.sizeScale) * 0.35
+                    }
             }
         }
         .textCase(.uppercase)
