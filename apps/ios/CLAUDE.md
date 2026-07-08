@@ -11,7 +11,7 @@ This directory contains the native SwiftUI iOS app for AllyClock.
 - Test target: `AllyClockTests`
 - Minimum deployment target: iOS 26.0 (latest iOS only — no legacy support)
 - Device family: iPhone and iPad, landscape-only (`UIRequiresFullScreen`)
-- Pure clock logic lives in the local Swift package `packages/AllyClockCore`; this app is the SwiftUI rendering layer over it.
+- Pure clock logic lives in the local Swift package `packages/AllyClockCore` (now just face-config/dimension logic); this app is the SwiftUI rendering layer over it. Shared time models (zone catalog, zone/country/flag mapping, zone-aware formatting) come from the external Alloy repo (`github.com/triad7th/Alloy`) via the `AlloyTime` package product.
 
 ## Commands
 

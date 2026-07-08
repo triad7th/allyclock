@@ -7,8 +7,12 @@ let package = Package(
   products: [
     .library(name: "AllyClockCore", targets: ["AllyClockCore"]),
   ],
+  dependencies: [
+    .package(url: "https://github.com/triad7th/Alloy.git", from: "0.1.0"),
+  ],
   targets: [
-    .target(name: "AllyClockCore"),
+    .target(name: "AllyClockCore",
+            dependencies: [.product(name: "AlloyTime", package: "Alloy")]),
     .testTarget(name: "AllyClockCoreTests", dependencies: ["AllyClockCore"]),
   ]
 )

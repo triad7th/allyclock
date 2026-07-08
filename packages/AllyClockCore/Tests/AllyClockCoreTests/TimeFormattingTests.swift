@@ -31,18 +31,4 @@ final class TimeFormattingTests: XCTestCase {
         XCTAssertEqual(p.day, "15")
         XCTAssertEqual(p.gmt, "+9")
     }
-
-    func test_compactOffset_wholeAndHalfHours_useMinusSign() {
-        XCTAssertEqual(TimeFormatting.compactOffset(date, timeZone: TimeZone(identifier: "UTC")!), "+0")
-        XCTAssertEqual(TimeFormatting.compactOffset(date, timeZone: TimeZone(identifier: "America/Los_Angeles")!), "\u{2212}8")
-        XCTAssertEqual(TimeFormatting.compactOffset(date, timeZone: TimeZone(identifier: "Asia/Kolkata")!), "+5:30")
-    }
-
-    func test_zoneCity_fullAndAbbreviated() {
-        XCTAssertEqual(TimeFormatting.zoneCity("America/Los_Angeles", abbreviate: false), "LOS ANGELES")
-        XCTAssertEqual(TimeFormatting.zoneCity("America/Los_Angeles", abbreviate: true), "LA")
-        XCTAssertEqual(TimeFormatting.zoneCity("Europe/London", abbreviate: true), "LON")
-        XCTAssertEqual(TimeFormatting.zoneCity("UTC", abbreviate: true), "UTC")
-        XCTAssertEqual(TimeFormatting.zoneCity("+05:30", abbreviate: false), "")
-    }
 }

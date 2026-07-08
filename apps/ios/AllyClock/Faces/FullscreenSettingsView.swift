@@ -1,4 +1,5 @@
 import AllyClockCore
+import AlloyTime
 import SwiftUI
 
 /// Settings panel for the Fullscreen face — port of the web's

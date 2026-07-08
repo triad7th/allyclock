@@ -1,4 +1,5 @@
 import AllyClockCore
+import AlloyTime
 import SwiftUI
 
 struct WorldCardView: View {
@@ -54,8 +55,8 @@ struct WorldCardView: View {
         df.timeZone = tz
         df.setLocalizedDateFormatFromTemplate("MMMdyyyy")
         let cal = df.string(from: now)
-        let city = TimeFormatting.zoneCity(zone, abbreviate: true)
-        let offset = TimeFormatting.compactOffset(now, timeZone: tz)
+        let city = ZoneFormat.zoneCity(zone, abbreviate: true)
+        let offset = ZoneFormat.compactOffset(now, timeZone: tz)
         return HStack(alignment: .firstTextBaseline, spacing: 6 * dateScale) {
             Text(cal.uppercased())
             if !city.isEmpty { Text("·").opacity(0.5)

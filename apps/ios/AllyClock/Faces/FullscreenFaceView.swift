@@ -1,4 +1,5 @@
 import AllyClockCore
+import AlloyTime
 import SwiftUI
 
 struct FullscreenFaceView: View {
@@ -174,7 +175,7 @@ struct FullscreenFaceView: View {
                 Text("·").opacity(0.4)
                 // Follows the Date knob via the month scale, like the web's
                 // .zone (the knob broadcasts one value to every date part).
-                Text(TimeFormatting.zoneCity(zone.identifier, abbreviate: f.flagVisible))
+                Text(ZoneFormat.zoneCity(zone.identifier, abbreviate: f.flagVisible))
                     .font(.system(size: partSize(f.sections.month.sizeScale), weight: .light))
                     .opacity(0.6)
             }

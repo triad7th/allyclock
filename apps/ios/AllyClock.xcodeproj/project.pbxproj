@@ -22,6 +22,14 @@
 				minimumVersion = 1.18.0;
 			};
 		};
+		AC0000000000000000000170 /* XCRemoteSwiftPackageReference "Alloy" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/triad7th/Alloy.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -34,6 +42,11 @@
 			package = AC0000000000000000000161 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
 		};
+		AC0000000000000000000171 /* AlloyTime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC0000000000000000000170 /* XCRemoteSwiftPackageReference "Alloy" */;
+			productName = AlloyTime;
+		};
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXBuildFile section */
@@ -42,6 +55,7 @@
 		AC0000000000000000000033 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000023 /* Preview Assets.xcassets */; };
 		AC0000000000000000000102 /* AllyClockCore in Frameworks */ = {isa = PBXBuildFile; productRef = AC0000000000000000000101 /* AllyClockCore */; };
 		AC0000000000000000000163 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = AC0000000000000000000162 /* SnapshotTesting */; };
+		AC0000000000000000000172 /* AlloyTime in Frameworks */ = {isa = PBXBuildFile; productRef = AC0000000000000000000171 /* AlloyTime */; };
 		AC0000000000000000000165 /* FaceSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000164 /* FaceSnapshotTests.swift */; };
 		AC0000000000000000000114 /* SFIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000113 /* SFIcon.swift */; };
 		AC0000000000000000000116 /* FlagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000115 /* FlagView.swift */; };
@@ -104,6 +118,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC0000000000000000000102 /* AllyClockCore in Frameworks */,
+				AC0000000000000000000172 /* AlloyTime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +236,7 @@
 			name = AllyClock;
 			packageProductDependencies = (
 				AC0000000000000000000101 /* AllyClockCore */,
+				AC0000000000000000000171 /* AlloyTime */,
 			);
 			productName = AllyClock;
 			productReference = AC0000000000000000000024 /* AllyClock.app */;
@@ -278,6 +294,7 @@
 			packageReferences = (
 				AC0000000000000000000100 /* XCLocalSwiftPackageReference "AllyClockCore" */,
 				AC0000000000000000000161 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				AC0000000000000000000170 /* XCRemoteSwiftPackageReference "Alloy" */,
 			);
 			productRefGroup = AC0000000000000000000003 /* Products */;
 			projectDirPath = "";

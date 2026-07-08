@@ -1,4 +1,5 @@
 import Foundation
+import AlloyTime
 
 /// Timezone- and locale-aware formatting. Port of `clock-formatter.ts`
 /// (`Intl.DateTimeFormat` → `DateFormatter`/`Calendar`). Native
@@ -57,30 +58,6 @@ public enum TimeFormatting {
         return DateParts(weekday: wf.string(from: date),
                          month: mf.string(from: date),
                          day: df.string(from: date),
-                         gmt: compactOffset(date, timeZone: timeZone))
-    }
-
-    /// Sign + hours, with ":mm" only when the zone is off a whole hour.
-    /// Uses U+2212 MINUS for negatives, matching the app.
-    public static func compactOffset(_ date: Date, timeZone: TimeZone) -> String {
-        let minutes = timeZone.secondsFromGMT(for: date) / 60
-        let sign = minutes < 0 ? "\u{2212}" : "+"
-        let abs = Swift.abs(minutes)
-        let h = abs / 60, m = abs % 60
-        return m == 0 ? "\(sign)\(h)" : "\(sign)\(h):\(String(format: "%02d", m))"
-    }
-
-    /// City label from an IANA id: last path segment, underscores spaced,
-    /// uppercased. `abbreviate` collapses multi-word to initials, single word to
-    /// first three letters. Fixed-offset ids ("+05:30") have no city.
-    public static func zoneCity(_ ianaId: String, abbreviate: Bool) -> String {
-        if ianaId.range(of: "^[+\u{2212}-]\\d", options: .regularExpression) != nil { return "" }
-        let city = (ianaId.split(separator: "/").last.map(String.init) ?? ianaId)
-            .replacingOccurrences(of: "_", with: " ")
-        if !abbreviate { return city.uppercased() }
-        let words = city.split(whereSeparator: { $0 == " " || $0 == "-" }).map(String.init)
-        let label = words.count > 1 ? words.map { String($0.prefix(1)) }.joined()
-                                    : String(city.prefix(3))
-        return label.uppercased()
+                         gmt: ZoneFormat.compactOffset(date, timeZone: timeZone))
     }
 }
