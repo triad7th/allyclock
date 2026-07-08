@@ -81,7 +81,10 @@ struct GlassSheet<Content: View>: View {
             // controls-bar buttons.
             .overlay(alignment: .topLeading) {
                 GlassIconButton(icon: "xmark", label: "Close", size: 28, action: onClose)
-                    .padding(.leading, max(12, hInset))
+                    // Pinned to the panel edge, not inset by hInset: the sheet's
+                    // top-left is mid-screen in landscape, clear of the Dynamic
+                    // Island and corner curves, so only content needs hInset.
+                    .padding(.leading, 12)
                     .padding(.top, 16)
             }
             .transition(.move(edge: .bottom).combined(with: .opacity))
