@@ -67,7 +67,9 @@ struct GlassSheet<Content: View>: View {
 
                 content()
                     .padding(.horizontal, hInset)
-                    .padding(.top, 4)
+                    // Web nav-header keeps ~24px below the title; 4pt read as
+                    // the content crowding the header.
+                    .padding(.top, 16)
                     .padding(.bottom, 20)
             }
             .frame(maxWidth: .infinity)
