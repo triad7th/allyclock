@@ -82,11 +82,12 @@
 // Zone flag badge trailing the date row. Sized to the uppercase date text's
 // height and centered on the row (the row is baseline-aligned, so center keeps
 // the square visually level with the glyphs). Sized off --date-base because the
-// flag inherits the root font-size, not the date text size.
+// flag inherits the root font-size, not the date text size. Follows the Date
+// knob via the month scale (the knob broadcasts one value to every date part).
 .date-flag {
   align-self: center;
-  width: calc(var(--date-base) * 0.9);
-  height: calc(var(--date-base) * 0.9);
+  width: calc(var(--date-base) * 0.9 * var(--month-scale, 1));
+  height: calc(var(--date-base) * 0.9 * var(--month-scale, 1));
   border-radius: 2px;
 }
 .weekday {
@@ -105,9 +106,10 @@
   opacity: var(--day-opacity, 0.6);
 }
 // Display zone's city name, sitting just before the GMT offset. Shares the
-// muted date-part look; never wraps mid-name.
+// muted date-part look; never wraps mid-name. Follows the Date knob via the
+// month scale (the knob broadcasts one value to every date part).
 .zone {
-  font-size: var(--date-base);
+  font-size: calc(var(--date-base) * var(--month-scale, 1));
   font-weight: 300;
   opacity: 0.6;
   white-space: nowrap;
