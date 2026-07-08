@@ -71,3 +71,4 @@ build/
 .build/
 .swiftpm/
 Package.resolved
+.superpowers/
