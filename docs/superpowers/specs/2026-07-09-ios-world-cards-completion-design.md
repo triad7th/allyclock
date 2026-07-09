@@ -34,8 +34,10 @@ divergent):
   (`overflow-y: auto`). The iOS `ViewThatFits` shrink ladder cannot produce
   that structure and is REPLACED by a ported wrap algorithm (pure function
   in AllyClockCore + a ScrollView-based face layout).
-- Vertical centering / letterboxing of the row block (centered when content
-  fits, scrolls when it does not).
+- Vertical alignment — CORRECTED during implementation: the web `.cards`
+  column has no vertical centering (plain flex column in an
+  `overflow-y: auto` host); the face TOP-ALIGNS and scrolls. The initial
+  "centered when fits" wording here was a spec error, caught by the user.
 
 Exit criterion: side-by-side screenshots at the three sizes with no visible
 structural differences (modulo the discrete-vs-continuous shrink), and new
