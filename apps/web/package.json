@@ -15,7 +15,7 @@
   "private": true,
   "dependencies": {
     "@allyworld/alloy-time": "https://github.com/triad7th/Alloy/releases/download/0.1.1/allyworld-alloy-time-0.1.1.tgz",
-    "@allyworld/alloy-ui": "https://github.com/triad7th/Alloy/releases/download/0.2.0/allyworld-alloy-ui-0.2.0.tgz",
+    "@allyworld/alloy-ui": "https://github.com/triad7th/Alloy/releases/download/0.2.1/allyworld-alloy-ui-0.2.1.tgz",
     "@angular/animations": "^21.2.14",
     "@angular/common": "^21.2.14",
     "@angular/compiler": "^21.2.14",
