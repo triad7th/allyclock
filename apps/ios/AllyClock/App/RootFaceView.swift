@@ -92,6 +92,7 @@ struct RootFaceView: View {
                                onClose: { close($adjustOpen) })
                     {
                         AdjustSheetView(face: face, fullscreenStore: fullscreenStore,
+                                        worldCardsStore: worldCardsStore,
                                         registry: registry, ratio: ratio,
                                         availableWidth: sheetWidth)
                     }
