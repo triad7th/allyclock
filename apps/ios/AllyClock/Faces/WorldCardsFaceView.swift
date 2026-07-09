@@ -12,10 +12,12 @@ struct WorldCardsFaceView: View {
             let size = geo.size
             let ratio = size.width / max(size.height, 1)
             let f = store.fieldsFor(ratio)
-            // Web-exact wrap: rows from the shared layout function, computed
-            // against the content width (host minus the 0.5rem insets).
+            // Wrap rows from the shared layout function, computed against the
+            // content width. The inset is deliberately roomier than the web's
+            // 0.5rem — the face felt edge-to-edge on device — and MUST stay in
+            // step with the .padding below (width term = 2 × inset).
             let rows = WorldCardsLayout.rows(f.cards, sizes: f.sizes,
-                                             width: size.width - 16)
+                                             width: size.width - 48)
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 0) {
                     ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
@@ -30,7 +32,8 @@ struct WorldCardsFaceView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 8)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 16)
                 // Top-aligned like the web (.cards is a plain flex column in
                 // an overflow-y:auto host); natural scroll when content
                 // overflows.
