@@ -1,13 +1,13 @@
 {
-  "originHash" : "568893b7a9eda57fb95f72505ea740acd6666e0534d19f9e445ca2973f9f7312",
+  "originHash" : "8aba9d8351b17fb2026791341e0cd0afb74bec077f735fe0e6abbf209abbd81e",
   "pins" : [
     {
       "identity" : "alloy",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/triad7th/Alloy.git",
       "state" : {
-        "revision" : "849eb09df03ed622d2e15988e0d27e39fbc9cab0",
-        "version" : "0.3.0"
+        "revision" : "aa17daf74f814398c4ed2e324dbf4bd99398e046",
+        "version" : "0.3.1"
       }
     }
   ],

@@ -1,5 +1,4 @@
 import AllyClockCore
-import AlloyUI
 import SwiftUI
 
 /// Face cards with live preview thumbnails, mirroring the web face-picker
