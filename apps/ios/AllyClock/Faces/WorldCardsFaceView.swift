@@ -3,63 +3,42 @@ import SwiftUI
 
 struct WorldCardsFaceView: View {
     let store: WorldCardsConfigStore
-    private let bg = Color(red: 0x05 / 255, green: 0x05 / 255, blue: 0x05 / 255)
-
-    /// Progressive shrink factors. `ViewThatFits` picks the first (largest) that
-    /// fits the host width, so a wide two-card row shrinks to fit a narrow phone
-    /// instead of overflowing — while a single-card row stays full size.
-    private static let fits: [Double] = [1.0, 0.85, 0.72, 0.6, 0.5, 0.42, 0.35, 0.29]
+    /// Frozen render instant for snapshot tests and previews; nil = live.
+    var now: Date?
+    private let bg = Color.black // web :host background: #000
 
     var body: some View {
         GeometryReader { geo in
-            let ratio = geo.size.width / max(geo.size.height, 1)
+            let size = geo.size
+            let ratio = size.width / max(size.height, 1)
             let f = store.fieldsFor(ratio)
-            let rows = Self.rows(f.cards)
-            ViewThatFits(in: .horizontal) {
-                ForEach(Self.fits, id: \.self) { fit in
-                    cards(rows, f, fit: fit)
-                        .debugFrame("cards", .yellow)
+            // Web-exact wrap: rows from the shared layout function, computed
+            // against the content width (host minus the 0.5rem insets).
+            let rows = WorldCardsLayout.rows(f.cards, sizes: f.sizes,
+                                             width: size.width - 16)
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 0) {
+                    ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                        HStack(alignment: .center, spacing: 24) {
+                            ForEach(row, id: \.id) { card in
+                                WorldCardView(zone: card.zone,
+                                              timeScale: f.sizes.time,
+                                              dateScale: f.sizes.date,
+                                              now: now)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                    }
                 }
+                .padding(.horizontal, 8)
+                // Centered when content fits; natural scroll when it doesn't.
+                .frame(maxWidth: .infinity, minHeight: size.height)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.horizontal, 24)
             .debugFrame("host", .white)
         }
         .background(bg).ignoresSafeArea()
         .dynamicTypeSize(.medium)
         .statusBarHidden()
-    }
-
-    private func cards(_ rows: [[WorldCardConfig]], _ f: WorldCardsFields,
-                       fit: Double) -> some View
-    {
-        VStack(spacing: 0) {
-            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                HStack(spacing: 32 * fit) {
-                    ForEach(row, id: \.id) { card in
-                        WorldCardView(
-                            zone: card.zone,
-                            timeScale: f.sizes.time * fit,
-                            dateScale: f.sizes.date * fit
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    /// Split cards into rows: a card with `lineBreak == true` ends its row.
-    static func rows(_ cards: [WorldCardConfig]) -> [[WorldCardConfig]] {
-        var out: [[WorldCardConfig]] = []
-        var row: [WorldCardConfig] = []
-        for c in cards {
-            row.append(c)
-            if c.lineBreak { out.append(row)
-                row = []
-            }
-        }
-        if !row.isEmpty { out.append(row) }
-        return out
     }
 }
 
