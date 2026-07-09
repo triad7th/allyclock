@@ -60,7 +60,7 @@ struct RootFaceView: View {
                     .opacity(autoHide.visible && !sheetOpen ? 1 : 0)
                     .animation(.easeInOut(duration: 0.3), value: autoHide.visible)
 
-                if face == .fullscreen {
+                if face == .fullscreen || face == .worldCards {
                     GlassIconButton(icon: "gearshape", label: "Display options") {
                         withAnimation(.easeOut(duration: 0.25)) { settingsOpen = true }
                     }
@@ -102,8 +102,14 @@ struct RootFaceView: View {
                     GlassSheet(title: "Settings", hInset: hInset,
                                onClose: { close($settingsOpen) })
                     {
-                        FullscreenSettingsView(store: fullscreenStore, initialWidth: sheetWidth,
-                                               availableHeight: fullHeight)
+                        switch face {
+                        case .fullscreen:
+                            FullscreenSettingsView(store: fullscreenStore, initialWidth: sheetWidth,
+                                                   availableHeight: fullHeight)
+                        case .worldCards:
+                            WorldCardsSettingsView(store: worldCardsStore, initialWidth: sheetWidth,
+                                                   availableHeight: fullHeight)
+                        }
                     }
                     .zIndex(1)
                 }
