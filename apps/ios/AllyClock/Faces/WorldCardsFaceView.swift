@@ -31,8 +31,11 @@ struct WorldCardsFaceView: View {
                     }
                 }
                 .padding(.horizontal, 8)
-                // Centered when content fits; natural scroll when it doesn't.
-                .frame(maxWidth: .infinity, minHeight: size.height)
+                // Top-aligned like the web (.cards is a plain flex column in
+                // an overflow-y:auto host); natural scroll when content
+                // overflows.
+                .frame(maxWidth: .infinity, minHeight: size.height,
+                       alignment: .top)
             }
             .debugFrame("host", .white)
         }
