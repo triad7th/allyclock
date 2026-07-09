@@ -1,4 +1,5 @@
 import AllyClockCore
+import AlloyUI
 import SwiftUI
 
 /// Adjust panel for the active face. Fullscreen gets the web's Adjustment
