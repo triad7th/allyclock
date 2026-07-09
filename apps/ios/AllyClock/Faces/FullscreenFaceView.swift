@@ -199,7 +199,7 @@ struct FullscreenFaceView: View {
             if f.flagVisible, ZoneCountry.country(for: zone.identifier) != nil {
                 // Follows the Date knob via the month scale, like the web's
                 // .date-flag.
-                FlagView(zone: zone.identifier)
+                FlagView(countryCode: ZoneCountry.country(for: zone.identifier))
                     .frame(width: partSize(f.sections.month.sizeScale) * 0.9,
                            height: partSize(f.sections.month.sizeScale) * 0.9)
                     // Web's `.date-flag { align-self: center }`: the square sits

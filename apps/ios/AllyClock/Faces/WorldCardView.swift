@@ -26,7 +26,7 @@ struct WorldCardView: View {
     private func card(_ now: Date, _ tz: TimeZone) -> some View {
         let big = TimeFormatting.bigTime(now, locale: .current, timeZone: tz)
         return HStack(spacing: 12) {
-            FlagView(zone: zone)
+            FlagView(countryCode: ZoneCountry.country(for: zone))
                 .frame(width: 92 * timeScale, height: 92 * timeScale)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
             Spacer(minLength: 0)

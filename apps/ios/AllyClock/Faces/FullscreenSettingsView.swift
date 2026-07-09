@@ -39,9 +39,9 @@ struct FullscreenSettingsView: View {
     /// Built once per presentation: "Follow System" + the IANA catalog (the
     /// web prepends the same synthetic '' entry; its label mentions the Time
     /// Machine, which iOS doesn't have).
-    @State private var zoneOptions: [TimeZoneOption] =
-        [TimeZoneOption(id: "", label: "Follow System", offset: -100_000)]
-            + ZoneCatalog.buildOptions()
+    @State private var zoneOptions: [ZonePickerOption] =
+        [ZonePickerOption(id: "", label: "Follow System")]
+            + ZoneCatalog.buildOptions().map { ZonePickerOption(id: $0.id, label: $0.label) }
 
     private static let barModes: [(value: BarMode, label: String)] =
         [(.off, "Off"), (.divider, "Divider"), (.progress, "Progress")]
@@ -52,7 +52,8 @@ struct FullscreenSettingsView: View {
             // No Cancel control: the sheet's X is the cancel (web parity
             // dropped by design); picking pops back to the toggles.
             ZonePickerView(options: zoneOptions, selectedId: fields.timeZone,
-                           listHeight: listHeight)
+                           listHeight: listHeight,
+                           countryFor: ZoneCountry.country(for:))
             { id in
                 store.setTimeZoneAll(id)
                 withAnimation(.easeOut(duration: 0.25)) { zonePickerOpen = false }
@@ -104,7 +105,7 @@ struct FullscreenSettingsView: View {
                     KnobField {
                         withAnimation(.easeOut(duration: 0.25)) { zonePickerOpen = true }
                     } content: {
-                        FlagView(zone: fields.timeZone)
+                        FlagView(countryCode: ZoneCountry.country(for: fields.timeZone))
                             .frame(width: 21, height: 21)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                         Text(currentZoneLabel(fields.timeZone)).lineLimit(1)

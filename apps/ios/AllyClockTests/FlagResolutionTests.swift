@@ -1,18 +1,25 @@
 import AlloyTime
+import AlloyUI
 @testable import AllyClock
 import AllyClockCore
 import UIKit
 import XCTest
 
 final class FlagResolutionTests: XCTestCase {
+    /// Zone -> asset name via AlloyUI's FlagResolution over AlloyTime's
+    /// zone->country table, the same composition FlagView call sites use.
+    private func assetName(forZone zone: String) -> String? {
+        FlagResolution.assetName(forCountryCode: ZoneCountry.country(for: zone))
+    }
+
     func test_knownZoneResolvesToBundledAsset() {
-        XCTAssertEqual(FlagResolution.assetName(forZone: "America/Los_Angeles"), "Flags/us")
-        XCTAssertEqual(FlagResolution.assetName(forZone: "Asia/Seoul"), "Flags/kr")
+        XCTAssertEqual(assetName(forZone: "America/Los_Angeles"), "Flags/us")
+        XCTAssertEqual(assetName(forZone: "Asia/Seoul"), "Flags/kr")
     }
 
     func test_nilForCountrylessZone() {
-        XCTAssertNil(FlagResolution.assetName(forZone: "UTC"))
-        XCTAssertNil(FlagResolution.assetName(forZone: "+05:30"))
+        XCTAssertNil(assetName(forZone: "UTC"))
+        XCTAssertNil(assetName(forZone: "+05:30"))
     }
 
     /// Every country the zone table can produce must ship its artwork —

@@ -23,8 +23,9 @@ struct WorldCardsSettingsView: View {
 
     /// Built once per presentation: "Follow System" + the IANA catalog (the
     /// web prepends the same synthetic '' entry via `buildSpecialZones`).
-    @State private var zoneOptions: [TimeZoneOption] =
-        ZoneCatalog.buildSpecialZones() + ZoneCatalog.buildOptions()
+    @State private var zoneOptions: [ZonePickerOption] =
+        (ZoneCatalog.buildSpecialZones() + ZoneCatalog.buildOptions())
+            .map { ZonePickerOption(id: $0.id, label: $0.label) }
 
     var body: some View {
         let cards = store.sample().cards
@@ -33,7 +34,8 @@ struct WorldCardsSettingsView: View {
             // no Cancel control — the sheet's X is the cancel; picking pops
             // back to the list.
             ZonePickerView(options: zoneOptions, selectedId: card.zone,
-                           listHeight: listHeight)
+                           listHeight: listHeight,
+                           countryFor: ZoneCountry.country(for:))
             { zone in
                 store.setCardZone(id: id, zone: zone)
                 withAnimation(.easeOut(duration: 0.25)) { editingCardId = nil }
@@ -68,7 +70,10 @@ struct WorldCardsSettingsView: View {
                 withAnimation(.easeOut(duration: 0.25)) { editingCardId = card.id }
             } label: {
                 HStack(spacing: 8) {
-                    FlagView(zone: card.zone).frame(width: 22, height: 22)
+                    FlagView(countryCode: ZoneCountry.country(for: card.zone)).frame(
+                        width: 22,
+                        height: 22
+                    )
                     Text(cityLabel(card.zone))
                         .font(.system(size: 14.5))
                         .lineLimit(1)
