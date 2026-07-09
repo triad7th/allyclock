@@ -11,7 +11,7 @@ Current layout:
 - `apps/web` contains the Angular 21 Web app.
 - `apps/ios` contains the native SwiftUI iOS app (targets the latest iOS; modern SwiftUI — including Liquid Glass — is used freely, with no legacy-OS availability guards).
 - `packages/AllyClockCore` is the local Swift package backing the iOS app; it now holds only face-config and dimension logic. Shared time models (zone catalog, zone/country/flag mapping, zone-aware formatting) live in the external Alloy repo (`github.com/triad7th/Alloy`), consumed via the `AlloyTime` package product.
-- `.github/workflows/allyclock.yml` builds and deploys the Web app to Netlify. iOS CI is intentionally not added yet.
+- `.github/workflows/allyclock.yml` builds and deploys the Web app to Netlify. `.github/workflows/ios-testflight.yml` archives the iOS app and uploads it to TestFlight on `main` pushes that touch `apps/ios/` or `packages/AllyClockCore/`.
 - `.claude/skills` contains the canonical repository-local skills. Each `<name>/SKILL.md` is shared with Codex through a symlink (see "Agent Harness" below).
 - `.agents/skills` is the Codex-facing view of the same skills. Each `<name>/SKILL.md` symlinks back to `.claude/skills/<name>/SKILL.md`; `<name>/agents/openai.yaml` is the Codex interface metadata.
 
@@ -95,12 +95,19 @@ Root scripts delegate to `apps/web`. App-local commands can also be run from `ap
 
 ## Deployment Notes
 
-The GitHub Actions workflow:
+The Web workflow (`allyclock.yml`):
 
 - Runs on `main` pushes and manual dispatch.
 - Uses Node.js 24.x.
 - Runs `npm --prefix apps/web ci`.
 - Runs `npm --prefix apps/web run build --if-present`.
 - Deploys `apps/web/dist/allyclock/browser` to Netlify site `allyclock`.
+
+The iOS workflow (`ios-testflight.yml`):
+
+- Runs on `main` pushes touching `apps/ios/` or `packages/AllyClockCore/`, and manual dispatch.
+- Archives the `AllyClock` scheme on a macOS runner with automatic (cloud) signing for team `77R8AFM4HU`.
+- Sets the build number to the workflow run number, so build numbers never collide; `MARKETING_VERSION` stays manual.
+- Uploads to App Store Connect / TestFlight, authenticating with an App Store Connect API key from repo secrets `ASC_API_KEY_ID`, `ASC_API_ISSUER_ID`, and `ASC_API_KEY_P8` (the raw `.p8` contents).
 
 Do not change deployment site IDs, app names, or secrets unless the task explicitly involves deployment.
