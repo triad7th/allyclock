@@ -1,11 +1,9 @@
 // Shared animation timing constants.
 //
-// SHEET_ANIMATION_MS is pushed to the --sheet-anim CSS var at bootstrap
-// (single source of truth); SCSS uses var(--sheet-anim, 0.28s).
-export const SHEET_ANIMATION_MS = 280;
-
-// How long an auto-hiding control stays visible before fading out.
-export const AUTO_HIDE_MS = 4000;
+// SHEET_ANIMATION_MS and AUTO_HIDE_MS moved to @allyworld/alloy-ui; re-exported
+// here so existing `@core/animation-timing` imports keep working.
+import { AUTO_HIDE_MS, SHEET_ANIMATION_MS } from '@allyworld/alloy-ui';
+export { AUTO_HIDE_MS, SHEET_ANIMATION_MS };
 
 // FACE_TRANSITION_MS is pushed to the --face-anim CSS var at bootstrap
 // (single source of truth); SCSS uses var(--face-anim, 0.3s).
