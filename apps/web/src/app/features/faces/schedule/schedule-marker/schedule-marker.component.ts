@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, inject, input, output } from '@angular/core';
-import { IconComponent } from '@shared/ui/icon/icon.component';
+import { IconComponent } from '@allyworld/alloy-ui';
 
 @Component({
   selector: 'app-schedule-marker',

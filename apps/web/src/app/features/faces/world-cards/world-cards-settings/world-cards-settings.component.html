@@ -60,6 +60,7 @@
       <div class="knobs-zonepicker">
         <app-zone-picker
           [options]="zoneOptions"
+          [countryFor]="countryFor"
           [selectedId]="selectedZone()"
           (picked)="pickZone($event)"
         />

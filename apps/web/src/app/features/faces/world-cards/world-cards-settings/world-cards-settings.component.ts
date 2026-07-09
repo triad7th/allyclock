@@ -9,16 +9,18 @@ import {
 } from '@angular/core';
 import { WorldCardsConfigStore } from '../world-cards-config-store.service';
 import { MIN_CARDS, MAX_CARDS } from '../world-cards-config';
-import { SheetComponent } from '@shared/ui/sheet/sheet.component';
-import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
-import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
-import { IconComponent } from '@shared/ui/icon/icon.component';
 import { ZoneCatalog, type TimeZoneOption, buildSpecialZones } from '@core/zone-catalog';
-import { countryCodeForZone } from '@core/zone-country';
+import { countryCodeForZone } from '@allyworld/alloy-time';
 import { zoneCity } from '../../fullscreen/clock-formatter';
-import { ZonePickerComponent } from '@shared/ui/zone-picker/zone-picker.component';
-import { FlagComponent } from '@shared/ui/flag/flag.component';
-import { KnobToggleComponent } from '@allyworld/alloy-ui';
+import {
+  KnobToggleComponent,
+  SheetComponent,
+  NavHeaderComponent,
+  IconButtonComponent,
+  IconComponent,
+  ZonePickerComponent,
+  FlagComponent,
+} from '@allyworld/alloy-ui';
 
 /**
  * World Cards Settings: manage the card list (zone + line-break flag, add/remove).

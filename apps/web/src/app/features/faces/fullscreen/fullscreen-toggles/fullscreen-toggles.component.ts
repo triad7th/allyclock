@@ -9,14 +9,16 @@ import {
 } from '@angular/core';
 import { FullscreenConfigStore } from '../fullscreen-config-store.service';
 import { type BarMode } from '../fullscreen-preset';
-import { SheetComponent } from '@shared/ui/sheet/sheet.component';
-import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
-import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 import { ZoneCatalog, type TimeZoneOption } from '@core/zone-catalog';
-import { countryCodeForZone } from '@core/zone-country';
-import { ZonePickerComponent } from '@shared/ui/zone-picker/zone-picker.component';
-import { FlagComponent } from '@shared/ui/flag/flag.component';
-import { KnobToggleComponent } from '@allyworld/alloy-ui';
+import { countryCodeForZone } from '@allyworld/alloy-time';
+import {
+  KnobToggleComponent,
+  SheetComponent,
+  NavHeaderComponent,
+  IconButtonComponent,
+  ZonePickerComponent,
+  FlagComponent,
+} from '@allyworld/alloy-ui';
 
 /**
  * Dimension-agnostic visibility toggles for the Fullscreen face (Weekday / GMT /

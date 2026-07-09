@@ -1,9 +1,7 @@
 import { NgComponentOutlet } from '@angular/common';
 import { Component, Injector, input, output, viewChild } from '@angular/core';
 import { FACES } from '@features/faces/face-registry';
-import { SheetComponent } from '@shared/ui/sheet/sheet.component';
-import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
-import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
+import { SheetComponent, NavHeaderComponent, IconButtonComponent } from '@allyworld/alloy-ui';
 
 @Component({
   selector: 'app-face-picker-sheet',

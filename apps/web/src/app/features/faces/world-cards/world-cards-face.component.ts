@@ -7,8 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { ContainerSizeDirective } from '@shared/ui/container-size/container-size.directive';
-import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
-import { IconComponent } from '@shared/ui/icon/icon.component';
+import { AutoHideDirective, IconComponent } from '@allyworld/alloy-ui';
 import { FaceConfigService } from '@core/face-config.service';
 import { WorldCardsConfigStore } from './world-cards-config-store.service';
 import { type WorldCardConfig } from './world-cards-config';

@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { ClockService } from '@core/clock.service';
-import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
+import { AutoHideDirective, IconComponent } from '@allyworld/alloy-ui';
 import { ScheduleStoreService } from './schedule-store.service';
 import { ScheduleConfigComponent } from './schedule-config/schedule-config.component';
-import { IconComponent } from '@shared/ui/icon/icon.component';
 import { ContainerSizeDirective } from '@shared/ui/container-size/container-size.directive';
 import { FaceConfigService } from '@core/face-config.service';
 import { activeSegment, framedWindow } from './schedule-formatter';

@@ -106,6 +106,7 @@
       <div class="knobs-zonepicker">
         <app-zone-picker
           [options]="zoneOptions"
+          [countryFor]="countryFor"
           [selectedId]="faceZone()"
           (picked)="pickZone($event)"
         />

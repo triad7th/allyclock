@@ -1,6 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
-import { IconComponent } from '@shared/ui/icon/icon.component';
+import { AutoHideDirective, IconComponent } from '@allyworld/alloy-ui';
 
 @Component({
   selector: 'app-screen-button',

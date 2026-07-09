@@ -7,15 +7,13 @@ import {
   signal,
 } from '@angular/core';
 import { ClockService } from '@core/clock.service';
-import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
+import { AutoHideDirective, IconComponent, FlagComponent } from '@allyworld/alloy-ui';
 import { ContainerSizeDirective } from '@shared/ui/container-size/container-size.directive';
 import { FaceConfigService } from '@core/face-config.service';
 import { FullscreenConfigStore } from './fullscreen-config-store.service';
 import { FullscreenConfigComponent } from './fullscreen-config/fullscreen-config.component';
 import { FullscreenTogglesComponent } from './fullscreen-toggles/fullscreen-toggles.component';
-import { IconComponent } from '@shared/ui/icon/icon.component';
-import { FlagComponent } from '@shared/ui/flag/flag.component';
-import { countryCodeForZone } from '@core/zone-country';
+import { countryCodeForZone } from '@allyworld/alloy-time';
 import { bigTime, dateParts, zoneCity } from './clock-formatter';
 import { varsFor } from './fullscreen-style';
 

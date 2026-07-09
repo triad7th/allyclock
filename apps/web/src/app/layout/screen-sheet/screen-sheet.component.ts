@@ -1,11 +1,20 @@
 import { NgComponentOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, output, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  output,
+  viewChild,
+} from '@angular/core';
 import { FACES, FaceDescriptor } from '@features/faces/face-registry';
 import { ScreensService } from '@core/screens/screens.service';
-import { SheetComponent } from '@shared/ui/sheet/sheet.component';
-import { IconComponent } from '@shared/ui/icon/icon.component';
-import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
-import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
+import {
+  SheetComponent,
+  IconComponent,
+  NavHeaderComponent,
+  IconButtonComponent,
+} from '@allyworld/alloy-ui';
 
 @Component({
   selector: 'app-screen-sheet',

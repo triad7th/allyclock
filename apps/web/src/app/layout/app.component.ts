@@ -19,8 +19,7 @@ import { TimeMachineComponent } from './time-machine/time-machine.component';
 import { FaceConfigService } from '@core/face-config.service';
 import { FaceOverlayComponent } from './face-overlay/face-overlay.component';
 import { snapIndex } from './screen-strip/swipe-snap';
-import { IconComponent } from '@shared/ui/icon/icon.component';
-import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
+import { IconComponent, AutoHideDirective } from '@allyworld/alloy-ui';
 import { ScreenButtonComponent } from './screen-button/screen-button.component';
 import { ScreenSheetComponent } from './screen-sheet/screen-sheet.component';
 

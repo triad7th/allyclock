@@ -23,11 +23,6 @@
             "polyfills": [],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/app/shared/ui"
-              ]
-            },
             "assets": [
               {
                 "glob": "**/*",

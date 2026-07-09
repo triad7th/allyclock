@@ -35,6 +35,7 @@
         <div class="tm-tzpicker">
           <app-zone-picker
             [options]="zoneOptions"
+            [countryFor]="countryFor"
             [selectedId]="clock.timeZone()"
             (picked)="onTimeZone($event); closeTzPicker()"
           />

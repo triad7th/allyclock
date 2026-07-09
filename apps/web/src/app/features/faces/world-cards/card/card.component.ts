@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ClockService } from '@core/clock.service';
-import { countryCodeForZone } from '@core/zone-country';
-import { FlagComponent } from '@shared/ui/flag/flag.component';
-import { IconComponent } from '@shared/ui/icon/icon.component';
+import { countryCodeForZone } from '@allyworld/alloy-time';
+import { IconComponent, FlagComponent } from '@allyworld/alloy-ui';
 import { bigTime, compactOffset, zoneCity } from '../../fullscreen/clock-formatter';
 
 @Component({

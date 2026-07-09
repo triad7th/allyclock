@@ -1,21 +1,23 @@
 import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { ClockService } from '@core/clock.service';
 import { ZoneCatalog, type TimeZoneOption } from '@core/zone-catalog';
-import { countryCodeForZone } from '@core/zone-country';
 import {
+  countryCodeForZone,
   instantFromWallClock,
   wallClockInZone,
   wallClockToInput,
   inputToWallClock,
   type WallClock,
-} from '@core/zone-time';
-import { AutoHideDirective } from '@shared/ui/auto-hide.directive';
-import { FlagComponent } from '@shared/ui/flag/flag.component';
-import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
-import { IconComponent } from '@shared/ui/icon/icon.component';
-import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
-import { SheetComponent } from '@shared/ui/sheet/sheet.component';
-import { ZonePickerComponent } from '@shared/ui/zone-picker/zone-picker.component';
+} from '@allyworld/alloy-time';
+import {
+  AutoHideDirective,
+  IconButtonComponent,
+  IconComponent,
+  NavHeaderComponent,
+  SheetComponent,
+  FlagComponent,
+  ZonePickerComponent,
+} from '@allyworld/alloy-ui';
 
 const MS_PER_DAY = 86400000;
 

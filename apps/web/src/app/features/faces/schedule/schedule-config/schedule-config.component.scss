@@ -1,4 +1,4 @@
-@use 'tokens' as t;
+@use '@allyworld/alloy-ui/styles/tokens' as t;
 
 // The panel fills the full-height sheet content region (which scrolls); the
 // chrome (grab handle, slide animation, backdrop) is owned by <app-sheet>.

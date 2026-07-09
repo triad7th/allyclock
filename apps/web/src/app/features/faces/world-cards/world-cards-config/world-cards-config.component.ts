@@ -10,11 +10,13 @@ import {
 import { DecimalPipe } from '@angular/common';
 import { WorldCardsConfigStore } from '../world-cards-config-store.service';
 import { DimensionRegistry } from '@core/dimensions/dimension-registry.service';
-import { SheetComponent } from '@shared/ui/sheet/sheet.component';
-import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
-import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 import { type WorldCardSizes } from '../world-cards-config';
-import { KnobSliderDirective } from '@allyworld/alloy-ui';
+import {
+  KnobSliderDirective,
+  SheetComponent,
+  NavHeaderComponent,
+  IconButtonComponent,
+} from '@allyworld/alloy-ui';
 
 /**
  * Resolution-based Adjust panel for World Cards: Time / Date font
