@@ -1,4 +1,5 @@
 import AllyClockCore
+import AlloyUI
 import SwiftUI
 
 /// App root: hosts the active face full-bleed with an auto-hiding controls bar
@@ -8,8 +9,7 @@ struct RootFaceView: View {
     @State private var pickerOpen = false
     @State private var adjustOpen = false
     @State private var settingsOpen = false
-    @State private var chromeVisible = true
-    @State private var hideTask: Task<Void, Never>?
+    @State private var autoHide = AutoHideModel()
 
     private let registry: DimensionRegistry
     private let fullscreenStore: FullscreenConfigStore
@@ -57,8 +57,8 @@ struct RootFaceView: View {
                 controlsBar
                     .debugFrame("controls", .cyan)
                     .padding(.bottom, 16)
-                    .opacity(chromeVisible && !sheetOpen ? 1 : 0)
-                    .animation(.easeInOut(duration: 0.3), value: chromeVisible)
+                    .opacity(autoHide.visible && !sheetOpen ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.3), value: autoHide.visible)
 
                 if face == .fullscreen {
                     GlassIconButton(icon: "gearshape", label: "Display options") {
@@ -68,8 +68,8 @@ struct RootFaceView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                     .padding(.trailing, max(16, hInset))
                     .padding(.bottom, 16)
-                    .opacity(chromeVisible && !sheetOpen ? 1 : 0)
-                    .animation(.easeInOut(duration: 0.3), value: chromeVisible)
+                    .opacity(autoHide.visible && !sheetOpen ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.3), value: autoHide.visible)
                 }
 
                 // Web-style glass sheets: content-hugging bottom panels over
@@ -116,14 +116,15 @@ struct RootFaceView: View {
         .preferredColorScheme(.dark)
         .persistentSystemOverlays(.hidden)
         .contentShape(Rectangle())
-        .onTapGesture { revealChrome() }
+        .onTapGesture { autoHide.reveal() }
         .onAppear {
-            scheduleHide()
+            autoHide.scheduleHide()
             // Test hook: open the picker on launch for UI verification.
             if ProcessInfo.processInfo.arguments.contains("-openPicker") { pickerOpen = true }
             if ProcessInfo.processInfo.arguments.contains("-openAdjust") { adjustOpen = true }
             if ProcessInfo.processInfo.arguments.contains("-openSettings") { settingsOpen = true }
         }
+        .onChange(of: sheetOpen) { autoHide.setHold(sheetOpen) }
     }
 
     private var sheetOpen: Bool {
@@ -142,20 +143,6 @@ struct RootFaceView: View {
             GlassIconButton(icon: "slider.horizontal.3", label: "Adjust layout") {
                 withAnimation(.easeOut(duration: 0.25)) { adjustOpen = true }
             }
-        }
-    }
-
-    private func revealChrome() {
-        chromeVisible = true
-        scheduleHide()
-    }
-
-    private func scheduleHide() {
-        hideTask?.cancel()
-        hideTask = Task {
-            try? await Task.sleep(for: .seconds(3))
-            guard !Task.isCancelled else { return }
-            chromeVisible = false
         }
     }
 }

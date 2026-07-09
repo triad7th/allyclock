@@ -1,13 +1,13 @@
 {
-  "originHash" : "2a3962e4920d66f1d571a853168cac5d142676d2018272c7ab370f481ad51dd5",
+  "originHash" : "87e3fb2301489fb3336788d4156ff07612393cc322e021ad639b96f4f56cd464",
   "pins" : [
     {
       "identity" : "alloy",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/triad7th/Alloy.git",
       "state" : {
-        "revision" : "8547c5b1e6bd59d4a669178e64f8249ee4241c48",
-        "version" : "0.1.1"
+        "revision" : "bb526baa988190f0bc0ac8c3829c56334dbc5064",
+        "version" : "0.2.0"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
       "state" : {
-        "revision" : "ad5e3190cc63dc288f28546f9c6827efc1e9d495",
-        "version" : "1.19.2"
+        "revision" : "1bc16f430d8410e7f087d4c787767b26fd32fe30",
+        "version" : "1.19.3"
       }
     },
     {

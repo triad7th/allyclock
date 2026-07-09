@@ -11,7 +11,7 @@ This directory contains the native SwiftUI iOS app for AllyClock.
 - Test target: `AllyClockTests`
 - Minimum deployment target: iOS 26.0 (latest iOS only — no legacy support)
 - Device family: iPhone and iPad, landscape-only (`UIRequiresFullScreen`)
-- Pure clock logic lives in the local Swift package `packages/AllyClockCore` (now just face-config/dimension logic); this app is the SwiftUI rendering layer over it. Shared time models (zone catalog, zone/country/flag mapping, zone-aware formatting) come from the external Alloy repo (`github.com/triad7th/Alloy`) via the `AlloyTime` package product.
+- Pure clock logic lives in the local Swift package `packages/AllyClockCore` (now just face-config/dimension logic); this app is the SwiftUI rendering layer over it. Shared time models (zone catalog, zone/country/flag mapping, zone-aware formatting) come from the external Alloy repo (`github.com/triad7th/Alloy`) via the `AlloyTime` package product. Shared glass chrome (icon abstraction, sheet, icon button, auto-hide model) comes from the same repo via the `AlloyUI` package product.
 
 ## Commands
 
@@ -38,5 +38,5 @@ swiftformat AllyClock AllyClockTests
 
 - Keep SwiftUI views small and focused.
 - Use modern SwiftUI freely — Liquid Glass (`glassEffect`, `.buttonStyle(.glass)`), `UnevenRoundedRectangle`, Swift concurrency. No `if #available(...)` guards for older iOS.
-- Sheets are content-hugging `GlassSheet` bottom panels (see `Shared/GlassSheet.swift`), not full-screen system sheets; they apply live and accept on any dismissal (X/backdrop) — no confirm/cancel.
+- Sheets are content-hugging `GlassSheet` bottom panels (from `AlloyUI`), not full-screen system sheets; they apply live and accept on any dismissal (X/backdrop) — no confirm/cancel.
 - Layout debugging: launch with `-layoutDebug` (or `.environment(\.layoutDebug, true)` in a preview) to draw border guidelines and centering-delta panels; see `Shared/LayoutDebug.swift`.

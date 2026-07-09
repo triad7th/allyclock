@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/triad7th/Alloy.git",
       "state" : {
-        "revision" : "8547c5b1e6bd59d4a669178e64f8249ee4241c48",
-        "version" : "0.1.1"
+        "revision" : "bb526baa988190f0bc0ac8c3829c56334dbc5064",
+        "version" : "0.2.0"
       }
     }
   ],
