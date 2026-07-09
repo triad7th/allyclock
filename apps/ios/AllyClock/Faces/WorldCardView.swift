@@ -30,7 +30,9 @@ struct WorldCardView: View {
                 .frame(width: 92 * timeScale, height: 92 * timeScale)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
             Spacer(minLength: 0)
-            VStack(alignment: .trailing, spacing: 3 * timeScale) {
+            // Time→date gap: the web's .date margin-top (0.2rem) plus the time
+            // row's 0.1em bottom padding ≈ 10px at scale 1.
+            VStack(alignment: .trailing, spacing: 10 * timeScale) {
                 HStack(alignment: .center, spacing: 4 * timeScale) {
                     // Tie the flank to the digits' cap band (~0.72 of the font),
                     // not the Text line box, so AM/PM hugs the cap top and

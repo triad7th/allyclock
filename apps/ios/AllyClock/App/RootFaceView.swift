@@ -154,26 +154,12 @@ struct RootFaceView: View {
     }
 }
 
-// Fixed-frame previews at representative device sizes (ClockView's preview
-// pattern) so centering is verifiable straight from the canvas.
-#Preview("iPhone 16 Pro portrait") {
-    RootFaceView().frame(width: 393, height: 852)
-}
-
-#Preview("iPhone 16 Pro landscape") {
-    RootFaceView().frame(width: 852, height: 393)
-}
-
-#Preview("iPhone 16 Pro Max landscape") {
-    RootFaceView().frame(width: 956, height: 440)
-}
-
-#Preview("iPad Pro 11\" landscape") {
-    RootFaceView().frame(width: 1210, height: 834)
-}
-
-#Preview("DEBUG iPhone 16 Pro landscape") {
+// Dimensions come from the canvas device picker, not fixed frames.
+#Preview("RootFaceView") {
     RootFaceView()
-        .frame(width: 852, height: 393)
+}
+
+#Preview("Layout debug") {
+    RootFaceView()
         .environment(\.layoutDebug, true)
 }
