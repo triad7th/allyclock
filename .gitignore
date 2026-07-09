@@ -71,3 +71,4 @@ build/
 .build/
 .swiftpm/
 .superpowers/
+buildServer.json
