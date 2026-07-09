@@ -4,7 +4,7 @@ import SwiftUI
 
 /// Adjust panel for the active face. Fullscreen and World Cards each get the
 /// web's Adjustment panel: Time and Date size sliders editing the band
-/// resolved from the live face ratio. each face gets its web Adjustment panel.
+/// resolved from the live face ratio.
 struct AdjustSheetView: View {
     let face: FaceKind
     let fullscreenStore: FullscreenConfigStore

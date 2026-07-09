@@ -48,13 +48,15 @@ struct WorldCardsSettingsView: View {
                         KnobLabel("Break")
                     }
                     ForEach(cards, id: \.id) { card in
-                        cityRow(card, removable: cards.count > 1)
+                        cityRow(card, removable: cards.count > MIN_CARDS)
                     }
                 }
                 KnobField(action: { store.addCard(zone: TimeZone.current.identifier) }) {
                     SFIcon("plus").frame(width: 14, height: 14)
                     Text("Add City")
                 }
+                .disabled(cards.count >= MAX_CARDS)
+                .opacity(cards.count >= MAX_CARDS ? 0.3 : 1)
             }
             .padding(.horizontal, 24)
         }

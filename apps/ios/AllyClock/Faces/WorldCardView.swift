@@ -29,7 +29,7 @@ struct WorldCardView: View {
             FlagView(zone: zone)
                 .frame(width: 92 * timeScale, height: 92 * timeScale)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
-            Spacer(minLength: 12)
+            Spacer(minLength: 0)
             VStack(alignment: .trailing, spacing: 3 * timeScale) {
                 HStack(alignment: .center, spacing: 4 * timeScale) {
                     // Tie the flank to the digits' cap band (~0.72 of the font),
