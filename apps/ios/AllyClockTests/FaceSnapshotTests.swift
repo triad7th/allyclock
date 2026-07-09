@@ -77,4 +77,52 @@ final class FaceSnapshotTests: XCTestCase {
         }
         assertFace(store, width: 852, height: 393, named: "date05zoneflag")
     }
+
+    private func makeWorldStore(
+        _ mutate: (WorldCardsConfigStore) -> Void = { _ in }
+    ) -> WorldCardsConfigStore {
+        let defaults = UserDefaults(suiteName: "face-snapshots-\(UUID().uuidString)")!
+        let store = WorldCardsConfigStore(registry: DimensionRegistry(), defaults: defaults)
+        mutate(store)
+        return store
+    }
+
+    private func assertWorldFace(_ store: WorldCardsConfigStore,
+                                 width: CGFloat, height: CGFloat, named name: String,
+                                 file: StaticString = #filePath,
+                                 testName: String = #function, line: UInt = #line)
+    {
+        let view = WorldCardsFaceView(store: store, now: instant)
+            .frame(width: width, height: height)
+        assertSnapshot(of: view, as: .image(layout: .fixed(width: width, height: height)),
+                       named: name, file: file, testName: testName, line: line)
+    }
+
+    func test_worldCardsDefault() {
+        assertWorldFace(makeWorldStore(), width: 852, height: 393, named: "phone852x393")
+        assertWorldFace(makeWorldStore(), width: 480, height: 270, named: "thumb480x270")
+        assertWorldFace(makeWorldStore(), width: 1210, height: 834, named: "ipad1210x834")
+    }
+
+    /// Explicit line breaks split rows; the wrap algorithm handles the rest.
+    func test_worldCardsMultiRow() {
+        let store = makeWorldStore { s in
+            s.addCard(zone: "Asia/Seoul")
+            s.addCard(zone: "Europe/London")
+            if let first = s.sample().cards.first {
+                s.setCardLineBreak(id: first.id, true)
+            }
+        }
+        assertWorldFace(store, width: 852, height: 393, named: "multirow852x393")
+    }
+
+    /// Off-1.0 sizes drive both the card scale and the wrap threshold.
+    func test_worldCardsScaled() {
+        let store = makeWorldStore { s in
+            let band = DimensionRegistry().resolveForRatio(852.0 / 393.0).id
+            s.setSize(band, key: \.time, value: 1.4)
+            s.setSize(band, key: \.date, value: 0.8)
+        }
+        assertWorldFace(store, width: 852, height: 393, named: "scaled852x393")
+    }
 }

@@ -1,5 +1,5 @@
-import AllyClockCore
 import AlloyUI
+import AllyClockCore
 import SwiftUI
 
 /// Adjust panel for the active face. Fullscreen and World Cards each get the
@@ -61,7 +61,9 @@ struct WorldCardsAdjustView: View {
         _width = State(initialValue: initialWidth)
     }
 
-    private var bandId: String { registry.resolveForRatio(ratio).id }
+    private var bandId: String {
+        registry.resolveForRatio(ratio).id
+    }
 
     var body: some View {
         let fields = store.config(bandId)

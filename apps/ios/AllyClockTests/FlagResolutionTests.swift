@@ -1,6 +1,6 @@
+import AlloyTime
 @testable import AllyClock
 import AllyClockCore
-import AlloyTime
 import UIKit
 import XCTest
 

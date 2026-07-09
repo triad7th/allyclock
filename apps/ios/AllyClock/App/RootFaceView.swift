@@ -1,5 +1,5 @@
-import AllyClockCore
 import AlloyUI
+import AllyClockCore
 import SwiftUI
 
 /// App root: hosts the active face full-bleed with an auto-hiding controls bar
