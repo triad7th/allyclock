@@ -113,7 +113,10 @@ export class ScreensService {
       if (raw) {
         const parsed = JSON.parse(raw) as ScreensState;
         if (parsed?.screens?.length) {
-          const activeIndex = Math.max(0, Math.min(parsed.activeIndex ?? 0, parsed.screens.length - 1));
+          const activeIndex = Math.max(
+            0,
+            Math.min(parsed.activeIndex ?? 0, parsed.screens.length - 1),
+          );
           return { version: 1, screens: parsed.screens, activeIndex };
         }
       }
@@ -171,7 +174,10 @@ export class ScreensService {
     const req = indexedDB.open(IDB_DB_NAME);
     req.onsuccess = () => {
       const db = req.result;
-      if (!db.objectStoreNames.contains(IDB_STORE_NAME)) { db.close(); return; }
+      if (!db.objectStoreNames.contains(IDB_STORE_NAME)) {
+        db.close();
+        return;
+      }
       const tx = db.transaction(IDB_STORE_NAME, 'readwrite');
       const store = tx.objectStore(IDB_STORE_NAME);
       const keysReq = store.getAllKeys();

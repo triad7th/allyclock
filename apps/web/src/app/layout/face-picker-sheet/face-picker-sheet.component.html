@@ -5,24 +5,24 @@
     </app-nav-header>
 
     <div class="options">
-    @for (face of faces; track face.id) {
-      <button
-        type="button"
-        class="face-option"
-        [class.active]="face.id === activeFaceId()"
-        (click)="selectFace(face.id)"
-      >
-        <span class="preview" aria-hidden="true">
-          <span class="preview-viewport">
-            <ng-container
-              [ngComponentOutlet]="face.component"
-              [ngComponentOutletInjector]="previewInjector()"
-            />
+      @for (face of faces; track face.id) {
+        <button
+          type="button"
+          class="face-option"
+          [class.active]="face.id === activeFaceId()"
+          (click)="selectFace(face.id)"
+        >
+          <span class="preview" aria-hidden="true">
+            <span class="preview-viewport">
+              <ng-container
+                [ngComponentOutlet]="face.component"
+                [ngComponentOutletInjector]="previewInjector()"
+              />
+            </span>
           </span>
-        </span>
-        <span class="name">{{ face.displayName }}</span>
-      </button>
-    }
+          <span class="name">{{ face.displayName }}</span>
+        </button>
+      }
     </div>
   </div>
 </app-sheet>

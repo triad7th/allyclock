@@ -32,4 +32,3 @@ export const FACES: FaceDescriptor[] = [
   },
   { id: 'schedule', displayName: 'Daily Schedule', component: ScheduleFaceComponent },
 ];
-

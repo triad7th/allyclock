@@ -83,7 +83,9 @@ describe('WorldCardsConfigStore', () => {
     store.setSize('lap', 'time', 1.5);
     expect(store.config('lap').sizes.time).toBe(1.5);
     expect(store.config('phone').sizes.time).toBe(1); // other bands untouched
-    expect(JSON.parse(mem['allyclock.screen.1.world-cards.config']).byBand.lap.sizes.time).toBe(1.5);
+    expect(JSON.parse(mem['allyclock.screen.1.world-cards.config']).byBand.lap.sizes.time).toBe(
+      1.5,
+    );
   });
 
   it('fieldsFor(ratio) resolves the band containing the ratio', () => {
