@@ -15,12 +15,11 @@
         <div class="knobs-row">
           <input
             type="range"
-            class="knobs-slider"
+            appKnobSlider
             min="0.5"
             max="2.0"
             step="0.05"
             [value]="editingFields().sections.time.sizeScale"
-            [style.--fill]="fillPct(editingFields().sections.time.sizeScale, 0.5, 2.0)"
             data-knob="time-size"
             (input)="onSectionSize('time', $event)"
           />
@@ -39,12 +38,11 @@
         <div class="knobs-row">
           <input
             type="range"
-            class="knobs-slider"
+            appKnobSlider
             min="0.5"
             max="2.0"
             step="0.05"
             [value]="editingFields().sections.month.sizeScale"
-            [style.--fill]="fillPct(editingFields().sections.month.sizeScale, 0.5, 2.0)"
             data-knob="date-size"
             (input)="onDateSize($event)"
           />

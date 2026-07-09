@@ -27,15 +27,12 @@
                 <span class="city-name">{{ cityLabel(card.zone) }}</span>
               </button>
               <button
-                type="button"
-                class="knobs-toggle"
-                [class.on]="card.lineBreak"
+                appKnobToggle
+                [on]="card.lineBreak"
                 data-knob="card-linebreak"
                 [attr.aria-label]="card.lineBreak ? 'Line break on' : 'Line break off'"
-                (click)="setLineBreak(card.id, !card.lineBreak)"
-              >
-                <span class="knobs-toggle-thumb"></span>
-              </button>
+                (toggled)="setLineBreak(card.id, !card.lineBreak)"
+              ></button>
               @if (canRemove()) {
                 <app-icon-button
                   class="city-remove"

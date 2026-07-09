@@ -18,6 +18,7 @@ import { countryCodeForZone } from '@core/zone-country';
 import { zoneCity } from '../../fullscreen/clock-formatter';
 import { ZonePickerComponent } from '@shared/ui/zone-picker/zone-picker.component';
 import { FlagComponent } from '@shared/ui/flag/flag.component';
+import { KnobToggleComponent } from '@allyworld/alloy-ui';
 
 /**
  * World Cards Settings: manage the card list (zone + line-break flag, add/remove).
@@ -34,6 +35,7 @@ import { FlagComponent } from '@shared/ui/flag/flag.component';
     IconComponent,
     ZonePickerComponent,
     FlagComponent,
+    KnobToggleComponent,
   ],
   templateUrl: './world-cards-settings.component.html',
   styleUrl: './world-cards-settings.component.scss',

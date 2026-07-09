@@ -14,6 +14,7 @@ import { SheetComponent } from '@shared/ui/sheet/sheet.component';
 import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
 import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 import { type WorldCardSizes } from '../world-cards-config';
+import { KnobSliderDirective } from '@allyworld/alloy-ui';
 
 /**
  * Resolution-based Adjust panel for World Cards: Time / Date font
@@ -22,7 +23,13 @@ import { type WorldCardSizes } from '../world-cards-config';
 @Component({
   selector: 'app-world-cards-config',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, DecimalPipe],
+  imports: [
+    SheetComponent,
+    NavHeaderComponent,
+    IconButtonComponent,
+    DecimalPipe,
+    KnobSliderDirective,
+  ],
   templateUrl: './world-cards-config.component.html',
   styleUrl: './world-cards-config.component.scss',
 })
@@ -42,11 +49,6 @@ export class WorldCardsConfigComponent {
   }
   onSheetClosed(): void {
     this.closed.emit();
-  }
-
-  fillPct(value: number, min: number, max: number): string {
-    const pct = Math.round(((value - min) / (max - min)) * 100);
-    return `${Math.max(0, Math.min(100, pct))}%`;
   }
 
   onSize(key: keyof WorldCardSizes, event: Event): void {

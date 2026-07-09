@@ -14,11 +14,18 @@ import { SheetComponent } from '@shared/ui/sheet/sheet.component';
 import { NavHeaderComponent } from '@shared/ui/nav-header/nav-header.component';
 import { IconButtonComponent } from '@shared/ui/icon-button/icon-button.component';
 import { type SectionKey, DATE_SECTION_KEYS } from '../fullscreen-preset';
+import { KnobSliderDirective } from '@allyworld/alloy-ui';
 
 @Component({
   selector: 'app-fullscreen-config',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SheetComponent, NavHeaderComponent, IconButtonComponent, DecimalPipe],
+  imports: [
+    SheetComponent,
+    NavHeaderComponent,
+    IconButtonComponent,
+    DecimalPipe,
+    KnobSliderDirective,
+  ],
   templateUrl: './fullscreen-config.component.html',
   styleUrl: './fullscreen-config.component.scss',
 })
@@ -41,12 +48,6 @@ export class FullscreenConfigComponent {
   }
   onSheetClosed(): void {
     this.closed.emit();
-  }
-
-  /** Compute --fill % for a slider given its current value and range. */
-  fillPct(value: number, min: number, max: number): string {
-    const pct = Math.round(((value - min) / (max - min)) * 100);
-    return `${Math.max(0, Math.min(100, pct))}%`;
   }
 
   onSectionSize(key: SectionKey, event: Event): void {

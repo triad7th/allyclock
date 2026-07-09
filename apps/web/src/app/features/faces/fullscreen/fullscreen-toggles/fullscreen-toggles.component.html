@@ -13,28 +13,22 @@
             <div class="knobs-cell">
               <span class="knobs-section-label">Seconds</span>
               <button
-                type="button"
-                class="knobs-toggle"
-                [class.on]="showSeconds()"
+                appKnobToggle
+                [on]="showSeconds()"
                 data-knob="seconds-visible"
-                (click)="toggleSeconds()"
+                (toggled)="toggleSeconds()"
                 [attr.aria-label]="showSeconds() ? 'Hide Seconds' : 'Show Seconds'"
-              >
-                <span class="knobs-toggle-thumb"></span>
-              </button>
+              ></button>
             </div>
             <div class="knobs-cell">
               <span class="knobs-section-label">Weekday</span>
               <button
-                type="button"
-                class="knobs-toggle"
-                [class.on]="showWeekday()"
+                appKnobToggle
+                [on]="showWeekday()"
                 data-knob="weekday-visible"
-                (click)="toggleWeekday()"
+                (toggled)="toggleWeekday()"
                 [attr.aria-label]="showWeekday() ? 'Hide Weekday' : 'Show Weekday'"
-              >
-                <span class="knobs-toggle-thumb"></span>
-              </button>
+              ></button>
             </div>
           </div>
         </div>
@@ -45,41 +39,32 @@
             <div class="knobs-cell">
               <span class="knobs-section-label">Zone</span>
               <button
-                type="button"
-                class="knobs-toggle"
-                [class.on]="showZone()"
+                appKnobToggle
+                [on]="showZone()"
                 data-knob="zone-visible"
-                (click)="toggleZone()"
+                (toggled)="toggleZone()"
                 [attr.aria-label]="showZone() ? 'Hide Time Zone' : 'Show Time Zone'"
-              >
-                <span class="knobs-toggle-thumb"></span>
-              </button>
+              ></button>
             </div>
             <div class="knobs-cell">
               <span class="knobs-section-label">GMT</span>
               <button
-                type="button"
-                class="knobs-toggle"
-                [class.on]="showGmt()"
+                appKnobToggle
+                [on]="showGmt()"
                 data-knob="gmt-visible"
-                (click)="toggleGmt()"
+                (toggled)="toggleGmt()"
                 [attr.aria-label]="showGmt() ? 'Hide GMT' : 'Show GMT'"
-              >
-                <span class="knobs-toggle-thumb"></span>
-              </button>
+              ></button>
             </div>
             <div class="knobs-cell">
               <span class="knobs-section-label">Flag</span>
               <button
-                type="button"
-                class="knobs-toggle"
-                [class.on]="showFlag()"
+                appKnobToggle
+                [on]="showFlag()"
                 data-knob="flag-visible"
-                (click)="toggleFlag()"
+                (toggled)="toggleFlag()"
                 [attr.aria-label]="showFlag() ? 'Hide Flag' : 'Show Flag'"
-              >
-                <span class="knobs-toggle-thumb"></span>
-              </button>
+              ></button>
             </div>
           </div>
         </div>
