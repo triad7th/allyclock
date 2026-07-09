@@ -27,10 +27,15 @@ divergent):
   card padding.
 - Card bottom rule: web draws it at content width with reduced opacity;
   iOS overlays a full-width, full-opacity 1px line.
-- Horizontal overflow: the iOS `ViewThatFits` shrink ladder STAYS (it is the
-  SwiftUI-idiomatic equivalent of the web's continuous scaling) but must be
-  validated at each canonical size with the same card content.
-- Vertical centering / letterboxing of the row block.
+- Horizontal overflow — AMENDED at planning time: the web does not scale to
+  fit at all; it WRAPS. `.line` is `flex-wrap` with per-card
+  `min-width: min(92px·timeScale + 18rem·dateScale, 100%)`, cards divide a
+  row's width evenly (`flex: 1 1 0`), and the face scrolls vertically
+  (`overflow-y: auto`). The iOS `ViewThatFits` shrink ladder cannot produce
+  that structure and is REPLACED by a ported wrap algorithm (pure function
+  in AllyClockCore + a ScrollView-based face layout).
+- Vertical centering / letterboxing of the row block (centered when content
+  fits, scrolls when it does not).
 
 Exit criterion: side-by-side screenshots at the three sizes with no visible
 structural differences (modulo the discrete-vs-continuous shrink), and new
