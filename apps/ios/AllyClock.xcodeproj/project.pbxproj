@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -55,27 +55,10 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXBuildFile section */
-		AC0000000000000000000030 /* AllyClockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000020 /* AllyClockApp.swift */; };
-		AC0000000000000000000032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000022 /* Assets.xcassets */; };
-		AC0000000000000000000033 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000023 /* Preview Assets.xcassets */; };
 		AC0000000000000000000102 /* AllyClockCore in Frameworks */ = {isa = PBXBuildFile; productRef = AC0000000000000000000101 /* AllyClockCore */; };
 		AC0000000000000000000163 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = AC0000000000000000000162 /* SnapshotTesting */; };
 		AC0000000000000000000172 /* AlloyTime in Frameworks */ = {isa = PBXBuildFile; productRef = AC0000000000000000000171 /* AlloyTime */; };
 		AC0000000000000000000174 /* AlloyUI in Frameworks */ = {isa = PBXBuildFile; productRef = AC0000000000000000000173 /* AlloyUI */; };
-		AC0000000000000000000165 /* FaceSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000164 /* FaceSnapshotTests.swift */; };
-		AC0000000000000000000118 /* FontWeightMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000117 /* FontWeightMap.swift */; };
-		AC0000000000000000000152 /* LayoutDebug.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000151 /* LayoutDebug.swift */; };
-		AC0000000000000000000158 /* FullscreenSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000157 /* FullscreenSettingsView.swift */; };
-		AC0000000000000000000176 /* WorldCardsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000175 /* WorldCardsSettingsView.swift */; };
-		AC0000000000000000000121 /* FlagResolutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000120 /* FlagResolutionTests.swift */; };
-		AC0000000000000000000131 /* FullscreenFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000130 /* FullscreenFaceView.swift */; };
-		AC0000000000000000000134 /* WorldCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000133 /* WorldCardView.swift */; };
-		AC0000000000000000000136 /* WorldCardsFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000135 /* WorldCardsFaceView.swift */; };
-		AC0000000000000000000138 /* FaceKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000137 /* FaceKind.swift */; };
-		AC0000000000000000000142 /* FacePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000141 /* FacePickerView.swift */; };
-		AC0000000000000000000144 /* RootFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000143 /* RootFaceView.swift */; };
-		AC0000000000000000000150 /* AdjustSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000149 /* AdjustSheetView.swift */; };
-		AC0000000000000000000148 /* FaceKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000147 /* FaceKindTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,26 +72,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		AC0000000000000000000020 /* AllyClockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllyClockApp.swift; sourceTree = "<group>"; };
-		AC0000000000000000000022 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		AC0000000000000000000023 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AC0000000000000000000024 /* AllyClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllyClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC0000000000000000000051 /* AllyClockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AllyClockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AC0000000000000000000117 /* FontWeightMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontWeightMap.swift; sourceTree = "<group>"; };
-		AC0000000000000000000151 /* LayoutDebug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutDebug.swift; sourceTree = "<group>"; };
-		AC0000000000000000000157 /* FullscreenSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenSettingsView.swift; sourceTree = "<group>"; };
-		AC0000000000000000000175 /* WorldCardsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCardsSettingsView.swift; sourceTree = "<group>"; };
-		AC0000000000000000000120 /* FlagResolutionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagResolutionTests.swift; sourceTree = "<group>"; };
-		AC0000000000000000000130 /* FullscreenFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenFaceView.swift; sourceTree = "<group>"; };
-		AC0000000000000000000133 /* WorldCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCardView.swift; sourceTree = "<group>"; };
-		AC0000000000000000000135 /* WorldCardsFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCardsFaceView.swift; sourceTree = "<group>"; };
-		AC0000000000000000000137 /* FaceKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceKind.swift; sourceTree = "<group>"; };
-		AC0000000000000000000141 /* FacePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacePickerView.swift; sourceTree = "<group>"; };
-		AC0000000000000000000143 /* RootFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootFaceView.swift; sourceTree = "<group>"; };
-		AC0000000000000000000149 /* AdjustSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustSheetView.swift; sourceTree = "<group>"; };
-		AC0000000000000000000147 /* FaceKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceKindTests.swift; sourceTree = "<group>"; };
-		AC0000000000000000000164 /* FaceSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceSnapshotTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		AC0000000000000000000011 /* AllyClock */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AllyClock;
+			sourceTree = "<group>";
+		};
+		AC0000000000000000000041 /* AllyClockTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AllyClockTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		AC0000000000000000000014 /* Frameworks */ = {
@@ -150,69 +129,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AC0000000000000000000011 /* AllyClock */ = {
-			isa = PBXGroup;
-			children = (
-				AC0000000000000000000020 /* AllyClockApp.swift */,
-				AC0000000000000000000022 /* Assets.xcassets */,
-				AC0000000000000000000012 /* Preview Content */,
-				AC0000000000000000000112 /* Shared */,
-				AC0000000000000000000132 /* Faces */,
-				AC0000000000000000000140 /* App */,
-			);
-			path = AllyClock;
-			sourceTree = "<group>";
-		};
-		AC0000000000000000000012 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				AC0000000000000000000023 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		AC0000000000000000000041 /* AllyClockTests */ = {
-			isa = PBXGroup;
-			children = (
-				AC0000000000000000000120 /* FlagResolutionTests.swift */,
-				AC0000000000000000000147 /* FaceKindTests.swift */,
-				AC0000000000000000000164 /* FaceSnapshotTests.swift */,
-			);
-			path = AllyClockTests;
-			sourceTree = "<group>";
-		};
-		AC0000000000000000000112 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				AC0000000000000000000117 /* FontWeightMap.swift */,
-				AC0000000000000000000151 /* LayoutDebug.swift */,
-			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
-		AC0000000000000000000132 /* Faces */ = {
-			isa = PBXGroup;
-			children = (
-				AC0000000000000000000130 /* FullscreenFaceView.swift */,
-				AC0000000000000000000157 /* FullscreenSettingsView.swift */,
-				AC0000000000000000000133 /* WorldCardView.swift */,
-				AC0000000000000000000135 /* WorldCardsFaceView.swift */,
-				AC0000000000000000000175 /* WorldCardsSettingsView.swift */,
-				AC0000000000000000000137 /* FaceKind.swift */,
-			);
-			path = Faces;
-			sourceTree = "<group>";
-		};
-		AC0000000000000000000140 /* App */ = {
-			isa = PBXGroup;
-			children = (
-				AC0000000000000000000141 /* FacePickerView.swift */,
-				AC0000000000000000000143 /* RootFaceView.swift */,
-				AC0000000000000000000149 /* AdjustSheetView.swift */,
-			);
-			path = App;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -227,6 +143,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AC0000000000000000000011 /* AllyClock */,
 			);
 			name = AllyClock;
 			packageProductDependencies = (
@@ -250,6 +169,9 @@
 			);
 			dependencies = (
 				AC0000000000000000000060 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AC0000000000000000000041 /* AllyClockTests */,
 			);
 			name = AllyClockTests;
 			packageProductDependencies = (
@@ -279,7 +201,6 @@
 				};
 			};
 			buildConfigurationList = AC0000000000000000000072 /* Build configuration list for PBXProject "AllyClock" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -287,11 +208,13 @@
 				Base,
 			);
 			mainGroup = AC0000000000000000000002;
+			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				AC0000000000000000000100 /* XCLocalSwiftPackageReference "AllyClockCore" */,
 				AC0000000000000000000161 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				AC0000000000000000000170 /* XCRemoteSwiftPackageReference "Alloy" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = AC0000000000000000000003 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -307,8 +230,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC0000000000000000000033 /* Preview Assets.xcassets in Resources */,
-				AC0000000000000000000032 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,18 +247,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC0000000000000000000030 /* AllyClockApp.swift in Sources */,
-				AC0000000000000000000118 /* FontWeightMap.swift in Sources */,
-				AC0000000000000000000152 /* LayoutDebug.swift in Sources */,
-				AC0000000000000000000131 /* FullscreenFaceView.swift in Sources */,
-				AC0000000000000000000158 /* FullscreenSettingsView.swift in Sources */,
-				AC0000000000000000000134 /* WorldCardView.swift in Sources */,
-				AC0000000000000000000136 /* WorldCardsFaceView.swift in Sources */,
-				AC0000000000000000000176 /* WorldCardsSettingsView.swift in Sources */,
-				AC0000000000000000000138 /* FaceKind.swift in Sources */,
-				AC0000000000000000000142 /* FacePickerView.swift in Sources */,
-				AC0000000000000000000144 /* RootFaceView.swift in Sources */,
-				AC0000000000000000000150 /* AdjustSheetView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,9 +254,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC0000000000000000000121 /* FlagResolutionTests.swift in Sources */,
-				AC0000000000000000000148 /* FaceKindTests.swift in Sources */,
-				AC0000000000000000000165 /* FaceSnapshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
