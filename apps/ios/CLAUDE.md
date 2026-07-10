@@ -40,3 +40,14 @@ swiftformat AllyClock AllyClockTests
 - Use modern SwiftUI freely — Liquid Glass (`glassEffect`, `.buttonStyle(.glass)`), `UnevenRoundedRectangle`, Swift concurrency. No `if #available(...)` guards for older iOS.
 - Sheets are content-hugging `GlassSheet` bottom panels (from `AlloyUI`), not full-screen system sheets; they apply live and accept on any dismissal (X/backdrop) — no confirm/cancel.
 - Layout debugging: launch with `-layoutDebug` (or `.environment(\.layoutDebug, true)` in a preview) to draw border guidelines and centering-delta panels; see `Shared/LayoutDebug.swift`.
+- The Xcode project uses synchronized folder groups: any file added under `AllyClock/` or `AllyClockTests/` joins its target automatically. Never hand-edit `project.pbxproj` to add, move, or remove files — create/`git mv`/delete them on disk.
+
+## Swift File Naming & Layout
+
+The web app (`apps/web`) is the porting reference; Swift files map from it mechanically:
+
+- Web `<name>.component.ts` → `<Name>View.swift`. Every SwiftUI view type ends in `View` — including sheets (`AdjustSheetView`, never `AdjustSheet`).
+- Web `<name>.ts` models/stores/logic (dropping `.service`/`.data` suffixes) → `<Name>.swift` (`DimensionRegistry`, `WorldCardsPresets`).
+- Folders mirror the web top level: `layout/` → `App/`, `features/faces/` → `Faces/`, `shared/` → `Shared/`.
+- One primary type per file; the file is named after that type.
+- Sanctioned deviations (kept, not bugs): `FacePickerView` (web: `face-picker-sheet.component.ts`) and the `*SettingsView` pair normalizing web's inconsistent `fullscreen-config` / `world-cards-settings` names.
