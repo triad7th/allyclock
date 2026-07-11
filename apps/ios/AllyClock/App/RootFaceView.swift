@@ -57,8 +57,7 @@ struct RootFaceView: View {
                 controlsBar
                     .debugFrame("controls", .cyan)
                     .padding(.bottom, 16)
-                    .opacity(autoHide.visible && !sheetOpen ? 1 : 0)
-                    .animation(.easeInOut(duration: 0.3), value: autoHide.visible)
+                    .chromeAutoHides(autoHide)
 
                 if face == .fullscreen || face == .worldCards {
                     GlassIconButton(icon: "gearshape", label: "Display options") {
@@ -68,8 +67,7 @@ struct RootFaceView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                     .padding(.trailing, max(16, hInset))
                     .padding(.bottom, 16)
-                    .opacity(autoHide.visible && !sheetOpen ? 1 : 0)
-                    .animation(.easeInOut(duration: 0.3), value: autoHide.visible)
+                    .chromeAutoHides(autoHide)
                 }
 
                 // Web-style glass sheets: content-hugging bottom panels over
@@ -131,7 +129,7 @@ struct RootFaceView: View {
             if ProcessInfo.processInfo.arguments.contains("-openAdjust") { adjustOpen = true }
             if ProcessInfo.processInfo.arguments.contains("-openSettings") { settingsOpen = true }
         }
-        .onChange(of: sheetOpen) { autoHide.setHold(sheetOpen) }
+        .onChange(of: sheetOpen) { autoHide.suppressed = sheetOpen }
     }
 
     private var sheetOpen: Bool {

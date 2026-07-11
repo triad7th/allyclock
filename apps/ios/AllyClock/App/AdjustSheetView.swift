@@ -25,24 +25,6 @@ struct AdjustSheetView: View {
     }
 }
 
-/// One knobs slider row: 0.5–2.0 step 0.05 with the web's %.2f readout.
-private struct AdjustSliderRow: View {
-    let value: Double
-    let set: (Double) -> Void
-
-    var body: some View {
-        HStack(spacing: 10) {
-            Slider(value: Binding(get: { value }, set: set), in: 0.5 ... 2.0, step: 0.05)
-                .tint(Knobs.tint)
-            Text(String(format: "%.2f", value))
-                .font(.system(size: 11.5))
-                .monospacedDigit()
-                .foregroundStyle(.white)
-                .frame(width: 38, alignment: .trailing)
-        }
-    }
-}
-
 /// Time + Date size sliders for World Cards, per dimension band. Range/step
 /// and the %.2f readout match the web (`world-cards-config.component`).
 struct WorldCardsAdjustView: View {
@@ -74,16 +56,22 @@ struct WorldCardsAdjustView: View {
             spacing: 16
         ) {
             KnobCard {
-                KnobLabel("Time")
-                AdjustSliderRow(value: fields.sizes.time) { value in
-                    store.setSize(bandId, key: \.time, value: value)
-                }
+                KnobSlider(
+                    label: "Time",
+                    value: Binding(get: { fields.sizes.time },
+                                   set: { store.setSize(bandId, key: \.time, value: $0) }),
+                    in: 0.5 ... 2.0, step: 0.05,
+                    display: String(format: "%.2f", fields.sizes.time)
+                )
             }
             KnobCard {
-                KnobLabel("Date")
-                AdjustSliderRow(value: fields.sizes.date) { value in
-                    store.setSize(bandId, key: \.date, value: value)
-                }
+                KnobSlider(
+                    label: "Date",
+                    value: Binding(get: { fields.sizes.date },
+                                   set: { store.setSize(bandId, key: \.date, value: $0) }),
+                    in: 0.5 ... 2.0, step: 0.05,
+                    display: String(format: "%.2f", fields.sizes.date)
+                )
             }
         }
         .padding(.horizontal, 24)
@@ -126,24 +114,34 @@ struct FullscreenAdjustView: View {
             spacing: 16
         ) {
             KnobCard {
-                KnobLabel("Time")
-                AdjustSliderRow(value: fields.sections.time.sizeScale) { value in
-                    store.updateSection(bandId, .time) { var s = $0
-                        s.sizeScale = value
-                        return s
-                    }
-                }
+                KnobSlider(
+                    label: "Time",
+                    value: Binding(get: { fields.sections.time.sizeScale },
+                                   set: { value in
+                                       store.updateSection(bandId, .time) { var s = $0
+                                           s.sizeScale = value
+                                           return s
+                                       }
+                                   }),
+                    in: 0.5 ... 2.0, step: 0.05,
+                    display: String(format: "%.2f", fields.sections.time.sizeScale)
+                )
             }
             KnobCard {
-                KnobLabel("Date")
-                AdjustSliderRow(value: fields.sections.month.sizeScale) { value in
-                    for key in SectionKey.dateKeys {
-                        store.updateSection(bandId, key) { var s = $0
-                            s.sizeScale = value
-                            return s
-                        }
-                    }
-                }
+                KnobSlider(
+                    label: "Date",
+                    value: Binding(get: { fields.sections.month.sizeScale },
+                                   set: { value in
+                                       for key in SectionKey.dateKeys {
+                                           store.updateSection(bandId, key) { var s = $0
+                                               s.sizeScale = value
+                                               return s
+                                           }
+                                       }
+                                   }),
+                    in: 0.5 ... 2.0, step: 0.05,
+                    display: String(format: "%.2f", fields.sections.month.sizeScale)
+                )
             }
         }
         .padding(.horizontal, 24)
