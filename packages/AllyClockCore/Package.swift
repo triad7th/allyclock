@@ -8,7 +8,7 @@ let package = Package(
     .library(name: "AllyClockCore", targets: ["AllyClockCore"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/triad7th/Alloy.git", exact: "0.4.0"),
+    .package(url: "https://github.com/triad7th/Alloy.git", exact: "0.6.0"),
   ],
   targets: [
     .target(name: "AllyClockCore",

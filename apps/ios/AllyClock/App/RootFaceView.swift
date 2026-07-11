@@ -62,7 +62,7 @@ struct RootFaceView: View {
 
                 if face == .fullscreen || face == .worldCards {
                     GlassIconButton(icon: "gearshape", label: "Display options") {
-                        withAnimation(.easeOut(duration: 0.25)) { settingsOpen = true }
+                        settingsOpen = true
                     }
                     .debugFrame("gear", .mint)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
@@ -77,20 +77,20 @@ struct RootFaceView: View {
                 // and rejected: full-screen cover on iPhone landscape, and the
                 // iPad floating panel didn't fit the app's look).
                 if pickerOpen {
-                    GlassSheet(title: "Faces", hInset: hInset, onClose: { close($pickerOpen) }) {
+                    GlassSheet(title: "Faces", hInset: hInset, onClosed: { pickerOpen = false }) { dismiss in
                         FacePickerView(
                             selection: Binding(get: { face }, set: { selectedRaw = $0.rawValue }),
                             fullscreenStore: fullscreenStore,
                             worldCardsStore: worldCardsStore,
-                            onSelect: { close($pickerOpen) }
+                            onSelect: { dismiss() }
                         )
                     }
                     .zIndex(1)
                 }
                 if adjustOpen {
                     GlassSheet(title: "Adjustment", hInset: hInset,
-                               onClose: { close($adjustOpen) })
-                    {
+                               onClosed: { adjustOpen = false })
+                    { _ in
                         AdjustSheetView(face: face, fullscreenStore: fullscreenStore,
                                         worldCardsStore: worldCardsStore,
                                         registry: registry, ratio: ratio,
@@ -100,8 +100,8 @@ struct RootFaceView: View {
                 }
                 if settingsOpen {
                     GlassSheet(title: "Settings", hInset: hInset,
-                               onClose: { close($settingsOpen) })
-                    {
+                               onClosed: { settingsOpen = false })
+                    { _ in
                         switch face {
                         case .fullscreen:
                             FullscreenSettingsView(store: fullscreenStore, initialWidth: sheetWidth,
@@ -138,17 +138,13 @@ struct RootFaceView: View {
         pickerOpen || adjustOpen || settingsOpen
     }
 
-    private func close(_ flag: Binding<Bool>) {
-        withAnimation(.easeOut(duration: 0.25)) { flag.wrappedValue = false }
-    }
-
     private var controlsBar: some View {
         HStack(spacing: 16) {
             GlassIconButton(icon: "clock", label: "Choose clock face") {
-                withAnimation(.easeOut(duration: 0.25)) { pickerOpen = true }
+                pickerOpen = true
             }
             GlassIconButton(icon: "slider.horizontal.3", label: "Adjust layout") {
-                withAnimation(.easeOut(duration: 0.25)) { adjustOpen = true }
+                adjustOpen = true
             }
         }
     }
