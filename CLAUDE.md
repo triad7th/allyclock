@@ -75,7 +75,6 @@ AllyClock's official dev-serve port is **4200** (Angular's default). Each Ally p
 - `apps/web/src/app/features/faces/face-registry.ts` lists the selectable clock faces.
 - `apps/web/src/app/features/faces/` contains one directory per clock face (fullscreen, world-cards).
 - `apps/web/src/app/layout/` contains the configure button and face picker sheet.
-- `apps/web/src/app/core/location.service.ts` maps region IDs to flag URLs and timezone offsets.
 - `netlify.toml` defines the Netlify build base and publish directory.
 
 ## Coding Conventions

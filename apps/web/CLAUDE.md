@@ -18,7 +18,7 @@ The app is structured into four tiers with one-way dependencies (`layout → fea
 
 ```
 src/app/
-  core/           — app-wide singletons (ClockService, LocationService, FaceConfigService,
+  core/           — app-wide singletons (ClockService, FaceConfigService,
                     DimensionRegistryService, animation-timing constants)
   shared/ui/      — reusable UI primitives (IconComponent, SheetComponent, NavHeaderComponent,
                     IconButtonComponent, ContainerSizeDirective, AutoHideDirective, tokens.scss)
@@ -78,7 +78,6 @@ npm test
 - `src/app/features/faces/schedule/` contains the Daily Schedule face: image panning, drag-marker config, and IndexedDB image storage.
 - `src/app/layout/` contains the "Face" button (opens the face picker sheet) and the Time Machine control (mocks the clock via `ClockService`).
 - `src/app/core/clock.service.ts` exposes `now()`; the Time Machine overrides it with `setMock()`/`clearMock()` so every face can be previewed at an arbitrary instant.
-- `src/app/core/location.service.ts` maps region IDs to flag URLs and timezone offsets.
 - `src/app/core/animation-timing.ts` is the single source of truth for animation duration constants (also pushed to CSS custom properties at bootstrap).
 - `src/app/shared/ui/icon/icon.component.ts` is the icon abstraction layer keyed to SF Symbol names.
 - `src/styles.scss` contains global styles.
@@ -90,7 +89,7 @@ npm test
 - Follow the existing TypeScript strictness in `tsconfig.json`; avoid adding `any` unless there is a clear boundary reason.
 - Use two-space indentation, UTF-8, final newlines, and single quotes in TypeScript.
 - Prefer Angular template bindings over interpolation in attributes.
-- Keep shared timezone/flag mapping logic in `LocationService` until a shared `packages/core` module exists.
+- Timezone catalog, zone→country/flag mapping, and offset formatting come from `@allyworld/alloy-time` (`ZoneCountry`, `ZoneFormat`, via `core/zone-catalog.ts`); never hand-roll region/offset maps in the app.
 - Keep UI changes consistent with the current Bootstrap utility-class approach unless intentionally introducing a design-system change.
 - This app is the reference implementation for native Apple ports (iOS/watchOS/tvOS); prefer abstractions that map 1:1 onto Apple APIs so porting is mechanical (see the root `CLAUDE.md` "Platform Porting Goal").
 - Use SF Symbol names for iconography. Render icons through the icon abstraction layer keyed to SF Symbol names (e.g. `pencil`, `photo`, `plus`, `trash`) as SVG, rather than ad-hoc emoji or one-off Bootstrap Icons, so the Apple ports swap to `Image(systemName:)` with the same names.
