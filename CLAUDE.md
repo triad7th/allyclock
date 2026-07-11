@@ -63,6 +63,8 @@ npm run test:web
 
 Root scripts delegate to `apps/web`. App-local commands can also be run from `apps/web`.
 
+AllyClock's official dev-serve port is **4200** (Angular's default). Each Ally project owns a fixed port so several can run side by side: AllyClock 4200, AllyPiano 4201, AllyScore 4202, Alloy 4205. The official port belongs to the human dev: if it is already serving, never kill or reuse that server — agents doing their own debugging or checking start their own instance on a free port with `--port`.
+
 ## Important Files
 
 - `package.json` owns root orchestration scripts.
