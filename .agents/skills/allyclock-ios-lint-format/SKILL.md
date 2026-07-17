@@ -1,1 +1,0 @@
-../../../.claude/skills/allyclock-ios-lint-format/SKILL.md

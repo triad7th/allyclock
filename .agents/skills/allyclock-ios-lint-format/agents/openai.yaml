@@ -1,4 +1,0 @@
-interface:
-  display_name: "AllyClock iOS Lint Format"
-  short_description: "Run SwiftLint and SwiftFormat for iOS"
-  default_prompt: "Use $allyclock-ios-lint-format to format and lint the AllyClock iOS app under apps/ios."
